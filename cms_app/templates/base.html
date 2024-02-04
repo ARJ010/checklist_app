@@ -1,0 +1,27 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      {% block title %}
+      {% endblock %}
+    </title>
+    <link rel="stylesheet" href="{% static 'app.css' %}">
+    {% block style_content %}
+    {% endblock %}
+  </head>
+  <body>
+    <header id="main-navigation">
+        {% block type %}{% endblock type %}
+        <nav>
+          <a href="">LOGOUT</a>
+          <a href="">All Posts</a>
+        </nav>
+    </header>
+    {% block body_content %}
+    {% endblock %}
+  </body>
+</html>

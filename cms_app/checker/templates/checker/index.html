@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  CMS-Checker
+{% endblock %}
+
+{% block style_content %}
+  <link rel="stylesheet" href=" {% static 'checker/index.css' %}" />
+{% endblock %}
+
+{% block type %}
+<h1><a href="{% url "checker_index" %}">CMS</a></h1>
+{% endblock %}
+
+{% block body_content %}
+  <section id="welcome">
+    <header>
+      <img src="{% static 'blog/images/me.png' %}" alt="Abhinav Raj - Creator of this Blog" />
+      <h2>Checker_Name</h2>
+    </header>
+    <p>Hi, I'm Abhinav and I love to blog about my coding journey.</p>
+  </section>
+
+  <section id="about">
+    <h2>What I Do</h2>
+    <p>I love coding, learning new things and helping others.</p>
+    <p>I'm currently learning Django. My Goal is to become a Django developer</p>
+  </section>
+{% endblock %}
