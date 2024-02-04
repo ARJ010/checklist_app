@@ -58,6 +58,22 @@
   flex: 1;
 }
 
+#about {
+  text-align: center;
+  padding: 3rem;
+  background-color: #e48900;
+  margin-top: 5rem;
+}
+
+#about h2 {
+  font-size: 3rem;
+}
+
+#about p {
+  font-size: 1.5rem;
+  color: #353535;
+}
+
 #procedure_table {
   background-color: white;
   padding: 5rem;

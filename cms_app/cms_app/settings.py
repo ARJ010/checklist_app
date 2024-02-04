@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'checklist',
     'user',
     'checker',
+    'manager',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

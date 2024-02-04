@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  CMS-User
+{% endblock %}
+
+{% block style_content %}
+  <link rel="stylesheet" href=" {% static 'manager/index.css' %}" />
+  <link rel="stylesheet" href=" {% static 'manager/all_actions.css' %}">
+{% endblock %}
+
+{% block type %}
+<h1><a href="{% url "manager_index" %}">CMS</a></h1>
+{% endblock %}
+
+{% block body_content %}
+  <section id="welcome">
+    <header>
+      <img src="{% static 'images/admin.png' %}" alt="Admin" />
+      <h2>Admin Dashboard</h2>
+    </header>
+  </section>
+
+  <section id="procedure_table" class="all_actions">
+      <ul>
+        <li>
+          <article class="action">
+            <a href="">
+              <img src="{% static 'images/user.png' %}" alt="user" />
+              <div class="action_content">
+                <h3>Users</h3>
+                <p>View, Add, Edit, Delete</p>
+              </div>
+            </a>
+          </article>
+        </li>
+        <li>
+          <article class="action">
+            <a href="">
+              <img src="{% static 'images/checker.png' %}" alt="user" />
+              <div class="action_content">
+                <h3>Checkers</h3>
+                <p>View, Add, Edit, Delete</p>
+              </div>
+            </a>
+          </article>
+        </li>
+        <li>
+          <article class="action">
+            <a href="">
+              <img src=" {% static 'images/checklist.png' %}" alt="user" />
+              <div class="action_content">
+                <h3>Checklist</h3>
+                <p>View, Add, Edit, Delete</p>
+              </div>
+            </a>
+          </article>
+        </li>
+      </ul>
+  </section>
+
+{% endblock %}
+

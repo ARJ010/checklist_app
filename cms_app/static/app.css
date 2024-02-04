@@ -31,6 +31,10 @@ h3 {
   left: 0;
 }
 
+nav{
+  padding-top: 0%;
+}
+
 #main-navigation a {
   text-decoration: none;
   color: white;

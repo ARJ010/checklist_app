@@ -16,15 +16,34 @@
 {% block body_content %}
   <section id="welcome">
     <header>
-      <img src="{% static 'blog/images/me.png' %}" alt="Abhinav Raj - Creator of this Blog" />
       <h2>Checker_Name</h2>
     </header>
-    <p>Hi, I'm Abhinav and I love to blog about my coding journey.</p>
   </section>
 
-  <section id="about">
-    <h2>What I Do</h2>
-    <p>I love coding, learning new things and helping others.</p>
-    <p>I'm currently learning Django. My Goal is to become a Django developer</p>
+  <section id="procedure_table">
+
+    <header>
+      <h2>Procedures</h2>
+    </header>
+    <table>
+      <thead>
+        <tr>
+          <th>Sl No.</th>
+          <th>Procedure Name</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>Procedure_1</td>
+          <td><a href="">Proceed</a></td>
+        </tr>
+      </tbody>
+    </table>
+
   </section>
+
+
+
 {% endblock %}
