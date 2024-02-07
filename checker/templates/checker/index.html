@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  CMS-Checker
+{% endblock %}
+
+{% block style_content %}
+  <link rel="stylesheet" href=" {% static 'checker/index.css' %}" />
+{% endblock %}
+
+{% block type %}
+<h1><a href="{% url "checker_index" %}">CMS</a></h1>
+{% endblock %}
+
+{% block body_content %}
+  <section id="welcome">
+    <header>
+      <h2>Checker_Name</h2>
+    </header>
+  </section>
+
+  <section id="procedure_table">
+
+    <header>
+      <h2>Procedures</h2>
+    </header>
+    <table>
+      <thead>
+        <tr>
+          <th>Sl No.</th>
+          <th>Procedure Name</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>Procedure_1</td>
+          <td><a href="">Proceed</a></td>
+        </tr>
+      </tbody>
+    </table>
+
+  </section>
+
+
+
+{% endblock %}

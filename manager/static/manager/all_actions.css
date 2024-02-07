@@ -1,0 +1,100 @@
+body {
+  background-color: #e7e7e7;
+}
+
+#main-navigation {
+  background-color: #390281;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.all_actions {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 60rem;
+  margin: -6rem auto 2rem auto;
+  box-shadow: 1px 1px 12px rgba(0, 0, 0, 0.4);
+}
+
+.all_actions h2 {
+  text-align: center;
+}
+
+.all_actions ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 1rem;
+}
+
+.all_actions li {
+  flex: 1;
+}
+
+.all_actions {
+  margin: 7rem auto;
+  width: 90%;
+  max-width: 60rem;
+}
+
+.all_actions h2 {
+  text-align: center;
+  font-size: 2rem;
+  color: #2e2e2e;
+  margin: 3rem 0;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  gap: 1.5rem;
+}
+
+
+.action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.action a {
+  text-decoration: none;
+  color: black;
+  transition: all 0.2s ease;
+  padding: 1rem;
+}
+
+.action a:hover,
+.post a:active {
+  transform: scale(1.1);
+  background-color: #390281;
+  color: white;
+}
+
+.action img {
+  width: 5rem;
+  height: 5rem;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.action h3 {
+  margin: 0.25rem 0;
+}
+
+.action time {
+  color: #666666;
+  margin: 0.25rem;
+  font-style: italic;
+  font-size: 0.85rem;
+}
+
+.action:hover time,
+.action:active time {
+  color: white;
+}
