@@ -1,0 +1,102 @@
+
+.form-control {
+    margin-bottom: 1rem;
+}
+
+
+
+.form-control input:focus {
+    border-color: #1f0050;
+    outline: none;
+    background-color: #f4eeff;
+}
+
+.form-control label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+
+
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+}
+
+.login-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.login-form input[type="text"],
+.login-form input[type="password"],
+.login-form button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+button {
+    cursor: pointer;
+    padding: 0.5rem 1.5rem;
+    border-radius: 6px;
+    background-color: #1f0050;
+    color: white;
+    border: 1px solid #1f0050;
+}
+
+button:hover,
+button:active {
+    background-color: #320777;
+    border-color: #320777;
+}
+
+/* Existing Styles */
+.form-control input:focus {
+    border-color: #1f0050;
+    outline: none;
+    background-color: #f4eeff;
+}
+
+.errorlist {
+    list-style: none;
+    margin: 0.5rem 0;
+    padding: 0;
+    color: #680000;
+}
+
+.errors input {
+    border-color: #680000;
+    background-color: #fde3e3;
+}
+
+.errors label {
+    color: #680000;
+}
+
+.error {
+    margin: 0.5rem 0;
+    padding: 0;
+    font-style: italic;
+    color: #680000;
+}

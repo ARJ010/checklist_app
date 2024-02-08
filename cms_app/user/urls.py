@@ -4,5 +4,5 @@ from . import views
 
 
 urlpatterns = [
-    path("", views.index, name="user_index"),
+    path("", views.my_protected_view, name="user_index"),
 ]
