@@ -1,0 +1,14 @@
+{% load static %}
+
+
+<li>
+  <article class="user">
+    <a href="">
+      <img src="{{user.user_photo.url|cut:'/manager'}}" alt="{{ user.first_name }}">
+
+      <div class="post__content">
+        <h3>{{user.first_name}} {{user.last_name}}</h3>
+      </div>
+    </a>
+  </article>
+</li>

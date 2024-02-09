@@ -7,26 +7,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
       {% block title %}
+
       {% endblock %}
     </title>
-    <link rel="stylesheet" href="{% static 'app.css' %}">
+    <link rel="stylesheet" href="{% static 'app.css' %}" />
     {% block style_content %}
+
     {% endblock %}
   </head>
   <body>
     <header id="main-navigation">
-        {% block type %}{% endblock type %}
-        <nav>
-          <a href="{% url "logout" %}">LOGOUT</a>
-          <a href="">History</a>
-        </nav>
+      {% block type %}
+
+      {% endblock %}
+      <nav>
+        {% block navigation %}
+
+        {% endblock %}
+        <a href="{% url 'logout' %}">LOGOUT</a>
+      </nav>
     </header>
-    
-    {% block body_content %}
+
+    {% block sidebar %}
     {% endblock %}
 
-    <section id="about">
-    
-    </section>
+    {% block body_content %}
+
+    {% endblock %}
   </body>
 </html>

@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+<!-- manager/index.html {% url "user_register" %}?user_type=user -->
+
 {% load static %}
 
 {% block title %}
@@ -6,12 +8,12 @@
 {% endblock %}
 
 {% block style_content %}
-  <link rel="stylesheet" href=" {% static 'manager/index.css' %}" />
-  <link rel="stylesheet" href=" {% static 'manager/all_actions.css' %}">
+  <link rel="stylesheet" href="{% static 'manager/index.css' %}" />
+  <link rel="stylesheet" href="{% static 'manager/all_actions.css' %}" />
 {% endblock %}
 
 {% block type %}
-<h1><a href="{% url "manager_index" %}">CMS</a></h1>
+  <h1><a href="{% url 'manager_index' %}">CMS</a></h1>
 {% endblock %}
 
 {% block body_content %}
@@ -23,42 +25,40 @@
   </section>
 
   <section id="procedure_table" class="all_actions">
-      <ul>
-        <li>
-          <article class="action">
-            <a href="">
-              <img src="{% static 'images/user.png' %}" alt="user" />
-              <div class="action_content">
-                <h3>Users</h3>
-                <p>View, Add, Edit, Delete</p>
-              </div>
-            </a>
-          </article>
-        </li>
-        <li>
-          <article class="action">
-            <a href="">
-              <img src="{% static 'images/checker.png' %}" alt="user" />
-              <div class="action_content">
-                <h3>Checkers</h3>
-                <p>View, Add, Edit, Delete</p>
-              </div>
-            </a>
-          </article>
-        </li>
-        <li>
-          <article class="action">
-            <a href="">
-              <img src=" {% static 'images/checklist.png' %}" alt="user" />
-              <div class="action_content">
-                <h3>Checklist</h3>
-                <p>View, Add, Edit, Delete</p>
-              </div>
-            </a>
-          </article>
-        </li>
-      </ul>
+    <ul>
+      <li>
+        <article class="action">
+          <a href="{% url 'all_users' %}?user_type=user">
+            <img src="{% static 'images/user.png' %}" alt="user" />
+            <div class="action_content">
+              <h3>Users</h3>
+              <p>View, Add, Edit, Delete</p>
+            </div>
+          </a>
+        </article>
+      </li>
+      <li>
+        <article class="action">
+          <a href="{% url 'all_users' %}?user_type=checker">
+            <img src="{% static 'images/checker.png' %}" alt="checker" />
+            <div class="action_content">
+              <h3>Checkers</h3>
+              <p>View, Add, Edit, Delete</p>
+            </div>
+          </a>
+        </article>
+      </li>
+      <li>
+        <article class="action">
+          <a href="">
+            <img src="{% static 'images/checklist.png' %}" alt="checklist" />
+            <div class="action_content">
+              <h3>Checklist</h3>
+              <p>View, Add, Edit, Delete</p>
+            </div>
+          </a>
+        </article>
+      </li>
+    </ul>
   </section>
-
 {% endblock %}
-

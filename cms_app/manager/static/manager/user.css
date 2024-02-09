@@ -1,0 +1,43 @@
+.user {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.user a {
+  text-decoration: none;
+  color: black;
+  transition: all 0.2s ease;
+  padding: 1rem;
+}
+
+.user a:hover,
+.user a:active {
+  transform: scale(1.1);
+  background-color: #390281;
+  color: white;
+}
+
+.user img {
+  width: 5rem;
+  height: 5rem;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.user h3 {
+  margin: 0.25rem 0;
+}
+
+.user time {
+  color: #666666;
+  margin: 0.25rem;
+  font-style: italic;
+  font-size: 0.85rem;
+}
+
+.user:hover time,
+.user:active time {
+  color: white;
+}

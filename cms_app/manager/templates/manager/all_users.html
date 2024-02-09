@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  All Users
+{% endblock %}
+
+{% block type %}
+  <h1><a href="{% url "manager_index" %}">CMS</a></h1>
+{% endblock type %}
+
+{% block style_content %}
+  <link rel="stylesheet" href="{% static 'manager/all-users.css' %}">
+  <link rel="stylesheet" href="{% static 'manager/user.css' %}">
+  <link rel="stylesheet" href="{% static 'manager/sidebar.css' %}">
+{% endblock style_content %}
+
+{% block navigation %}
+  <!-- Existing navigation bar -->
+{% endblock navigation %}
+
+{% block sidebar %}
+  <aside id="sidebar">
+    <ul>
+      <li>
+        <a href="{% url 'all_users' %}?user_type=user">User</a>
+          {% if request.GET.user_type == 'user' %}
+            <ul>
+              <li><a href="{% url 'user_register' %}?user_type=user">Add</a></li>
+            </ul>
+          {% endif %}
+      </li>
+      <li>
+        <a href="{% url 'all_users' %}?user_type=checker">Checker</a>      
+          {% if request.GET.user_type == 'checker' %}
+          <ul>
+            <li><a href="{% url 'user_register' %}?user_type=checker">Add</a></li>
+          </ul>
+          {% endif %}
+      </li>
+      <li>
+        <a href="{% url 'all_users' %}?user_type=checklist">Checklist</a>
+          {% if request.GET.user_type == 'checklist' %}
+          <ul>
+            <li><a href="{% url 'user_register' %}?user_type=checklist">Add</a></li>
+          </ul>
+          {% endif %}
+      </li>
+    </ul>
+  </aside>
+{% endblock %}
+
+
+{% block body_content %}
+  <div class="container-fluid">
+    <div class="row">
+      {% block main_content %}
+        <section id="all-users">
+          <h2>All Users</h2>
+          <ul>
+            {% for user in all_users %}
+              {% include 'manager/includes/user.html' %}
+            {% endfor %}
+          </ul>
+        </section>
+      {% endblock main_content %}
+    </div>
+  </div>
+{% endblock body_content %}
