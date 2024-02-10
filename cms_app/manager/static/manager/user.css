@@ -41,3 +41,35 @@
 .user:active time {
   color: white;
 }
+
+.search-container {
+  text-align: center;
+}
+
+.search-form {
+  display: inline-block;
+}
+
+/* Add styles for the search input */
+.search-input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  width: 300px; /* Adjust width as needed */
+}
+
+/* Add styles for the search button */
+.search-button {
+  padding: 10px 20px;
+  background-color: #390281;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.search-button:hover {
+  background-color: #2d0361; /* Adjust hover color as needed */
+}

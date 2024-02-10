@@ -52,18 +52,30 @@
 
 
 {% block body_content %}
-  <div class="container-fluid">
-    <div class="row">
-      {% block main_content %}
-        <section id="all-users">
-          <h2>All Users</h2>
-          <ul>
-            {% for user in all_users %}
+
+  {% if query %}
+    <section id="all-users">
+      <h2>Search Results for "{{ query }}"</h2>
+      <ul>
+          {% for user in all_users %}
               {% include 'manager/includes/user.html' %}
-            {% endfor %}
-          </ul>
-        </section>
-      {% endblock main_content %}
-    </div>
-  </div>
+          {% endfor %}
+      </ul>
+    </section>
+  {% else %}
+    <section id="all-users">
+      <h2>All Users</h2>
+      <div class="search-container">
+        <form action="{% url 'search_users' %}" method="get" class="search-form">
+          <input type="hidden" name="user_type" value="{{ request.GET.user_type }}">
+          <input type="text" name="q" placeholder="Search for a user..." class="search-input">
+          <button type="submit" class="search-button">Search</button>
+        </form>
+      <ul>
+        {% for user in all_users %}
+          {% include 'manager/includes/user.html' %}
+        {% endfor %}
+      </ul>
+    </section>
+  {% endif %}
 {% endblock body_content %}
