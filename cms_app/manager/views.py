@@ -65,3 +65,13 @@ def all_users(request):
         users_group = Group.objects.get(name='Checkers')
         all_users = Employee.objects.filter(user__groups=users_group)
         return render(request, 'manager/all_users.html', {'all_users': all_users})
+    
+
+def delete_users(request):
+    if request.method == 'POST':
+        user_ids = request.POST.getlist('user_ids')
+        User.objects.filter(id__in=user_ids).delete()
+        return redirect('all_users')
+    else:
+        # Handle GET request if needed
+        pass
