@@ -1,24 +1,21 @@
 from django.shortcuts import render, redirect
+from django.urls import reverse
+from django.http import HttpResponseBadRequest
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User, Group
-
 from .forms import RegisterForm
 from .models import Employee
 
-
 # Create your views here.
-
 
 def employee_group_required(user):
     """Check if the user belongs to the 'Admin' group."""
     return user.groups.filter(name='Admin').exists()
 
-
 @login_required
 @user_passes_test(employee_group_required)
 def my_protected_view(request):
     return render(request, 'manager/index.html')
-
 
 @login_required
 @user_passes_test(employee_group_required)
@@ -37,52 +34,77 @@ def register_user(request):
             age = form.cleaned_data['age']
             gender = form.cleaned_data['gender']
 
-            # Create User
-            user = User.objects.create_user(
-                username=username, email=email, password=password, first_name=first_name, last_name=last_name)
-            if user_type == 'user':
-                user.groups.add(Group.objects.get(name='Users'))
-            elif user_type == 'checker':
-                user.groups.add(Group.objects.get(name='Checkers'))
+            user = User.objects.create_user(username=username, email=email, password=password, first_name=first_name, last_name=last_name)
 
-            # Create Employee
-            employee = Employee.objects.create(
-                user=user, first_name=first_name, last_name=last_name, user_photo=user_photo, age=age, gender=gender)
+            group_name = 'Users' if user_type == 'user' else 'Checkers'
+            try:
+                group = Group.objects.get(name=group_name)
+            except Group.DoesNotExist:
+                group = Group.objects.create(name=group_name)
+            user.groups.add(group)
+
+            employee = Employee.objects.create(user=user, first_name=first_name, last_name=last_name, user_photo=user_photo, age=age, gender=gender)
             employee.save()
 
-            # Redirect to login page after registration
-            return redirect('login')
+            if user_type == 'user':
+                return redirect(reverse('all_users') + '?user_type=user')
+            elif user_type == 'checker':
+                return redirect(reverse('all_users') + '?user_type=checker')
 
     return render(request, 'manager/register.html', {'form': form})
-
 
 @login_required
 @user_passes_test(employee_group_required)
 def all_users(request):
     user_type = request.GET.get('user_type')
-    if user_type == 'user':
-        users_group = Group.objects.get(name='Users')
+    query = request.GET.get('qname')
+    delete = request.GET.get('delete')
+
+    group_name = 'Users' if user_type == 'user' else 'Checkers'
+    try:
+        users_group = Group.objects.get(name=group_name)
         all_users = Employee.objects.filter(user__groups=users_group)
-        return render(request, 'manager/all_users.html', {'all_users': all_users})
+        if query:
+            all_users = all_users.filter(first_name__icontains=query) | all_users.filter(last_name__icontains=query)
+        if delete:
+            all_users = User.objects.filter(groups=users_group)
+            return render(request, 'manager/all_users.html', {'all_users': all_users, 'query': query , 'delete': True})
+    except Group.DoesNotExist:
+        all_users = []
 
-    elif user_type == 'checker':
-        users_group = Group.objects.get(name='Checkers')
-        all_users = Employee.objects.filter(user__groups=users_group)
-        return render(request, 'manager/all_users.html', {'all_users': all_users})
+    return render(request, 'manager/all_users.html', {'all_users': all_users, 'query': query})
 
+# You can use the same view for searching users
 
-def search_users(request):
-    user_type = request.GET.get('user_type')
-    if user_type == 'user':
-        query = request.GET.get('q')
-        users_group = Group.objects.get(name='Users')
-        all_users = Employee.objects.filter(first_name__icontains=query, user__groups=users_group) | Employee.objects.filter(
-            last_name__icontains=query, user__groups=users_group)
-        return render(request, 'manager/all_users.html', {'all_users': all_users, 'query': query})
+@login_required
+@user_passes_test(employee_group_required)
+def delete_users(request):
+    if request.method == 'POST':
+        # Get the list of user IDs from the POST request
+        user_ids = request.POST.getlist('user_ids')
+        user_type = request.POST.get('user_type')
 
-    elif user_type == 'checker':
-        query = request.GET.get('q')
-        users_group = Group.objects.get(name='Checkers')
-        all_users = Employee.objects.filter(first_name__icontains=query, user__groups=users_group) | Employee.objects.filter(
-            last_name__icontains=query, user__groups=users_group)
-        return render(request, 'manager/all_users.html', {'all_users': all_users, 'query': query})
+        # Ensure user_ids is not empty
+        if not user_ids:
+            if user_type == 'user':
+                return redirect(reverse('all_users') + '?user_type=user')
+            elif user_type == 'checker':
+                return redirect(reverse('all_users') + '?user_type=checker')
+
+        try:
+            # Convert user IDs from strings to integers
+            user_ids_to_delete = list(map(int, user_ids))
+            users_to_delete = User.objects.filter(id__in=user_ids_to_delete)
+            print("Users to delete:", users_to_delete)
+            users_to_delete.delete()
+            # Redirect to the appropriate URL based on user_type
+            if user_type == 'user':
+                return redirect(reverse('all_users') + '?user_type=user')
+            elif user_type == 'checker':
+                return redirect(reverse('all_users') + '?user_type=checker')
+        except Exception as e:
+            # Print exception details for debugging
+            print("Error deleting users:", e)
+            return HttpResponseBadRequest("Failed to delete users: {}".format(str(e)))
+
+    return HttpResponseBadRequest("Invalid request method. POST data expected.")

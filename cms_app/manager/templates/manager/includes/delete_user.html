@@ -1,0 +1,12 @@
+{% load static %}
+
+
+<li class="user">
+    <input type="checkbox" name="user_ids" value="{{ user.id }}" id="user_{{ user.id }}" class="user-checkbox">
+    <label for="user_{{ user.id }}" class="user-label">
+        <img src="{{ user.employee.user_photo.url|cut:'/manager' }}" alt="{{ user.first_name }}">
+        <div class="post__content">
+          <h3>{{ user.first_name }} {{ user.last_name }}</h3>
+        </div>
+    </label>
+</li>

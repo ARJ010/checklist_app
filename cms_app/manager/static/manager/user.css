@@ -30,18 +30,6 @@
   margin: 0.25rem 0;
 }
 
-.user time {
-  color: #666666;
-  margin: 0.25rem;
-  font-style: italic;
-  font-size: 0.85rem;
-}
-
-.user:hover time,
-.user:active time {
-  color: white;
-}
-
 .search-container {
   text-align: center;
 }
@@ -73,3 +61,5 @@
 .search-button:hover {
   background-color: #2d0361; /* Adjust hover color as needed */
 }
+
+

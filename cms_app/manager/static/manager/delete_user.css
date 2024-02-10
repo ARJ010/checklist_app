@@ -1,0 +1,108 @@
+.user {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.user img {
+    width: 5rem;
+    height: 5rem;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.user h3 {
+    margin: 0.25rem 0;
+}
+
+.user time {
+    color: #666666;
+    margin: 0.25rem;
+    font-style: italic;
+    font-size: 0.85rem;
+}
+
+.user:hover time,
+.user:active time {
+    color: white;
+}
+
+.user-checkbox {
+    position: absolute;
+    opacity: 0;
+}
+
+.user-label {
+    text-decoration: none;
+    color: black;
+    transition: all 0.2s ease;
+    padding: 1rem;
+    cursor: pointer;
+    height: 10rem;
+    transform-origin: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    border-radius: 12px;
+    background-color: white;
+}
+
+.user-checkbox:checked + .user-label {
+    transform: scale(1.1);
+    background-color: #390281;
+    color: white;
+}
+
+
+.user-label:active {
+    transform: scale(1.1);
+    background-color: #390281;
+    color: white;
+}
+
+.search-container {
+    text-align: center;
+}
+
+.search-form {
+    display: inline-block;
+}
+
+.search-input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 300px;
+}
+
+.search-button {
+    padding: 10px 20px;
+    background-color: #390281;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.search-button:hover {
+    background-color: #2d0361;
+}
+
+.delete-button {
+    padding: 10px 20px;
+    background-color: #ff0000; /* Red color for delete button */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 20px; /* Adjust margin as needed */
+}
+
+.delete-button:hover {
+    background-color: #cc0000; /* Darker red color on hover */
+}

@@ -11,8 +11,12 @@
 
 {% block style_content %}
   <link rel="stylesheet" href="{% static 'manager/all-users.css' %}">
-  <link rel="stylesheet" href="{% static 'manager/user.css' %}">
   <link rel="stylesheet" href="{% static 'manager/sidebar.css' %}">
+  {% if delete %}
+  <link rel="stylesheet" href="{% static 'manager/delete_user.css' %}">
+  {% else %}
+  <link rel="stylesheet" href="{% static 'manager/user.css' %}">
+  {% endif %}
 {% endblock style_content %}
 
 {% block navigation %}
@@ -27,6 +31,7 @@
           {% if request.GET.user_type == 'user' %}
             <ul>
               <li><a href="{% url 'user_register' %}?user_type=user">Add</a></li>
+              <li><a href="{% url 'all_users' %}?user_type=user&delete=delete">Delete</a></li>
             </ul>
           {% endif %}
       </li>
@@ -35,6 +40,7 @@
           {% if request.GET.user_type == 'checker' %}
           <ul>
             <li><a href="{% url 'user_register' %}?user_type=checker">Add</a></li>
+            <li><a href="{% url 'all_users' %}?user_type=checker&delete=delete">Delete</a></li>
           </ul>
           {% endif %}
       </li>
@@ -62,20 +68,42 @@
           {% endfor %}
       </ul>
     </section>
+  {% elif delete %}
+    <section id="all-users">
+      <h2>All Users</h2>
+      <div class="search-container">
+        <form action="{% url 'all_users' %}" method="get" class="search-form">
+          <input type="hidden" name="user_type" value="{{ request.GET.user_type }}">
+          <input type="text" name="qname" placeholder="Search for a user..." class="search-input">
+          <button type="submit" class="search-button">Search</button>
+        </form>
+      </div>
+      <form method="POST" action="{% url 'delete_user' %}" class="delete-form">
+        {% csrf_token %}
+        <button type="submit" class="delete-button">Delete Selected Users</button>
+        <input type="hidden" name="user_type" value="{{ request.GET.user_type }}"> 
+        <ul>
+            {% for user in all_users %}
+                {% include 'manager/includes/delete_user.html' %}
+            {% endfor %} 
+        </ul>  
+    </form>
+    </section>
   {% else %}
     <section id="all-users">
       <h2>All Users</h2>
       <div class="search-container">
-        <form action="{% url 'search_users' %}" method="get" class="search-form">
+        <form action="{% url 'all_users' %}" method="get" class="search-form">
           <input type="hidden" name="user_type" value="{{ request.GET.user_type }}">
-          <input type="text" name="q" placeholder="Search for a user..." class="search-input">
+          <input type="text" name="qname" placeholder="Search for a user..." class="search-input">
           <button type="submit" class="search-button">Search</button>
         </form>
-      <ul>
-        {% for user in all_users %}
-          {% include 'manager/includes/user.html' %}
-        {% endfor %}
-      </ul>
+      </div>
+        <ul>
+          {% for user in all_users %}
+            {% include 'manager/includes/user.html' %}
+          {% endfor %}
+        </ul>
     </section>
   {% endif %}
 {% endblock body_content %}
