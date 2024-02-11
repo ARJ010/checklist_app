@@ -1,26 +1,30 @@
 from django.conf import settings
-import os,logging
-from django.shortcuts import render, redirect
+import os
+import logging
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.http import HttpResponseBadRequest
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User, Group
-from .forms import RegisterForm
+from .forms import RegisterForm, UserProfileForm, UserEmployeeForm
 from .models import Employee
 
 logger = logging.getLogger(__name__)
 
 # Create your views here.
 
+
 def employee_group_required(user):
     """Check if the user belongs to the 'Admin' group."""
     return user.groups.filter(name='Admin').exists()
+
 
 @login_required
 @user_passes_test(employee_group_required)
 def my_protected_view(request):
     return render(request, 'manager/index.html')
+
 
 @login_required
 @user_passes_test(employee_group_required)
@@ -39,7 +43,8 @@ def register_user(request):
             age = form.cleaned_data['age']
             gender = form.cleaned_data['gender']
 
-            user = User.objects.create_user(username=username, email=email, password=password, first_name=first_name, last_name=last_name)
+            user = User.objects.create_user(
+                username=username, email=email, password=password, first_name=first_name, last_name=last_name)
 
             group_name = 'Users' if user_type == 'user' else 'Checkers'
             try:
@@ -48,7 +53,8 @@ def register_user(request):
                 group = Group.objects.create(name=group_name)
             user.groups.add(group)
 
-            employee = Employee.objects.create(user=user, first_name=first_name, last_name=last_name, user_photo=user_photo, age=age, gender=gender)
+            employee = Employee.objects.create(
+                user=user, first_name=first_name, last_name=last_name, user_photo=user_photo, age=age, gender=gender)
             employee.save()
 
             if user_type == 'user':
@@ -57,6 +63,7 @@ def register_user(request):
                 return redirect(reverse('all_users') + '?user_type=checker')
 
     return render(request, 'manager/register.html', {'form': form})
+
 
 @login_required
 @user_passes_test(employee_group_required)
@@ -70,10 +77,11 @@ def all_users(request):
         users_group = Group.objects.get(name=group_name)
         all_users = Employee.objects.filter(user__groups=users_group)
         if query:
-            all_users = all_users.filter(first_name__icontains=query) | all_users.filter(last_name__icontains=query)
+            all_users = all_users.filter(first_name__icontains=query) | all_users.filter(
+                last_name__icontains=query)
         if delete:
             all_users = User.objects.filter(groups=users_group)
-            return render(request, 'manager/all_users.html', {'all_users': all_users, 'query': query , 'delete': True})
+            return render(request, 'manager/all_users.html', {'all_users': all_users, 'query': query, 'delete': True})
     except Group.DoesNotExist:
         all_users = []
 
@@ -122,13 +130,32 @@ def delete_users(request):
             return HttpResponseBadRequest(error_message)
 
     return HttpResponseBadRequest("Invalid request method. POST data expected.")
+
+
+@login_required
+@user_passes_test(employee_group_required)
+def delete_user(request):
+    user_type = request.GET.get('user_type')
+    user_id = request.GET.get('user_id')
+
+    user = User.objects.get(id=user_id)
+    delete_user_and_photo(user)
+    success_message = "Users successfully deleted."
+    messages.success(request, success_message)
+    if user_type == 'user':
+        return redirect(reverse('all_users') + '?user_type=user')
+    elif user_type == 'checker':
+        return redirect(reverse('all_users') + '?user_type=checker')
+
+
 def delete_user_and_photo(user):
     """
     Delete the user along with their associated photo if exists.
     """
     try:
         if user.employee.user_photo:
-            photo_path = os.path.join(settings.MEDIA_ROOT, str(user.employee.user_photo))
+            photo_path = os.path.join(
+                settings.MEDIA_ROOT, str(user.employee.user_photo))
             if os.path.exists(photo_path):
                 os.remove(photo_path)
     except Exception as e:
@@ -138,3 +165,43 @@ def delete_user_and_photo(user):
         user.delete()
     except Exception as e:
         logger.exception("Error deleting user")
+
+
+@login_required
+@user_passes_test(employee_group_required)
+def edit_user_profile(request):
+    user_id = request.GET.get('user_id')
+    user = get_object_or_404(User, id=user_id)
+    try:
+        employee = user.employee
+    except Employee.DoesNotExist:
+        employee = Employee(user=user)
+
+    if request.method == 'POST':
+        user_form = UserEmployeeForm(request.POST, instance=user)
+        profile_form = UserProfileForm(
+            request.POST, request.FILES, instance=employee)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+
+            # Check if the image field has been cleared
+            if 'user_photo' in profile_form.cleaned_data and not profile_form.cleaned_data['user_photo']:
+                print("User photo cleared, deleting old image.")
+                # Delete the old image file
+                if employee.user_photo:
+                    photo_path = os.path.join(
+                        settings.MEDIA_ROOT, str(employee.user_photo))
+                    if os.path.exists(photo_path):
+                        os.remove(photo_path)
+                    # Clear the image path from the user model
+                    employee.user_photo = None
+                    employee.save()
+
+            # messages.success(request, 'Your profile has been updated!')
+            # Adjust as needed
+            return redirect(reverse('user_details') + '?user_id=' + str(user.id))
+    else:
+        user_form = UserEmployeeForm(instance=user)
+        profile_form = UserProfileForm(instance=employee)
+    return render(request, 'manager/edit_profile.html', {'user_form': user_form, 'profile_form': profile_form})

@@ -10,32 +10,91 @@ body {
   background-color: #390281;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
-.user-profile {
-  text-decoration: none;
-    color: black;
-    transition: all 0.2s ease;
-    padding: 1rem;
-    display: flex;
-    cursor: pointer;
-    height: auto;
-    width: auto;
-    transform-origin: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-    border-radius: 12px;
-    background-color: white;
-    justify-content: center;
-    align-items: center;
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  max-width: 300px;
+  margin: auto;
+  text-align: center;
+  margin-top: 100px;
 }
-.user-profile img {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  margin-bottom: 10px;
-}
-.user-details {
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
+
+
+
+.title {
+  color: grey;
   font-size: 18px;
-  color: #333;
+}
+
+.card button {
+  border: none;
+  outline: 0;
+  display: inline-block;
+  padding: 8px;
+  color: white;
+  background-color: #000;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+  font-size: 18px;
+}
+
+
+.card button:hover, a:hover {
+  opacity: 0.7;
+}
+
+.delete-button {
+  position: fixed;
+  bottom: 20px; /* Adjust the distance from the bottom */
+  right: 20px; /* Adjust the distance from the right */
+  z-index: 9999;
+  padding: 14px 28px;
+  background-color: white; /* Red color for delete button */
+  color: rgb(0, 0, 0);
+  border: 2px solid #f44336;;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-left: 10px;
+}
+
+.delete-button:hover {
+  background-color: #ff0000; /* Darker red color on hover */
+  border-radius: 5px;
+}
+
+@media screen and (max-width: 600px) {
+  #d1 {
+    display: none;
+    /* Hide the sidebar */
+  }
+}
+
+@media screen and (min-width: 600px) {
+  #d2 {
+    display: none;
+  }
+}
+
+
+.alert {
+  padding: 20px;
+  background-color: #f44336;
+  color: white;
+}
+
+.closebtn {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.closebtn:hover {
+  color: black;
 }

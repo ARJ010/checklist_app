@@ -20,77 +20,11 @@
 {% endblock %}
 
 {% block navigation %}
-  <aside class="dropdown-container">
-    <div class="dropdown">
-      <a href="#" class="menu-icon">&#9776;</a>
-      <div class="dropdown-content">
-        <div class="sub-menu">
-          <a href="{% url 'all_users' %}?user_type=user">User</a>
-          <div id="sub-user" class="sub-options">
-            <a href="{% url 'user_register' %}?user_type=user">Add</a>
-            <a href="{% url 'all_users' %}?user_type=user&delete=delete">Delete</a>
-          </div>
-        </div>
-        <div class="sub-menu">
-          <a href="{% url 'all_users' %}?user_type=checker">Checker</a>
-          <div id="sub-checker" class="sub-options">
-            <a href="{% url 'user_register' %}?user_type=checker">Add</a>
-            <a href="{% url 'all_users' %}?user_type=checker&delete=delete">Delete</a>
-          </div>
-        </div>
-        <div class="sub-menu">
-          <a href="{% url 'all_users' %}?user_type=checklist">Checklist</a>
-          <div id="sub-checklist" class="sub-options">
-            <a href="">Add</a>
-            <a href="">Delete</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </aside>
+  {% include 'manager/includes/sidemenu.html' %}
 {% endblock %}
 
 {% block sidebar %}
-  <aside id="sidebar">
-    <ul>
-      <li>
-        <a href="{% url 'all_users' %}?user_type=user">User</a>
-        {% if request.GET.user_type == 'user' %}
-          <ul>
-            <li>
-              <a href="{% url 'user_register' %}?user_type=user">Add</a>
-            </li>
-            <li>
-              <a href="{% url 'all_users' %}?user_type=user&delete=delete">Delete</a>
-            </li>
-          </ul>
-        {% endif %}
-      </li>
-      <li>
-        <a href="{% url 'all_users' %}?user_type=checker">Checker</a>
-        {% if request.GET.user_type == 'checker' %}
-          <ul>
-            <li>
-              <a href="{% url 'user_register' %}?user_type=checker">Add</a>
-            </li>
-            <li>
-              <a href="{% url 'all_users' %}?user_type=checker&delete=delete">Delete</a>
-            </li>
-          </ul>
-        {% endif %}
-      </li>
-      <li>
-        <a href="{% url 'all_users' %}?user_type=checklist">Checklist</a>
-        {% if request.GET.user_type == 'checklist' %}
-          <ul>
-            <li>
-              <a href="{% url 'user_register' %}?user_type=checklist">Add</a>
-            </li>
-          </ul>
-        {% endif %}
-      </li>
-    </ul>
-  </aside>
+  {% include 'manager/includes/sidebar.html' %}
 {% endblock %}
 
 {% block navigation2 %}
@@ -117,8 +51,8 @@
     </section>
   {% elif delete %}
     <section id="all-users">
-      <h2>All Users</h2>
-      <form method="POST" action="{% url 'delete_user' %}" class="delete-form">
+      <h2>Select users to Delete</h2>
+      <form method="POST" action="{% url 'delete_users' %}" class="delete-form">
         {% csrf_token %}
         <input id="d1" class="delete-button" type="submit" value="Delete Selected Users" />
         <button id="d2" class="delete-button" type="submit"><i class="fa-sharp fa-solid fa-trash"></i></button>
@@ -134,10 +68,10 @@
     <section id="all-users">
       {% if messages %}
         {% for message in messages %}
-          <div class="alert alert-success" role="alert">
-            <i class="fas fa-check-circle"></i> <!-- Add an icon for success -->
-            {{ message }}
-          </div>
+        <div class="alert">
+          <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+          {{message}}
+        </div>
         {% endfor %}
       {% endif %}
       <h2>All Users</h2>

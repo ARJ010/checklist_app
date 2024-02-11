@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
+from .models import Employee
 
 class RegisterForm(forms.Form):
     username = forms.CharField(label='Username', max_length=100, error_messages={
@@ -19,3 +20,23 @@ class RegisterForm(forms.Form):
         if User.objects.filter(username=username).exists():
             raise forms.ValidationError("This username is already taken. Please choose a different one.")
         return username
+
+
+class UserEmployeeForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'first_name', 'last_name']
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = Employee
+        fields = ['user_photo', 'age', 'gender']
+    
+    def clean_user_photo(self):
+        user_photo = self.cleaned_data.get('user_photo')
+        print("Cleaned data:", user_photo)
+        if not user_photo:
+            print("User photo cleared, returning None.")
+            # If user photo is cleared, return None to delete the old image
+            return None
+        return user_photo
