@@ -9,7 +9,7 @@ body {
 
 #all-users {
   margin: 7rem auto;
-  width: 90%;
+  width: 80%;
   max-width: 60rem;
 }
 
@@ -22,11 +22,11 @@ body {
 
 ul {
   list-style: none;
-  margin-left: 1rem;
-  padding: 0;
+  max-width: 1200px;
+  width : 90%;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
 }
 
 .user img {
@@ -36,6 +36,7 @@ ul {
 
 .user a {
   height: 10rem;
+  width: 10rem;
   transform-origin: center;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
   border-radius: 12px;

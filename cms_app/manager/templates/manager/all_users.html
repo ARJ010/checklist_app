@@ -6,104 +6,146 @@
 {% endblock %}
 
 {% block type %}
-  <h1><a href="{% url "manager_index" %}">CMS</a></h1>
-{% endblock type %}
+  <h1><a href="{% url 'manager_index' %}">CMS</a></h1>
+{% endblock %}
 
 {% block style_content %}
-  <link rel="stylesheet" href="{% static 'manager/all-users.css' %}">
-  <link rel="stylesheet" href="{% static 'manager/sidebar.css' %}">
+  <link rel="stylesheet" href="{% static 'manager/all-users.css' %}" />
+  <link rel="stylesheet" href="{% static 'manager/sidebar.css' %}" />
   {% if delete %}
-  <link rel="stylesheet" href="{% static 'manager/delete_user.css' %}">
+    <link rel="stylesheet" href="{% static 'manager/user_delete.css' %}" />
   {% else %}
-  <link rel="stylesheet" href="{% static 'manager/user.css' %}">
+    <link rel="stylesheet" href="{% static 'manager/user.css' %}" />
   {% endif %}
-{% endblock style_content %}
+{% endblock %}
 
 {% block navigation %}
-  <!-- Existing navigation bar -->
-{% endblock navigation %}
+  <aside class="dropdown-container">
+    <div class="dropdown">
+      <a href="#" class="menu-icon">&#9776;</a>
+      <div class="dropdown-content">
+        <div class="sub-menu">
+          <a href="{% url 'all_users' %}?user_type=user">User</a>
+          <div id="sub-user" class="sub-options">
+            <a href="{% url 'user_register' %}?user_type=user">Add</a>
+            <a href="{% url 'all_users' %}?user_type=user&delete=delete">Delete</a>
+          </div>
+        </div>
+        <div class="sub-menu">
+          <a href="{% url 'all_users' %}?user_type=checker">Checker</a>
+          <div id="sub-checker" class="sub-options">
+            <a href="{% url 'user_register' %}?user_type=checker">Add</a>
+            <a href="{% url 'all_users' %}?user_type=checker&delete=delete">Delete</a>
+          </div>
+        </div>
+        <div class="sub-menu">
+          <a href="{% url 'all_users' %}?user_type=checklist">Checklist</a>
+          <div id="sub-checklist" class="sub-options">
+            <a href="">Add</a>
+            <a href="">Delete</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+{% endblock %}
 
 {% block sidebar %}
   <aside id="sidebar">
     <ul>
       <li>
         <a href="{% url 'all_users' %}?user_type=user">User</a>
-          {% if request.GET.user_type == 'user' %}
-            <ul>
-              <li><a href="{% url 'user_register' %}?user_type=user">Add</a></li>
-              <li><a href="{% url 'all_users' %}?user_type=user&delete=delete">Delete</a></li>
-            </ul>
-          {% endif %}
+        {% if request.GET.user_type == 'user' %}
+          <ul>
+            <li>
+              <a href="{% url 'user_register' %}?user_type=user">Add</a>
+            </li>
+            <li>
+              <a href="{% url 'all_users' %}?user_type=user&delete=delete">Delete</a>
+            </li>
+          </ul>
+        {% endif %}
       </li>
       <li>
-        <a href="{% url 'all_users' %}?user_type=checker">Checker</a>      
-          {% if request.GET.user_type == 'checker' %}
+        <a href="{% url 'all_users' %}?user_type=checker">Checker</a>
+        {% if request.GET.user_type == 'checker' %}
           <ul>
-            <li><a href="{% url 'user_register' %}?user_type=checker">Add</a></li>
-            <li><a href="{% url 'all_users' %}?user_type=checker&delete=delete">Delete</a></li>
+            <li>
+              <a href="{% url 'user_register' %}?user_type=checker">Add</a>
+            </li>
+            <li>
+              <a href="{% url 'all_users' %}?user_type=checker&delete=delete">Delete</a>
+            </li>
           </ul>
-          {% endif %}
+        {% endif %}
       </li>
       <li>
         <a href="{% url 'all_users' %}?user_type=checklist">Checklist</a>
-          {% if request.GET.user_type == 'checklist' %}
+        {% if request.GET.user_type == 'checklist' %}
           <ul>
-            <li><a href="{% url 'user_register' %}?user_type=checklist">Add</a></li>
+            <li>
+              <a href="{% url 'user_register' %}?user_type=checklist">Add</a>
+            </li>
           </ul>
-          {% endif %}
+        {% endif %}
       </li>
     </ul>
   </aside>
 {% endblock %}
 
+{% block navigation2 %}
+  <div class="search-container">
+    <form action="{% url 'all_users' %}" method="get" class="search-form">
+      <div class="search-input-container">
+        <input type="hidden" name="user_type" value="{{ request.GET.user_type }}" />
+        <input type="text" name="qname" placeholder="Search for a user..." class="search-input" />
+        <button type="submit" class="search-button"><i class="fas fa-search"></i></button>
+      </div>
+    </form>
+  </div>
+{% endblock %}
 
 {% block body_content %}
-
   {% if query %}
     <section id="all-users">
       <h2>Search Results for "{{ query }}"</h2>
       <ul>
-          {% for user in all_users %}
-              {% include 'manager/includes/user.html' %}
-          {% endfor %}
+        {% for user in all_users %}
+          {% include 'manager/includes/user.html' %}
+        {% endfor %}
       </ul>
     </section>
   {% elif delete %}
     <section id="all-users">
       <h2>All Users</h2>
-      <div class="search-container">
-        <form action="{% url 'all_users' %}" method="get" class="search-form">
-          <input type="hidden" name="user_type" value="{{ request.GET.user_type }}">
-          <input type="text" name="qname" placeholder="Search for a user..." class="search-input">
-          <button type="submit" class="search-button">Search</button>
-        </form>
-      </div>
       <form method="POST" action="{% url 'delete_user' %}" class="delete-form">
         {% csrf_token %}
-        <button type="submit" class="delete-button">Delete Selected Users</button>
-        <input type="hidden" name="user_type" value="{{ request.GET.user_type }}"> 
+        <input id="d1" class="delete-button" type="submit" value="Delete Selected Users" />
+        <button id="d2" class="delete-button" type="submit"><i class="fa-sharp fa-solid fa-trash"></i></button>
+        <input type="hidden" name="user_type" value="{{ request.GET.user_type }}" />
         <ul>
-            {% for user in all_users %}
-                {% include 'manager/includes/delete_user.html' %}
-            {% endfor %} 
-        </ul>  
-    </form>
+          {% for user in all_users %}
+            {% include 'manager/includes/delete_user.html' %}
+          {% endfor %}
+        </ul>
+      </form>
     </section>
   {% else %}
     <section id="all-users">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-success" role="alert">
+            <i class="fas fa-check-circle"></i> <!-- Add an icon for success -->
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
       <h2>All Users</h2>
-      <div class="search-container">
-        <form action="{% url 'all_users' %}" method="get" class="search-form">
-          <input type="hidden" name="user_type" value="{{ request.GET.user_type }}">
-          <input type="text" name="qname" placeholder="Search for a user..." class="search-input">
-          <button type="submit" class="search-button">Search</button>
-        </form>
-      </div>
-        <ul>
-          {% for user in all_users %}
-            {% include 'manager/includes/user.html' %}
-          {% endfor %}
-        </ul>
+      <ul>
+        {% for user in all_users %}
+          {% include 'manager/includes/user.html' %}
+        {% endfor %}
+      </ul>
     </section>
   {% endif %}
-{% endblock body_content %}
+{% endblock %}

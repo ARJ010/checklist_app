@@ -3,6 +3,8 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
+    margin-bottom: 30px;
+    /* Add margin at the bottom for spacing */
 }
 
 .user img {
@@ -13,7 +15,10 @@
 }
 
 .user h3 {
-    margin: 0.25rem 0;
+    margin: 0.5rem 0;
+    /* Increase margin for better separation */
+    font-size: 1.2rem;
+    /* Increase font size for better readability */
 }
 
 .user time {
@@ -21,6 +26,8 @@
     margin: 0.25rem;
     font-style: italic;
     font-size: 0.85rem;
+    transition: color 0.3s ease;
+    /* Add transition for smoother color change */
 }
 
 .user:hover time,
@@ -40,18 +47,21 @@
     padding: 1rem;
     cursor: pointer;
     height: 10rem;
+    width: 10rem;
     transform-origin: center;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
     border-radius: 12px;
     background-color: white;
+    justify-content: center;
+    align-items: center;
+
 }
 
-.user-checkbox:checked + .user-label {
+.user-checkbox:checked+.user-label {
     transform: scale(1.1);
     background-color: #390281;
     color: white;
 }
-
 
 .user-label:active {
     transform: scale(1.1);
@@ -59,50 +69,37 @@
     color: white;
 }
 
-.search-container {
-    text-align: center;
-}
-
-.search-form {
-    display: inline-block;
-}
-
-.search-input {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-    width: 300px;
-}
-
-.search-button {
-    padding: 10px 20px;
-    background-color: #390281;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-.search-button:hover {
-    background-color: #2d0361;
-}
 
 .delete-button {
+    position: fixed;
+    bottom: 20px; /* Adjust the distance from the bottom */
+    right: 20px; /* Adjust the distance from the right */
+    z-index: 9999;
     padding: 10px 20px;
     background-color: #ff0000; /* Red color for delete button */
-    color: white;
+    color: rgb(0, 0, 0);
     border: none;
     border-radius: 5px;
     font-size: 16px;
     cursor: pointer;
     transition: background-color 0.3s ease;
     margin-left: 10px;
-    margin-right: 10px;
-    margin-top: 20px; /* Adjust margin as needed */
-}
-
-.delete-button:hover {
+  }
+  
+  .delete-button:hover {
     background-color: #cc0000; /* Darker red color on hover */
-}
+  }
+
+  @media screen and (max-width: 600px) {
+    #d1 {
+      display: none;
+      /* Hide the sidebar */
+    }
+  }
+  
+  @media screen and (min-width: 600px) {
+    #d2 {
+      display: none;
+    }
+  }
+  

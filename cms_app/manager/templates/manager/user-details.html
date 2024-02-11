@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  All Users
+{% endblock %}
+
+{% block type %}
+  <h1><a href="{% url "manager_index" %}">CMS</a></h1>
+{% endblock type %}
+
+{% block style_content %}
+  <link rel="stylesheet" href="{% static 'manager/user-details.css' %}">
+  <link rel="stylesheet" href="{% static 'manager/sidebar.css' %}">
+{% endblock style_content %}
+
+{% block sidebar %}
+  <aside id="sidebar">
+    <ul>
+      <li>
+        <a href="{% url 'all_users' %}?user_type=user">User</a>
+          {% if request.GET.user_type == 'user' %}
+            <ul>
+              <li><a href="{% url 'user_register' %}?user_type=user">Add</a></li>
+              <li><a href="{% url 'all_users' %}?user_type=user&delete=delete">Delete</a></li>
+            </ul>
+          {% endif %}
+      </li>
+      <li>
+        <a href="{% url 'all_users' %}?user_type=checker">Checker</a>      
+          {% if request.GET.user_type == 'checker' %}
+          <ul>
+            <li><a href="{% url 'user_register' %}?user_type=checker">Add</a></li>
+            <li><a href="{% url 'all_users' %}?user_type=checker&delete=delete">Delete</a></li>
+          </ul>
+          {% endif %}
+      </li>
+      <li>
+        <a href="{% url 'all_users' %}?user_type=checklist">Checklist</a>
+          {% if request.GET.user_type == 'checklist' %}
+          <ul>
+            <li><a href="{% url 'user_register' %}?user_type=checklist">Add</a></li>
+          </ul>
+          {% endif %}
+      </li>
+    </ul>
+  </aside>
+{% endblock %}
+
+{% block body_content %}
+  <div class="user-profile">
+    {% if user.employee.user_photo %}
+        <img src="{{user.employee.user_photo.url|cut:'/manager'}}" alt="{{ user.first_name }}">
+      {% else %}
+        <img src="{% static 'images/user.png' %}" alt="{{ user.first_name }}">
+      {% endif %}
+    <div class="user-details">
+      <p>Name: {{user.first_name}} {{user.last_name}}</p>
+      <p>Age: {{user.employee.age}}</p>
+      <p>Gender: {{user.employee.gender}}</p>
+    </div>
+  </div>
+{% endblock %}

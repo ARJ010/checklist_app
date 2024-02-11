@@ -51,3 +51,22 @@ nav{
 #main-navigation h1 a:active {
   color: white;
 }
+
+.navbar {
+  display: flex;
+  align-items: center;
+}
+
+
+@media screen and (max-width: 600px) {
+  #l1 {
+    display: none;
+    /* Hide the sidebar */
+  }
+}
+
+@media screen and (min-width: 600px) {
+  #l2 {
+    display: none;
+  }
+}

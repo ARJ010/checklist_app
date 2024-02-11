@@ -10,6 +10,7 @@
 
       {% endblock %}
     </title>
+    <script src="https://kit.fontawesome.com/b7be0387ab.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{% static 'app.css' %}" />
     {% block style_content %}
 
@@ -20,12 +21,18 @@
       {% block type %}
 
       {% endblock %}
-      <nav>
-        <a href="{% url 'logout' %}">LOGOUT</a>
+      {% block navigation2 %}
+      {% endblock %}
+      <nav class="navbar">
+        {% block navigation %}
+        {% endblock %}
+        <a id="l1" href="{% url 'logout' %}">LOGOUT</a>
+        <a id="l2" href="{% url 'logout' %}"><i class="fa-solid fa-right-from-bracket"></i></a>
       </nav>
     </header>
 
     {% block sidebar %}
+
     {% endblock %}
 
     {% block body_content %}

@@ -3,10 +3,14 @@
 
 <li>
   <article class="user">
-    <a href="">
-      <img src="{{user.user_photo.url|cut:'/manager'}}" alt="{{ user.first_name }}">
+    <a href="{% url 'user_details' %}?user_id={{user.user.id}}">
+      {% if user.user_photo %}
+        <img src="{{user.user_photo.url|cut:'/manager'}}" alt="{{ user.first_name }}">
+      {% else %}
+        <img src="{% static 'images/user.png' %}" alt="{{ user.first_name }}">
+      {% endif %}
       <div class="post__content">
-        <h3>{{user.first_name}} {{user.last_name}}</h3>
+      <h3>{{user.first_name}} {{user.last_name}}</h3>
       </div>
     </a>
   </article>

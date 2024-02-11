@@ -8,7 +8,7 @@ class RegisterForm(forms.Form):
                                })
     email = forms.EmailField()
     password = forms.CharField(widget=forms.PasswordInput)
-    first_name = forms.CharField(label='First Name', max_length=100, required=False)
+    first_name = forms.CharField(label='First Name', max_length=100,)
     last_name = forms.CharField(label='Last Name', max_length=100, required=False)
     user_photo = forms.ImageField(required=False)
     age = forms.IntegerField(label='Age', required=False)

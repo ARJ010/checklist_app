@@ -1,10 +1,15 @@
+from django.conf import settings
+import os,logging
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.http import HttpResponseBadRequest
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User, Group
 from .forms import RegisterForm
 from .models import Employee
+
+logger = logging.getLogger(__name__)
 
 # Create your views here.
 
@@ -74,17 +79,22 @@ def all_users(request):
 
     return render(request, 'manager/all_users.html', {'all_users': all_users, 'query': query})
 
-# You can use the same view for searching users
+
+@login_required
+@user_passes_test(employee_group_required)
+def user_details(request):
+    user_id = request.GET.get('user_id')
+    user = User.objects.get(id=user_id)
+    return render(request, 'manager/user-details.html', {'user': user})
+
 
 @login_required
 @user_passes_test(employee_group_required)
 def delete_users(request):
     if request.method == 'POST':
-        # Get the list of user IDs from the POST request
         user_ids = request.POST.getlist('user_ids')
         user_type = request.POST.get('user_type')
 
-        # Ensure user_ids is not empty
         if not user_ids:
             if user_type == 'user':
                 return redirect(reverse('all_users') + '?user_type=user')
@@ -92,19 +102,39 @@ def delete_users(request):
                 return redirect(reverse('all_users') + '?user_type=checker')
 
         try:
-            # Convert user IDs from strings to integers
-            user_ids_to_delete = list(map(int, user_ids))
-            users_to_delete = User.objects.filter(id__in=user_ids_to_delete)
-            print("Users to delete:", users_to_delete)
-            users_to_delete.delete()
-            # Redirect to the appropriate URL based on user_type
+            users_to_delete = User.objects.filter(id__in=user_ids)
+            logger.info("Users to delete: %s", users_to_delete)
+
+            for user in users_to_delete:
+                delete_user_and_photo(user)
+
+            success_message = "Users successfully deleted."
+            messages.success(request, success_message)
+
             if user_type == 'user':
                 return redirect(reverse('all_users') + '?user_type=user')
             elif user_type == 'checker':
                 return redirect(reverse('all_users') + '?user_type=checker')
         except Exception as e:
-            # Print exception details for debugging
-            print("Error deleting users:", e)
-            return HttpResponseBadRequest("Failed to delete users: {}".format(str(e)))
+            logger.exception("Error deleting users")
+            error_message = "Failed to delete users: {}".format(str(e))
+            messages.error(request, error_message)
+            return HttpResponseBadRequest(error_message)
 
     return HttpResponseBadRequest("Invalid request method. POST data expected.")
+def delete_user_and_photo(user):
+    """
+    Delete the user along with their associated photo if exists.
+    """
+    try:
+        if user.employee.user_photo:
+            photo_path = os.path.join(settings.MEDIA_ROOT, str(user.employee.user_photo))
+            if os.path.exists(photo_path):
+                os.remove(photo_path)
+    except Exception as e:
+        logger.exception("Error deleting user photo")
+
+    try:
+        user.delete()
+    except Exception as e:
+        logger.exception("Error deleting user")

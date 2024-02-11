@@ -5,7 +5,6 @@
 {% block title %}{% if request.GET.user_type == 'user' %}User {% else %} Checker{% endif %}  Registration{% endblock title %}
 
 {% block style_content %}
-    <link rel="stylesheet" href="{% static 'manager/all_actions.css' %}">
     <link rel="stylesheet" href="{% static 'manager/index.css' %}">
     <link rel="stylesheet" href="{% static 'manager/registration.css' %}">
 {% endblock style_content %}
@@ -16,13 +15,19 @@
     
 
 {% block body_content %}
-<section class="all_actions">
-    <h2>{% if request.GET.user_type == 'user' %}User {% else %} Checker{% endif %} Registration</h2>
+<section>
     <div class="container">
+        <h2>{% if request.GET.user_type == 'user' %}User {% else %} Checker{% endif %} Registration</h2>
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            {{ form.as_p }}  <!-- Render form fields -->
-            <input type="hidden" name="user_type" value="{{ request.GET.user_type }}">
+            {% for field in form %}
+            <div class="form-control {% if form.username.errors %}errors{% endif %}">
+                {{ field.label_tag }}
+                {{ field }}
+                {{ field.errors }}
+            </div>
+            {% endfor %}
+            <input type="hidden" name="user_type" value="{{ request.GET.user_type }}">   
             <div class="button-container">
                 <button type="submit" value="Register">Register</button>
                 {% if request.GET.user_type == 'user' %}
@@ -32,9 +37,10 @@
                 {% endif %}
             </div>
         </form>
-        
     </div>
 </section>
-
 {% endblock body_content %}
-    
+
+
+
+ 
