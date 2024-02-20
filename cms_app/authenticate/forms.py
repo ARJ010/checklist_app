@@ -9,5 +9,3 @@ class LoginForm(forms.Form):
                                })
     password = forms.CharField(widget=forms.PasswordInput)
 
-class CustomPasswordResetForm(PasswordResetForm):
-    email = forms.EmailField(label='Email', max_length=254)

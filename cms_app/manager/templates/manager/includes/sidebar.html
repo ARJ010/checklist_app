@@ -27,11 +27,12 @@
       {% endif %}
     </li>
     <li>
-      <a href="{% url 'all_users' %}?user_type=checklist">Checklist</a>
+      <a href="{% url 'all_users' %}">Checklist</a>
       {% if request.GET.user_type == 'checklist' %}
         <ul>
           <li>
-            <a href="{% url 'user_register' %}?user_type=checklist">Add</a>
+            <a href="">Add</a>
+            <a href="">Delete</a>
           </li>
         </ul>
       {% endif %}

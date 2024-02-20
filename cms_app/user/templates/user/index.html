@@ -10,13 +10,14 @@
 {% endblock %}
 
 {% block type %}
-<h1><a href="{% url "user_index" %}">CMS</a></h1>
+<h1><a href="{% url "user_index" %}?user_id={{user.id}}">CMS</a></h1>
 {% endblock %}
 
 {% block body_content %}
   <section id="welcome">
     <header>
-      <h2>User_Name</h2>
+      <img src="{{user.employee.user_photo.url|cut:'/manager'}}" alt="{{ user.first_name }}"/>
+      <h2>Welcome,<br> {{user.employee.first_name}} {{user.employee.last_name}}</h2>
     </header>
   </section>
 

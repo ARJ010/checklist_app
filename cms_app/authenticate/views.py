@@ -26,9 +26,9 @@ def login_view(request):
                 if Group.objects.get(name='Admin') in user.groups.all():
                     return redirect('manager_index')
                 elif Group.objects.get(name='Checkers') in user.groups.all():
-                    return redirect('checker_index')
+                    return redirect(reverse('checker_index') + '?user_id=' + str(user.id))
                 elif Group.objects.get(name='Users') in user.groups.all():
-                    return redirect('user_index')
+                    return redirect(reverse('user_index') + '?user_id=' + str(user.id))
             else:
                 # Invalid username or password
                 return render(request, 'authenticate/login.html', {'form': form, 'error': 'Invalid username or password'})
