@@ -1,82 +1,128 @@
-
-.form-control {
-    margin-bottom: 1rem;
-}
-
-
-
-.form-control input:focus {
-    border-color: #1f0050;
-    outline: none;
-    background-color: #f4eeff;
-}
-
-.form-control label {
-    font-weight: bold;
-    display: block;
-    margin-bottom: 0.5rem;
-}
-
-
-
-
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+    font-family: 'poppins', sans-serif;
+}
+
+body {
     display: flex;
+    align-items: center;
+    Justify-content: center;
+    min-height: 100vh;
+    background-image: url('../images/lbg.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+
+
+#cms {
+    position: absolute;
+    top: -10px;
+    left: 20%;
+    transform: translateX(-60%);
+    max-width: 300px;
+}
+
+@media screen and (max-width: 900px) {
+    #cms {
+        max-width: 300px;
+        transform: translateX(-50%);
+        left: 50%;
+    }
+}
+
+#cms img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+section {
+    position: relative;
+    max-width: 400px;
+    background-color: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+    backdrop-filter: blur(55px);
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    padding: 2rem 3rem;
 }
 
-.login-container {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 300px;
-}
-
-.login-container h2 {
+h1 {
+    font-size: 2em;
+    color: #fff;
     text-align: center;
-    margin-bottom: 20px;
 }
 
-.login-form input[type="text"],
-.login-form input[type="password"],
-.login-form button {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
+.inputbox {
+    margin: 30px 0;
+    position: relative; /* Add position relative */
+    max-width: 310px; /* Adjusted max-width */
+    border-bottom: 2px solid #fff;
 }
+
+.inputbox label {
+    position: absolute;
+    top: 50%;
+    left: 5px;
+    transform: translateY(-50%);
+    color: #fff;
+    font-size: 1rem;
+    pointer-events: none;
+    transition: all 0.3s ease-in-out;
+}
+
+.inputbox input:focus + label,
+.inputbox input:valid + label {
+    top: -5px; /* Adjust the label position when the input is focused or has value */
+    font-size: 0.8rem; /* Adjust the font size when the input is focused or has value */
+}
+
+.inputbox input[type="text"],
+.inputbox input[type="password"] {
+    width: 100%; /* Adjusted width */
+    height: 40px;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    padding: 0 35px 0 5px;
+    color: #fff;
+    border-bottom: 1px solid #fff; /* Add a border-bottom to style the input fields */
+}
+
+.inputbox ion-icon {
+    position: absolute;
+    right: 8px;
+    color: #fff;
+    font-size: 1.2rem;
+    top: 20px;
+}
+
 
 button {
-    cursor: pointer;
-    padding: 0.5rem 1.5rem;
-    border-radius: 6px;
+    width: 100%;
+    height: 45px;
+    color: #fff;
+    border-radius: 40px;
     background-color: #1f0050;
-    color: white;
-    border: 1px solid #1f0050;
-}
-
-button:hover,
-button:active {
-    background-color: #320777;
-    border-color: #320777;
-}
-
-/* Existing Styles */
-.form-control input:focus {
-    border-color: #1f0050;
+    border: none;
     outline: none;
-    background-color: #f4eeff;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.4s ease;
 }
+
+button:hover {
+    background-color: #1f0050ab;
+}
+
+
+
 
 .errorlist {
     list-style: none;

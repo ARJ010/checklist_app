@@ -10,20 +10,29 @@
     <link rel="stylesheet" href="{% static 'authenticate/style.css' %}">
 </head>
 <body>
-    <div class="login-container">
-        <h2>Login</h2>
+    <div id="cms">
+        <img src="{% static 'images/cms.png' %}" alt="">
+    </div>
+    <section>
+        <h1>Login</h1>
         <center><p class="error">{{ error }}</p></center>
-        <form method="post" class="login-form">
+        <form method="post">
             {% csrf_token %}
             {% for field in form %}
-            <div class="form-control {% if form.username.errors %}errors{% endif %}">
-                {{ field.label_tag }}
+            <div class="inputbox {% if field.errors %}errors{% endif %}">
                 {{ field }}
-                {{ field.errors }}
+                <label>{{ field.label }}</label>
+                {% if field.errors %}
+                    <ul class="errorlist">
+                        {% for error in field.errors %}
+                            <li class="error">{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
             </div>
             {% endfor %}
             <button type="submit">Login</button>
         </form>
-    </div>
+    </section>
 </body>
 </html>
