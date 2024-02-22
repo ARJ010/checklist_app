@@ -23,4 +23,5 @@ urlpatterns = [
     path('user/', include('user.urls')),
     path('checker/', include('checker.urls')),
     path('manager/', include('manager.urls')),
+    path('manager/checklist/', include('checklist.urls')),
 ]
