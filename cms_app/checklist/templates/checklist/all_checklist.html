@@ -51,7 +51,7 @@
   {% elif delete %}
     <section id="all-users">
       <h2>Select users to Delete</h2>
-      <form method="POST" action="" class="delete-form">
+      <form method="POST" action="{% url "delete_checklist" %}" class="delete-form">
         {% csrf_token %}
         <input id="d1" class="delete-button" type="submit" value="Delete Selected Users" />
         <button id="d2" class="delete-button" type="submit"><i class="fa-sharp fa-solid fa-trash"></i></button>
@@ -73,7 +73,7 @@
         </div>
         {% endfor %}
       {% endif %}
-      <h2>All Users</h2>
+      <h2>All Checklists</h2>
       <ul>
         {% for checklist in all_checklist %}
           {% include 'Checklist/includes/checklist.html' %}

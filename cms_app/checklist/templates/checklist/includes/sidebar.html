@@ -31,10 +31,10 @@
       {% if request.GET.checklist == 'True' %}
         <ul>
           <li>
-            <a href="">Add</a>
+            <a href="{% url "add_checklist" %}">Add</a>
           </li>
           <li>
-            <a href="">Delete</a>
+            <a href="{% url "all_checklist" %}?delete=delete">Delete</a>
           </li>
         </ul>
       {% endif %}

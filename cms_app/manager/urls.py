@@ -13,5 +13,7 @@ urlpatterns = [
     path('user_details/', views.user_details, name='user_details'),
     path('edit_profile/', views.edit_user_profile, name='edit_user_profile'),
     path('all_checklist/', checklist_views.all_checklist, name='all_checklist'),
-    path('view_checklist/', checklist_views.add_checklist_question, name='view_checklist'),
+    path('add_checklist/', checklist_views.add_checklist, name='add_checklist'),
+    path('add_checklist_questions/', checklist_views.add_checklist_question, name='add_questions'),
+    path('delete_checklist/', checklist_views.delete_checklist, name='delete_checklist'),
 ]

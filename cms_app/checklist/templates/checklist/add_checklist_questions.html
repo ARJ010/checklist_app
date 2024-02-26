@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+<!-- registration/register.html -->
+
+{% block title %}
+  Checklist
+{% endblock %}
+
+{% block style_content %}
+  <link rel="stylesheet" href="{% static 'Checklist/index.css' %}" />
+  <link rel="stylesheet" href="{% static 'Checklist/registration.css' %}" />
+{% endblock %}
+
+{% block type %}
+  <h1><a href="{% url 'manager_index' %}">CMS</a></h1>
+{% endblock %}
+
+{% block body_content %}
+  <section>
+    <div class="container">
+      <h2>Questions for {{ name }}</h2>
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in form %}
+          <div class="form-control {% if form.username.errors %}{% endif %}">{{ field.label_tag }}
+            {{ field }}
+            {{ field.errors }}</div>
+        {% endfor %}
+        <input type="hidden" name="user_type" value="{{ request.GET.user_type }}" />
+        <div class="button-container">
+          <button type="submit" name="action" value="add_question" class="btn btn-primary">Save and Add</button>
+          <button type="submit" name="action" value="submit" class="btn btn-success">Save and Exit</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="container">
+      <h2>Questions in {{ name }}</h2>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Question</th>
+            <!-- Add more table headers if needed -->
+          </tr>
+        </thead>
+        <tbody>
+          {% for question in questions %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ question.question_text }}</td>
+              <!-- Add more table cells for additional question details -->
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="2">No questions found.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+{% endblock %}
