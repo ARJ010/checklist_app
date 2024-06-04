@@ -5,6 +5,15 @@ body {
     background-size: cover;
 }
 
+.main-container {
+    max-width: 500px; /* Limit the width of the container */
+    margin: 170px auto; /* Center the container vertically */
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
 .container {
     max-width: 500px; /* Limit the width of the container */
     margin: 100px auto; /* Center the container vertically */

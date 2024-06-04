@@ -64,7 +64,7 @@ body {
 
 .all_actions ul {
   list-style: none;
-  max-width: 1200px;
+  max-width: 100%;
   width : 100%;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));

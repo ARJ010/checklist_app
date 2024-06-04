@@ -5,7 +5,7 @@
   <article class="user">
     <a href="{% url 'user_details' %}?user_id={{user.user.id}}&user_type={{request.GET.user_type}}">
       {% if user.user_photo %}
-        <img src="{{user.user_photo.url|cut:'/manager'}}" alt="{{ user.first_name }}">
+        <img src="{{user.user_photo.url}}" alt="{{ user.first_name }}">
       {% else %}
         <img src="{% static 'images/user.png' %}" alt="{{ user.first_name }}">
       {% endif %}
