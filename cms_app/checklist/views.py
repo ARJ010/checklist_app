@@ -21,6 +21,14 @@ def add_checklist(request):
         form = ChecklistForm()
     return render(request, 'checklist/add_checklist.html', {'form': form})
 
+
+@login_required
+@user_passes_test(employee_group_required)
+def checklist_detail(request):
+    checklist_id = request.GET.get('checklist_id')
+    checklist = get_object_or_404(Checklist, id=checklist_id)
+    return render(request, 'checklist/checklist_details.html', {'checklist': checklist})
+
 @login_required
 @user_passes_test(employee_group_required)
 def add_checklist_question(request):

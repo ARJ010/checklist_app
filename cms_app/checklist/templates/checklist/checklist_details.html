@@ -1,47 +1,36 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}
-  All Users
-{% endblock %}
-
-{% block type %}
-  <h1><a href="{% url 'manager_index' %}">CMS</a></h1>
-{% endblock %}
+{% block title %}Checklist Details{% endblock title %}
 
 {% block style_content %}
-  <link rel="stylesheet" href="{% static 'manager/user-details.css' %}" />
-  <link rel="stylesheet" href="{% static 'manager/sidebar.css' %}" />
-{% endblock %}
+    <link rel="stylesheet" href="{% static 'Checklist/index.css' %}" />
+    <link rel="stylesheet" href="{% static 'Checklist/registration.css' %}" />
+{% endblock style_content %}
 
-{% block navigation %}
-  {% include 'manager/includes/sidemenu.html' %}
-{% endblock %}
-
-{% block sidebar %}
-  {% include 'manager/includes/sidebar.html' %}
+{% block type %}
+    <h1><a href="{% url 'manager_index' %}">CMS</a></h1>
 {% endblock %}
 
 {% block body_content %}
-  <div class="card">
-    {% if user.employee.user_photo %}
-      <img src="{{ user.employee.user_photo.url }}" alt="{{ user.first_name }}" style="width:100%" />
-    {% else %}
-      <img src="{% static 'images/user.png' %}" alt="{{ user.first_name }}" style="width:100%" />
-    {% endif %}
-    <h1>{{ user.first_name|title }} {{ user.last_name|title }}</h1>
-    <p class="title">{{ request.GET.user_type|title }}</p>
-    <p>Age: {{ user.employee.age }}</p>
-    <p>Gender: {{ user.employee.gender }}</p>
-    <p>
-      <a href="{% url 'edit_user_profile' %}?user_type={{ request.GET.user_type }}&user_id={{ user.id }}"><button>Edit</button></a>
-    </p>
-  </div>
+<section>
+    <div class="main-container">
+        <h2>Checklist: {{ checklist.name }}</h2>
+        <p>{{ checklist.description }}</p>
+        <!-- Add more checklist details as needed -->
 
-  <a href="{% url 'delete_user' %}?user_type={{ request.GET.user_type }}&user_id={{ user.id }}">
-    <input id="d1" class="delete-button" type="button" value="Delete Selected Users" />
-  </a>
-  <a href="{% url 'delete_user' %}?user_type={{ request.GET.user_type }}&user_id={{ user.id }}">
-    <button id="d2" class="delete-button" type="submit"><i class="fa-sharp fa-solid fa-trash"></i></button>
-  </a>
-{% endblock %}
+        <h3>Questions:</h3>
+        <ul>
+            {% for question in checklist.checklistquestion_set.all %}
+            <li>{{ question.question_text }}</li>
+            {% empty %}
+            <li>No questions found for this checklist.</li>
+            {% endfor %}
+        </ul>
+        
+        <a href="{% url 'all_checklist' %}" class="btn btn-secondary">Back to All Checklists</a>
+        <a href="" class="btn btn-primary">Edit Checklist</a>
+        <a href="" class="btn btn-danger">Delete Checklist</a>
+    </div>
+</section>
+{% endblock body_content %}
