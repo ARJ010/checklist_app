@@ -1,12 +1,23 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import ChecklistQuestionForm, ChecklistForm
+from .forms import ChecklistForm, ChecklistQuestionForm, ChecklistQuestionFormSet
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import Checklist,ChecklistQuestion
 from django.urls import reverse
+from django.forms import formset_factory
+from django.contrib import messages
 
 def employee_group_required(user):
     """Check if the user belongs to the 'Admin' group."""
     return user.groups.filter(name='Admin').exists()
+
+@login_required
+@user_passes_test(employee_group_required)
+def checklist_detail(request):
+    checklist_id = request.GET.get('checklist_id')
+    checklist = get_object_or_404(Checklist, id=checklist_id)
+    return render(request, 'checklist/checklist_details.html', {'checklist': checklist})
+
+
 
 @login_required
 @user_passes_test(employee_group_required)
@@ -16,18 +27,11 @@ def add_checklist(request):
         if form.is_valid():
             checklist = form.save()
             checklist_name = checklist.name
+            # Redirect to add questions page after adding the checklist
             return redirect(reverse('add_questions') + '?cname=' + checklist_name)
     else:
         form = ChecklistForm()
     return render(request, 'checklist/add_checklist.html', {'form': form})
-
-
-@login_required
-@user_passes_test(employee_group_required)
-def checklist_detail(request):
-    checklist_id = request.GET.get('checklist_id')
-    checklist = get_object_or_404(Checklist, id=checklist_id)
-    return render(request, 'checklist/checklist_details.html', {'checklist': checklist})
 
 @login_required
 @user_passes_test(employee_group_required)
@@ -37,25 +41,22 @@ def add_checklist_question(request):
         # Handle the case where the checklist name is not provided
         return redirect('error_page')  # Redirect to an error page or handle it as per your requirement
 
-    # Fetch the questions associated with the checklist
-    questions = ChecklistQuestion.objects.filter(checklist__name=checklist_name)
+    # Fetch the checklist instance
+    checklist_instance = get_object_or_404(Checklist, name=checklist_name)
 
     if request.method == 'POST':
-        form = ChecklistQuestionForm(request.POST)
-        if form.is_valid():
-            # Fetch the Checklist instance corresponding to the checklist name
-            checklist_instance = Checklist.objects.get(name=checklist_name)
-            question = form.save(commit=False)
-            question.checklist = checklist_instance  # Set the Checklist instance
-            question.save()
+        formset = ChecklistQuestionFormSet(request.POST, instance=checklist_instance)
+        if formset.is_valid():
+            formset.save()
             action = request.POST.get('action')
             if action == 'submit':
-                return redirect('all_checklist')  # Redirect to a success page
+                # Redirect to checklist detail page after saving and exiting
+                return redirect(reverse('checklist_detail') + '?checklist_id=' + str(checklist_instance.id))
             return redirect(reverse('add_questions') + '?cname=' + checklist_name)
     else:
-        form = ChecklistQuestionForm()
+        formset = ChecklistQuestionFormSet(instance=checklist_instance)
 
-    return render(request, 'checklist/add_checklist_questions.html', {'form': form, 'name': checklist_name, 'questions': questions})
+    return render(request, 'checklist/add_checklist_questions.html', {'formset': formset, 'name': checklist_name})
 
 @login_required
 @user_passes_test(employee_group_required)
@@ -83,7 +84,6 @@ def delete_checklist(request):
         checklist_ids = request.POST.getlist('checklist_ids')
         checklists_to_delete = Checklist.objects.filter(id__in=checklist_ids)
 
-        # Handle checklist deletion
         deleted_checklists = []
         failed_deletions = []
         for checklist in checklists_to_delete:
@@ -91,16 +91,32 @@ def delete_checklist(request):
                 checklist.delete()
                 deleted_checklists.append(checklist)
             except Exception as e:
-                # Log or handle the error appropriately
                 failed_deletions.append(checklist)
 
+        if deleted_checklists:
+            messages.success(request, f'Successfully deleted {len(deleted_checklists)} checklist(s).')
         if failed_deletions:
-            # Handle failed deletions (e.g., show error message)
-            pass
+            messages.error(request, f'Failed to delete {len(failed_deletions)} checklist(s).')
 
-        # Redirect to the page displaying all checklists
         return redirect('all_checklist')
 
-    # If the request method is not POST, return a GET request
-    # This is to prevent accidental deletions via direct URL access
     return redirect('all_checklist')
+
+@login_required
+@user_passes_test(employee_group_required)
+def edit_checklist(request):
+    checklist_id = request.GET.get('checklist_id')
+    checklist = get_object_or_404(Checklist, id=checklist_id)
+
+    if request.method == 'POST':
+        form = ChecklistForm(request.POST, instance=checklist)
+        formset = ChecklistQuestionFormSet(request.POST, instance=checklist)
+        if form.is_valid() and formset.is_valid():
+            form.save()
+            formset.save()
+            return redirect(reverse('checklist_detail') + '?checklist_id=' + str(checklist.id))
+    else:
+        form = ChecklistForm(instance=checklist)
+        formset = ChecklistQuestionFormSet(instance=checklist)
+
+    return render(request, 'checklist/edit_checklist.html', {'form': form, 'formset': formset, 'checklist': checklist})

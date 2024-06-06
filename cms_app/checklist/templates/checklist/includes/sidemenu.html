@@ -17,10 +17,10 @@
         </div>
       </div>
       <div class="sub-menu">
-        <a href="{% url 'all_checklist' %}">Checklist</a>
+        <a href="{% url 'all_checklist' %}?checklist=True">Checklist</a>
         <div id="sub-checklist" class="sub-options">
           <a href="{% url "add_checklist" %}">Add</a>
-          <a href="{% url "all_checklist" %}?delete=delete">Delete</a>
+          <a href="{% url "all_checklist" %}?checklist=True&delete=delete">Delete</a>
         </div>
       </div>
     </div>

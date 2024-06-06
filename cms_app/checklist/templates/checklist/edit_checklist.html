@@ -19,18 +19,14 @@
         <h2>Edit Checklist: {{ checklist.name }}</h2>
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            {{ form.as_p }}
+            <div class="form-control">
+                {{ form.as_p }}
+            </div>
             {{ formset.management_form }}
             {% for form in formset %}
             <div class="form-control">
-                <div>
-                    <label for="{{ form.question_text.id_for_label }}">Question</label>
-                    {{ form.question_text }}
-                </div>
-                <div>
-                    <label for="{{ form.DELETE.id_for_label }}">Delete</label>
-                    {{ form.DELETE }}
-                </div>
+                <label for="{{ form.auto_id }}">{{ form.label }}</label>
+                {{ form }}
                 <hr>
             </div>
             {% endfor %}

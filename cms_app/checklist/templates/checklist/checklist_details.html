@@ -17,7 +17,6 @@
     <div class="main-container">
         <h2>Checklist: {{ checklist.name }}</h2>
         <p>{{ checklist.description }}</p>
-        <!-- Add more checklist details as needed -->
 
         <h3>Questions:</h3>
         <ul>
@@ -28,9 +27,15 @@
             {% endfor %}
         </ul>
         
-        <a href="{% url 'all_checklist' %}" class="btn btn-secondary">Back to All Checklists</a>
-        <a href="" class="btn btn-primary">Edit Checklist</a>
-        <a href="" class="btn btn-danger">Delete Checklist</a>
+        <a href="{% url 'all_checklist' %}" class="btn btn-secondary"><button type="submit">Go Back</button></a>
+        <a href="{% url 'edit_checklist' %}?checklist_id={{ checklist.id }}" class="btn btn-primary"><button type="submit">Edit Checklist</button></a>
+        
+        <!-- Add a form to delete the checklist -->
+        <form method="post" action="{% url 'delete_checklist' %}" style="display: inline;">
+            {% csrf_token %}
+            <input type="hidden" name="checklist_ids" value="{{ checklist.id }}">
+            <button type="submit" class="btn btn-danger">Delete Checklist</button>
+        </form>
     </div>
 </section>
 {% endblock body_content %}

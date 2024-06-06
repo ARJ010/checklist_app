@@ -1,6 +1,6 @@
 from django import forms
+from django.forms import inlineformset_factory
 from .models import Checklist, ChecklistQuestion
-
 
 class ChecklistForm(forms.ModelForm):
     class Meta:
@@ -9,10 +9,10 @@ class ChecklistForm(forms.ModelForm):
 
     def clean_name(self):
         name = self.cleaned_data.get('name')
-        if Checklist.objects.filter(name=name).exists():
+        instance = self.instance
+        if instance and Checklist.objects.exclude(id=instance.id).filter(name=name).exists():
             raise forms.ValidationError("A checklist with this name already exists.")
         return name
-
 
 class ChecklistQuestionForm(forms.ModelForm):
     class Meta:
@@ -21,3 +21,16 @@ class ChecklistQuestionForm(forms.ModelForm):
         widgets = {
             'question_text': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
         }
+
+# Define the inline formset for ChecklistQuestion
+ChecklistQuestionFormSet = inlineformset_factory(
+    Checklist,  # Parent model
+    ChecklistQuestion,  # Child model
+    form=ChecklistQuestionForm,  # Form to use for the inline formset
+    fields=['question_text'],  # Fields to include in the formset
+    extra=1,  # Number of extra forms to display
+    can_delete=True,  # Allow deletion of existing questions
+    widgets={
+        'question_text': forms.Textarea(attrs={'class': 'form-control', 'rows': 3,}),
+    }
+)
