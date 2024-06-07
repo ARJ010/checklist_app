@@ -18,7 +18,6 @@ def checklist_detail(request):
     return render(request, 'checklist/checklist_details.html', {'checklist': checklist})
 
 
-
 @login_required
 @user_passes_test(employee_group_required)
 def add_checklist(request):
@@ -27,7 +26,6 @@ def add_checklist(request):
         if form.is_valid():
             checklist = form.save()
             checklist_name = checklist.name
-            # Redirect to add questions page after adding the checklist
             return redirect(reverse('add_questions') + '?cname=' + checklist_name)
     else:
         form = ChecklistForm()
@@ -38,10 +36,8 @@ def add_checklist(request):
 def add_checklist_question(request):
     checklist_name = request.GET.get('cname', None)
     if checklist_name is None:
-        # Handle the case where the checklist name is not provided
-        return redirect('error_page')  # Redirect to an error page or handle it as per your requirement
+        return redirect('error_page')
 
-    # Fetch the checklist instance
     checklist_instance = get_object_or_404(Checklist, name=checklist_name)
 
     if request.method == 'POST':
@@ -50,9 +46,9 @@ def add_checklist_question(request):
             formset.save()
             action = request.POST.get('action')
             if action == 'submit':
-                # Redirect to checklist detail page after saving and exiting
-                return redirect(reverse('checklist_detail') + '?checklist_id=' + str(checklist_instance.id))
-            return redirect(reverse('add_questions') + '?cname=' + checklist_name)
+                 return redirect('all_checklist')
+            elif action == 'save_and_add':
+                return redirect(reverse('add_questions') + '?cname=' + checklist_name + '#end')
     else:
         formset = ChecklistQuestionFormSet(instance=checklist_instance)
 

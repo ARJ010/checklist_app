@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 {% load static %}
-<!-- checklist/add_checklist_questions.html -->
 
 {% block title %}
   Checklist
@@ -9,9 +8,15 @@
 {% block style_content %}
   <link rel="stylesheet" href="{% static 'Checklist/index.css' %}" />
   <link rel="stylesheet" href="{% static 'Checklist/registration.css' %}" />
+  <link rel="stylesheet" href="{% static 'Checklist/edit_checklist.css' %}" />
   <style>
     .form-row {
       margin-bottom: 10px;
+    }
+    .button-container {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
     }
   </style>
 {% endblock %}
@@ -23,24 +28,45 @@
 {% block body_content %}
   <section>
     <div class="container">
-      <h2>Questions for {{ name }}</h2>
+      <h2>{{ name }}</h2>
       <form id="question-form" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ formset.management_form }}
-        <div id="formset-container">
-          {% for form in formset %}
-            <div class="form-row">
-              {{ form.as_p }}
+            <hr>
+            {% for form in formset %}
+            <div class="form-control">
+                <label for="{{ form.auto_id }}">{{ form.label }}</label>
+                {{ form }}
+                <hr>
             </div>
-          {% endfor %}
-        </div>
+            {% endfor %}
         <input type="hidden" name="user_type" value="{{ request.GET.user_type }}" />
         <div class="button-container">
-          <button type="button" id="add-question" class="btn btn-primary">Add Question</button>
+          <button type="submit" name="action" value="save_and_add" class="btn btn-primary">Save and Add</button>
           <button type="submit" name="action" value="submit" class="btn btn-success">Save and Exit</button>
         </div>
       </form>
     </div>
   </section>
 
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var formCount = {{ formset.total_form_count }};
+      var formContainer = document.getElementById('formset-container');
+      var addButton = document.getElementById('add-question');
+
+      addButton.addEventListener('click', function() {
+        var newForm = document.createElement('div');
+        newForm.classList.add('form-row');
+        newForm.innerHTML = formContainer.children[0].innerHTML.replace(/__prefix__/g, formCount);
+        formContainer.appendChild(newForm);
+        formCount++;
+        document.getElementById('id_form-TOTAL_FORMS').value = formCount;
+      });
+    });
+
+    if (window.location.hash === '#end') {
+      window.scrollTo(0, document.body.scrollHeight);
+    }
+  </script>
 {% endblock %}

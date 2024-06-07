@@ -12,7 +12,6 @@
 <h1><a href="{% url "manager_index" %}">CMS</a></h1>
 {% endblock %}
     
-
 {% block body_content %}
 <section>
     <div class="main-container">
@@ -28,9 +27,11 @@
             {% endfor %}
             <input type="hidden" name="user_type" value="{{ request.GET.user_type }}">   
             <div class="button-container">
+                <a href="{% url 'all_checklist' %}""><button type="button">Cancel</button></a>
                 <button type="submit" class="btn btn-primary">Add Checklist</button>
             </div>
         </form>
+
     </div>
 </section>
 {% endblock body_content %}
