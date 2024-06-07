@@ -114,7 +114,11 @@ def edit_checklist(request):
         if form.is_valid() and formset.is_valid():
             form.save()
             formset.save()
-            return redirect(reverse('checklist_detail') + '?checklist_id=' + str(checklist.id))
+
+            if request.POST.get('action') == 'save_and_edit':
+                return redirect(reverse('edit_checklist') + '?checklist_id=' + str(checklist.id))
+            else:
+                return redirect(reverse('checklist_detail') + '?checklist_id=' + str(checklist.id))
     else:
         form = ChecklistForm(instance=checklist)
         formset = ChecklistQuestionFormSet(instance=checklist)

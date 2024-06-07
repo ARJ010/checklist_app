@@ -1,45 +1,46 @@
 {% extends 'base.html' %}
 {% load static %}
+<!-- checklist/add_checklist_questions.html -->
 
-{% block title %}Edit Checklist{% endblock title %}
+{% block title %}
+  Checklist
+{% endblock %}
 
 {% block style_content %}
-    <link rel="stylesheet" href="{% static 'Checklist/index.css' %}" />
-    <link rel="stylesheet" href="{% static 'Checklist/registration.css' %}" />
-    <link rel="stylesheet" href="{% static 'Checklist/edit_checklist.css' %}" />
-{% endblock style_content %}
+  <link rel="stylesheet" href="{% static 'Checklist/index.css' %}" />
+  <link rel="stylesheet" href="{% static 'Checklist/registration.css' %}" />
+  <style>
+    .form-row {
+      margin-bottom: 10px;
+    }
+  </style>
+{% endblock %}
 
 {% block type %}
-    <h1><a href="{% url 'manager_index' %}">CMS</a></h1>
-{% endblock type %}
+  <h1><a href="{% url 'manager_index' %}">CMS</a></h1>
+{% endblock %}
 
 {% block body_content %}
-<section>
-    <div class="main-container">
-        <h2>Edit Checklist: {{ checklist.name }}</h2>
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.as_p }}
-            {{ formset.management_form }}
-            {% for form in formset %}
-            <div class="form-control">
-                <div>
-                    <label for="{{ form.question_text.id_for_label }}">Question</label>
-                    {{ form.question_text }}
-                </div>
-                <div>
-                    <label for="{{ form.DELETE.id_for_label }}">Delete</label>
-                    {{ form.DELETE }}
-                </div>
-                <hr>
+  <section>
+    <div class="container">
+      <h2>Questions for {{ name }}</h2>
+      <form id="question-form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ formset.management_form }}
+        <div id="formset-container">
+          {% for form in formset %}
+            <div class="form-row">
+              {{ form.as_p }}
             </div>
-            {% endfor %}
-            <div class="button-container">
-                <button type="submit" name="action" value="save_and_edit" class="btn btn-primary">Save and Edit</button>
-                <button type="submit" class="btn btn-primary">Save and Exit</button>
-                <a href="{% url 'checklist_detail' %}?checklist_id={{ checklist.id }}" class="btn btn-secondary"><button type="button" class="btn btn-primary">Cancel</button></a>
-            </div>
-        </form>
+          {% endfor %}
+        </div>
+        <input type="hidden" name="user_type" value="{{ request.GET.user_type }}" />
+        <div class="button-container">
+          <button type="button" id="add-question" class="btn btn-primary">Add Question</button>
+          <button type="submit" name="action" value="submit" class="btn btn-success">Save and Exit</button>
+        </div>
+      </form>
     </div>
-</section>
-{% endblock body_content %}
+  </section>
+
+{% endblock %}
