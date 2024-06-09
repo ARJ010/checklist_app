@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  CMS-User
+{% endblock %}
+
+{% block style_content %}
+  <link rel="stylesheet" href="{% static 'user/draft.css' %}" />
+  <link rel="stylesheet" href="{% static 'user/sidebar.css' %}" />
+{% endblock %}
+
+{% block type %}
+  <h1><a href="{% url 'user_index' %}?user_id={{ user.id }}">CMS</a></h1>
+{% endblock %}
+
+{% block navigation %}
+  {% include 'user/includes/sidemenu.html' %}
+{% endblock %}
+
+{% block sidebar %}
+  {% include 'user/includes/sidebar.html' %}
+{% endblock %}
+
+{% block body_content %}
+  <section id="search-container">
+    <form id="searchForm" method="GET" action="{% url 'status' %}?user_id={{ user.id }}">
+      <div class="search-container">
+        <input type="hidden" name="user_id" value="{{ user.id }}" />
+        <input type="text" name="searchClientName" id="searchClientName" placeholder="Search by Client Name" />
+        <input type="text" name="searchChecklist" id="searchChecklist" placeholder="Search by Checklist" />
+        <input type="date" name="searchDate" id="searchDate" placeholder="Search by Date" />
+        <button type="submit">Search</button>
+        {% if request.GET.searchClientName or request.GET.searchChecklist or request.GET.searchDate %}
+          <a href="{% url 'draft' %}?user_id={{ user.id }}&status=pending"><button type="button" id="cancelButton">Cancel</button></a>
+        {% endif %}
+      </div>
+    </form>
+  </section>
+  <section id="procedure_table">
+    <table>
+      <thead>
+        <tr>
+          <th>Sl No.</th>
+          <th>Client Name</th>
+          <th>Data Path</th>
+          <th>Checklist</th>
+          <th>Date</th>
+          <th>Checker</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for procedure in page_obj %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ procedure.client_name }}</td>
+            <td>{{ procedure.data_path }}</td>
+            <td>{{ procedure.checklist.name }}</td>
+            <td>{{ procedure.date_created }}</td>
+            <td>{{ procedure.checker }}</td>
+            <td>{{ procedure.status }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <!-- Pagination controls -->
+    <div class="pagination">
+      <span class="step-links">
+        {% if page_obj.has_previous %}
+          <a href="?page=1&user_id={{ user.id }}">&laquo; first</a>
+          <a href="?page={{ page_obj.previous_page_number }}&user_id={{ user.id }}">previous</a>
+        {% endif %}
+
+        <span class="current">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</span>
+
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}&user_id={{ user.id }}">next</a>
+          <a href="?page={{ page_obj.paginator.num_pages }}&user_id={{ user.id }}">last &raquo;</a>
+        {% endif %}
+      </span>
+    </div>
+  </section>
+{% endblock %}

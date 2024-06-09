@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  Add Procedure
+{% endblock %}
+
+{% block style_content %}
+  <link rel="stylesheet" href="{% static 'user/user-index.css.css' %}" />
+  <link rel="stylesheet" href="{% static 'user/add_procedure.css' %}" />
+{% endblock %}
+
+{% block type %}
+  <h1><a href="{% url 'user_index' %}?user_id={{ user.id }}">CMS</a></h1>
+{% endblock %}
+
+{% block body_content %}
+  <section>
+    <div class="container">
+      <header>
+        <h2>Add Procedure</h2>
+      </header>
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="button-container">
+          <button type="submit">Create Procedure</button>
+          <a href="{% url 'draft' %}?user_id={{user.id}}"><button type="button">Cancel</button></a>
+        </div>
+      </form>
+    </div>
+  </section>
+{% endblock %}

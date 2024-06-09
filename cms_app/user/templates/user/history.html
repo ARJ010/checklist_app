@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  CMS-User
+{% endblock %}
+
+{% block style_content %}
+  <link rel="stylesheet" href="{% static 'user/draft.css' %}" />
+  <link rel="stylesheet" href="{% static 'user/sidebar.css' %}" />
+{% endblock %}
+
+{% block type %}
+  <h1><a href="{% url 'user_index' %}?user_id={{ user.id }}">CMS</a></h1>
+{% endblock %}
+
+{% block navigation %}
+  {% include 'user/includes/sidemenu.html' %}
+{% endblock %}
+
+{% block sidebar %}
+  {% include 'user/includes/sidebar.html' %}
+{% endblock %}
+
+{% block body_content %}
+  <section id="procedure_table">
+    <header>
+      <h2>Procedures</h2>
+    </header>
+    <button>Add</button>
+    <table>
+      <thead>
+        <tr>
+          <th>Sl No.</th>
+          <th>Client Name</th>
+          <th>Checklist</th>
+          <th>Submitted Date</th>
+          <th>Checker</th>
+          <th>Final Submitted Date</th>
+          <th>Returned Count</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for procedure in page_obj %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ procedure.client_data }}</td>
+            <td>{{ procedure.checklist.name }}</td>
+            <td>{{ procedure.date_created }}</td>
+            <td>Checker Name</td>
+            <td>Final Submitted Date</td>
+            <td>Returned Count</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <!-- Pagination controls -->
+    <div class="pagination">
+      <span class="step-links">
+        {% if page_obj.has_previous %}
+          <a href="?page=1&user_id={{ user.id }}">&laquo; first</a>
+          <a href="?page={{ page_obj.previous_page_number }}&user_id={{ user.id }}">previous</a>
+        {% endif %}
+
+        <span class="current">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</span>
+
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}&user_id={{ user.id }}">next</a>
+          <a href="?page={{ page_obj.paginator.num_pages }}&user_id={{ user.id }}">last &raquo;</a>
+        {% endif %}
+      </span>
+    </div>
+  </section>
+{% endblock %}

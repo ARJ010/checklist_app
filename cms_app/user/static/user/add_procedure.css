@@ -1,0 +1,126 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-image: url('../images/bg1.png');
+    background-size: cover;
+    background-attachment: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 600px;
+    width: 100%;
+    margin: 20px auto;
+    padding: 40px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.container h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #1f0050;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+form {
+    width: 100%;
+}
+
+.form-control {
+    margin-bottom: 20px;
+}
+
+.form-control input,
+.form-control select,
+.form-control textarea {
+    font-family: inherit;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+.form-control input:focus,
+.form-control select:focus,
+.form-control textarea:focus {
+    border-color: #1f0050;
+    background-color: #f4eeff;
+    outline: none;
+}
+
+.form-control label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 8px;
+    color: #1f0050;
+    font-size: 14px;
+}
+
+/* Adjust radio button styling */
+.form-control input[type="radio"] {
+    margin-right: 8px;
+}
+
+.button-container {
+    text-align: center;
+}
+
+button {
+    cursor: pointer;
+    padding: 12px 24px;
+    border-radius: 6px;
+    background-color: #1f0050;
+    color: #ffffff;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease-in-out;
+}
+
+button:hover,
+button:active {
+    background-color: #320777;
+}
+
+.errorlist {
+    list-style: none;
+    padding: 0;
+    color: #680000;
+    margin-bottom: 20px;
+}
+
+.error {
+    font-style: italic;
+    font-size: 14px;
+    color: #d9534f;
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 20px;
+    }
+
+    .container h2 {
+        font-size: 20px;
+    }
+
+    .form-control input,
+    .form-control select,
+    .form-control textarea {
+        font-size: 14px;
+    }
+
+    button {
+        font-size: 14px;
+        padding: 10px 20px;
+    }
+}

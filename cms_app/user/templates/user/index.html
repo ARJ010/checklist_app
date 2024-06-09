@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block style_content %}
-  <link rel="stylesheet" href=" {% static 'user/index.css' %}" />
+  <link rel="stylesheet" href=" {% static 'manager/index.css' %}" />
 {% endblock %}
 
 {% block type %}
@@ -21,30 +21,55 @@
     </header>
   </section>
 
-  <section id="procedure_table">
-
-    <header>
-      <h2>Procedures</h2>
-    </header>
-    <button>Add</button>
-    <table>
-      <thead>
-        <tr>
-          <th>Sl No.</th>
-          <th>Procedure Name</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>1</td>
-          <td>Procedure_1</td>
-          <td><a href="">View</a> | <a href="">Edit</a> | <a href="">Delete</a></td>
-        </tr>
-      </tbody>
-    </table>
-
+  <section class="all_actions">
+    <ul>
+      <li>
+        <article class="action">
+          <a href="{% url 'draft' %}?user_id={{user.id}}&status=pending">
+            <img src="{% static 'images/draft.png' %}" alt="user" />
+            <div class="action_content">
+              <h3>Draft</h3>
+              <p>Procedures pending to submit</p>
+            </div>
+          </a>
+        </article>
+      </li>
+      <li>
+        <article class="action">
+          <a href="{% url 'status' %}?user_id={{user.id}}">
+            <img src="{% static 'images/status.png' %}" alt="checker" />
+            <div class="action_content">
+              <h3>Status</h3>
+              <p>Status of submitted procedures</p>
+            </div>
+          </a>
+        </article>
+      </li>
+      <li>
+        <article class="action">
+          <a href="{% url 'returned' %}?user_id={{user.id}}">
+            <img src="{% static 'images/returned.png' %}" alt="checklist" />
+            <div class="action_content">
+              <h3>Returned</h3>
+              <p>Procedure returned by Checkers</p>
+            </div>
+          </a>
+        </article>
+      </li>
+      <li>
+        <article class="action">
+          <a href="{% url 'history' %}?user_id={{user.id}}">
+            <img src="{% static 'images/history.png' %}" alt="checklist" />
+            <div class="action_content">
+              <h3>History</h3>
+              <p>Processed Procedures</p>
+            </div>
+          </a>
+        </article>
+      </li>
+    </ul>
   </section>
+  
 
 {% endblock %}
 

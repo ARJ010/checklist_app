@@ -1,0 +1,23 @@
+<aside id="sidebar">
+  <ul>
+    <li>
+      <a href="{% url 'draft' %}?user_id={{user.id}}&status=pending">Draft</a>
+      {% if request.GET.status == 'pending' %}
+        <ul>
+          <li>
+            <a href="{% url 'add_procedure' %}?user_id={{user.id}}">Add</a>
+          </li>
+        </ul>
+      {% endif %}
+    </li>
+    <li>
+      <a href="{% url 'status' %}?user_id={{user.id}}">Status</a>
+    </li>
+    <li>
+      <a href="{% url 'returned' %}?user_id={{user.id}}">Returned</a>
+    </li>
+    <li>
+      <a href="{% url 'history' %}?user_id={{user.id}}">History</a>
+    </li>
+  </ul>
+</aside>

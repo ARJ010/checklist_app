@@ -29,6 +29,8 @@ h3 {
   position: absolute;
   top: 0;
   left: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  background: linear-gradient(to right top, #3c097e, #390281);
 }
 
 nav{
