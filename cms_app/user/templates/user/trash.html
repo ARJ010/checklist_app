@@ -37,6 +37,9 @@
 </section>
 
 <section id="procedure_table">
+  <header>
+    <h2>Trash</h2>
+  </header>
   <table>
     <thead>
       <tr>
@@ -57,9 +60,8 @@
         <td>{{ procedure.checklist.name }}</td>
         <td>{{ procedure.date_created }}</td>
         <td>
-          <a href="{% url 'edit_procedure' %}?user_id={{ user.id }}&procedure_id={{ procedure.id }}&status=draft">Edit</a> | 
-          <a href="{% url 'delete_temp' %}?user_id={{ user.id }}&procedure_id={{ procedure.id }}">Delete</a> | 
-          <a href="{% url 'submit_procedure' %}?user_id={{ user.id }}&procedure_id={{ procedure.id }}&status=draft">Submit</a>
+          <a href="{% url 'restore_procedure' %}?user_id={{ user.id }}&procedure_id={{ procedure.id }}">Restore</a> | 
+          <a href="{% url 'delete_procedure' %}?user_id={{ user.id }}&procedure_id={{ procedure.id }}">Delete</a> 
         </td>
       </tr>
       {% endfor %}
@@ -85,12 +87,5 @@
     </span>
   </div>
 </section>
-
-<a href="{% url 'trash' %}?user_id={{ user.id }}">
-  <input id="d1" class="delete-button" type="button" value="Trash" />
-</a>
-<a href="{% url 'trash' %}?user_id={{ user.id }}">
-  <button id="d2" class="delete-button" type="submit"><i class="fa-sharp fa-solid fa-trash"></i></button>
-</a>
 
 {% endblock %}

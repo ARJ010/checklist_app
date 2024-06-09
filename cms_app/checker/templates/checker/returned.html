@@ -11,45 +11,44 @@
 {% endblock %}
 
 {% block type %}
-  <h1><a href="{% url 'user_index' %}?user_id={{ user.id }}">CMS</a></h1>
+<h1><a href="{% url "checker_index" %}?user_id={{user.id}}">CMS</a></h1>
 {% endblock %}
 
 {% block navigation %}
-  {% include 'user/includes/sidemenu.html' %}
+  {% include 'checker/includes/sidemenu.html' %}
 {% endblock %}
 
 {% block sidebar %}
-  {% include 'user/includes/sidebar.html' %}
+  {% include 'checker/includes/sidebar.html' %}
 {% endblock %}
 
 {% block body_content %}
-  <section id="search-container">
-    <form id="searchForm" method="GET" action="{% url 'draft' %}?user_id={{ user.id }}">
-      <div class="search-container">
-        <input type="hidden" name="user_id" value="{{ user.id }}" />
-        <input type="text" name="searchClientName" id="searchClientName" placeholder="Search by Client Name" />
-        <input type="text" name="searchChecklist" id="searchChecklist" placeholder="Search by Checklist" />
-        <input type="date" name="searchDate" id="searchDate" placeholder="Search by Date" />
-        <button type="submit">Search</button>
-        {% if request.GET.searchClientName or request.GET.searchChecklist or request.GET.searchDate %}
-          <a href="{% url 'draft' %}?user_id={{ user.id }}&status=pending"><button type="button" id="cancelButton">Cancel</button></a>
-        {% endif %}
-      </div>
-    </form>
-  </section>
-
+<section id="search-container">
+  <form id="searchForm" method="GET" action="{% url 'all_procedures' %}?user_id={{user.id}}">
+    <div class="search-container">
+      <input type="hidden" name="user_id" value="{{ user.id }}">
+      <input type="text" name="searchClientName" id="searchClientName" placeholder="Search by Client Name">
+      <input type="text" name="searchChecklist" id="searchChecklist" placeholder="Search by Checklist">
+      <input type="date" name="searchDate" id="searchDate" placeholder="Search by Date">
+      <button type="submit">Search</button>
+      {% if request.GET.searchClientName or request.GET.searchChecklist or request.GET.searchDate %}
+      <a href="{% url 'all_process' %}"><button type="button" id="cancelButton">Cancel</button></a>
+      {% endif %}
+    </div>
+  </form>
+</section>
   <section id="procedure_table">
     <table>
       <thead>
         <tr>
           <th>Sl No.</th>
           <th>Client Name</th>
-          <th>Data Path</th>
           <th>Checklist</th>
-          <th>Submitted Date</th>
-          <th>Checker's Name</th>
-          <th>Final Submitted Date</th>
+          <th>Date</th>
+          <th>Checker</th>
+          <th>Returned Date</th>
           <th>Returned Count</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody>
@@ -57,12 +56,20 @@
           <tr>
             <td>{{ forloop.counter }}</td>
             <td>{{ procedure.client_name }}</td>
-            <td>{{ procedure.data_path }}</td>
             <td>{{ procedure.checklist.name }}</td>
             <td>{{ procedure.date_created }}</td>
             <td>{{ procedure.checker.first_name }} {{ procedure.checker.last_name }}</td>
-            <td>{{ procedure.final_submission_date }}</td>
+            <td>{{ procedure.returned_date }}</td>
             <td>{{ procedure.return_count }}</td>
+            <td>
+              {% if procedure.status == 'Submitted' %}
+              <a href="{% url 'view_response' %}?user_id={{ user.id }}&procedure_id={{ procedure.id }}">Response</a> | 
+              <a href="{% url 'return_procedure' %}?user_id={{ user.id }}&procedure_id={{ procedure.id }}">Return</a> | 
+              <a href="{% url 'final_submit' %}?user_id={{ user.id }}&procedure_id={{ procedure.id }}">Final Confirm</a> 
+              {% else %}
+              Returned
+              {% endif %}
+            </td>
           </tr>
         {% endfor %}
       </tbody>

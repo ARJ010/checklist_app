@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  Edit Procedure Responses
+{% endblock %}
+
+{% block style_content %}
+  <link rel="stylesheet" href="{% static 'checker/edit_responses.css' %}" />
+  <link rel="stylesheet" href="{% static 'checker/response.css' %}" />
+  <link rel="stylesheet" href="{% static 'user/sidebar.css' %}" />
+{% endblock %}
+
+{% block type %}
+  <h1><a href="{% url 'checker_index' %}?user_id={{ user.id }}">CMS</a></h1>
+{% endblock %}
+
+{% block navigation %}
+  {% include 'checker/includes/sidemenu.html' %}
+{% endblock %}
+
+{% block sidebar %}
+  {% include 'checker/includes/sidebar.html' %}
+{% endblock %}
+
+{% block body_content %}
+  <section id="procedure_table">
+    <header>
+      <h2>Edit Responses</h2>
+    </header>
+
+    <form method="post" enctype="multipart/form-data" id="checklist-form">
+      {% csrf_token %}
+      <div class="form-control">{{ form.as_p }}</div>
+      {{ formset.management_form }}
+      <hr />
+      {% for form in formset %}
+        <div class="form-control">
+          <label for="{{ form.auto_id }}">{{ form.instance.question.question_text }}</label>
+          {{ form }}
+          <hr />
+        </div>
+      {% endfor %}
+      <div class="button-container">
+        <button type="submit">Save Changes</button>
+        <a href="{% url 'view_response' %}?user_id={{ procedure.checker.id }}&procedure_id={{ procedure.id }}"><button type="button">Cancel</button></a>
+      </div>
+    </form>
+  </section>
+{% endblock %}

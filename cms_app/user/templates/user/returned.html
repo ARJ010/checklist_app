@@ -23,11 +23,21 @@
 {% endblock %}
 
 {% block body_content %}
+  <section id="search-container">
+    <form id="searchForm" method="GET" action="{% url 'status' %}?user_id={{ user.id }}">
+      <div class="search-container">
+        <input type="hidden" name="user_id" value="{{ user.id }}" />
+        <input type="text" name="searchClientName" id="searchClientName" placeholder="Search by Client Name" />
+        <input type="text" name="searchChecklist" id="searchChecklist" placeholder="Search by Checklist" />
+        <input type="date" name="searchDate" id="searchDate" placeholder="Search by Date" />
+        <button type="submit">Search</button>
+        {% if request.GET.searchClientName or request.GET.searchChecklist or request.GET.searchDate %}
+          <a href="{% url 'draft' %}?user_id={{ user.id }}&status=pending"><button type="button" id="cancelButton">Cancel</button></a>
+        {% endif %}
+      </div>
+    </form>
+  </section>
   <section id="procedure_table">
-    <header>
-      <h2>Procedures</h2>
-    </header>
-    <button>Add</button>
     <table>
       <thead>
         <tr>
@@ -45,17 +55,19 @@
         {% for procedure in page_obj %}
           <tr>
             <td>{{ forloop.counter }}</td>
-            <td>{{ procedure.client_data }}</td>
+            <td>{{ procedure.client_name }}</td>
             <td>{{ procedure.checklist.name }}</td>
             <td>{{ procedure.date_created }}</td>
-            <td>Checker Name</td>
-            <td>Returned Date</td>
-            <td>Returned Count</td>
+            <td>{{ procedure.checker.first_name }} {{ procedure.checker.last_name }}</td>
+            <td>{{ procedure.returned_date }}</td>
+            <td>{{ procedure.return_count }}</td>
             <td>
-              <a href="#">View</a> |
-              <a href="#">Edit</a> |
-              <a href="#">Delete</a> |
-              <a href="#">Submit</a>
+              {% if procedure.status == 'Submitted' %}
+                Submitted
+              {% else %}
+                <a href="{% url 'edit_procedure' %}?user_id={{ user.id }}&procedure_id={{ procedure.id }}">Edit</a> |
+                <a href="{% url 'submit_procedure' %}?user_id={{ user.id }}&procedure_id={{ procedure.id }}">Submit</a>
+              {% endif %}
             </td>
           </tr>
         {% endfor %}

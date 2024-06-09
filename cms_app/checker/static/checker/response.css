@@ -75,12 +75,17 @@
   }
   
   #procedure_table {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     background-color: white;
-    padding: 4rem;
+    padding: 1rem;
     border-radius: 12px;
     width: 60rem;
-    margin: 5rem auto;
+    margin: 10rem auto;
     box-shadow: 1px 1px 12px rgba(0, 0, 0, 0.4);
+
   }
   
   #procedure_table header {
@@ -113,7 +118,7 @@
   }
   
   #procedure_table table {
-    width: 100%;
+    width: 70%;
     border-collapse: collapse;
     margin: 1rem;
   }
@@ -122,12 +127,12 @@
   #procedure_table td {
     border: 1px solid black;
     padding: 0.5rem;
-    text-align: center;
   }
   
   #procedure_table th {
     background-color: #6305dd;
     color: white;
+    text-align: center;
   }
   
   #procedure_table tr:nth-of-type(even) {

@@ -4,6 +4,8 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.models import User, Group
 from django.core.paginator import Paginator
 from django.urls import reverse
+from django.db.models import Q
+
 
 from .models import Procedure
 from .forms import ProcedureForm
@@ -71,6 +73,7 @@ def add_procedure(request):
 @login_required
 @user_passes_test(checkers_group_required)
 def submit_procedure(request):
+    status = request.GET.get('status')
     user_id = request.GET.get('user_id')
     user = get_object_or_404(User, id=user_id)
     procedure_id= request.GET.get('procedure_id')
@@ -78,13 +81,16 @@ def submit_procedure(request):
     # Update procedure status to 'Submitted'
     procedure.status = 'Submitted'
     procedure.save()
-    return redirect(reverse('draft') + '?user_id=' + str(user.id))  # Redirect to list of procedures
+    if status == 'draft':
+        return redirect(reverse('draft') + '?user_id=' + str(user.id))  # Redirect to list of procedures
+    return redirect(reverse('returned') + '?user_id=' + str(user.id))
 
 
 @login_required
 @user_passes_test(checkers_group_required)
 def edit_procedure(request):
     user_id = request.GET.get('user_id')
+    status = request.GET.get('status')
     user = get_object_or_404(User, id=user_id)
     procedure_id = request.GET.get('procedure_id')
     procedure = get_object_or_404(Procedure, id=procedure_id)
@@ -92,7 +98,9 @@ def edit_procedure(request):
         form = ProcedureForm(request.POST, instance=procedure)
         if form.is_valid():
             form.save()
-            return redirect(reverse('draft') + '?user_id=' + str(user.id))
+            if status == 'draft':
+                return redirect(reverse('draft') + '?user_id=' + str(user.id))
+            return redirect(reverse('returned') + '?user_id=' + str(user.id))
     else:
         form = ProcedureForm(instance=procedure)
     return render(request, 'user/edit_procedure.html', {'form': form})
@@ -107,7 +115,31 @@ def delete_procedure(request):
     procedure = get_object_or_404(Procedure, id=procedure_id)
     # Delete procedure from the database
     procedure.delete()
+    return redirect(reverse('trash') + '?user_id=' + str(user.id))
+
+@login_required
+@user_passes_test(checkers_group_required)
+def temp_delete_procedure(request):
+    user_id = request.GET.get('user_id')
+    user = get_object_or_404(User, id=user_id)
+    procedure_id = request.GET.get('procedure_id')
+    procedure = get_object_or_404(Procedure, id=procedure_id)
+    # Delete procedure from the database
+    procedure.status = 'Deleted'
+    procedure.save()
     return redirect(reverse('draft') + '?user_id=' + str(user.id))
+
+@login_required
+@user_passes_test(checkers_group_required)
+def restore_procedure(request):
+    user_id = request.GET.get('user_id')
+    user = get_object_or_404(User, id=user_id)
+    procedure_id = request.GET.get('procedure_id')
+    procedure = get_object_or_404(Procedure, id=procedure_id)
+    # Delete procedure from the database
+    procedure.status = 'Pending'
+    procedure.save()
+    return redirect(reverse('trash') + '?user_id=' + str(user.id))
 
 
 @login_required
@@ -115,7 +147,11 @@ def delete_procedure(request):
 def status(request):
     user_id = request.GET.get('user_id')
     user = get_object_or_404(User, id=user_id)
-    procedures = Procedure.objects.filter(user=request.user, status='Submitted')
+    procedures = Procedure.objects.filter(
+    Q(user=request.user) &
+    Q(return_count=0) &
+    (Q(status='Submitted') | Q(status='Processing'))
+)
 
     search_client_name = request.GET.get('searchClientName')
     search_checklist = request.GET.get('searchChecklist')
@@ -136,11 +172,46 @@ def status(request):
 
 @login_required
 @user_passes_test(checkers_group_required)
+def trash(request):
+    user_id = request.GET.get('user_id')
+    user = get_object_or_404(User, id=user_id)
+    procedures = Procedure.objects.filter(user=request.user, status='Deleted')
+
+    search_client_name = request.GET.get('searchClientName')
+    search_checklist = request.GET.get('searchChecklist')
+    search_date = request.GET.get('searchDate')
+
+    if search_client_name:
+        procedures = procedures.filter(client_name__icontains=search_client_name)
+    if search_checklist:
+        procedures = procedures.filter(checklist__name__icontains=search_checklist)
+    if search_date:
+        procedures = procedures.filter(date_created__date=search_date)
+
+
+    paginator = Paginator(procedures, 10)  # Show 10 procedures per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'user/trash.html', {'page_obj': page_obj, 'user': user})
+
+@login_required
+@user_passes_test(checkers_group_required)
 def returned(request):
     user_id = request.GET.get('user_id')
     user = get_object_or_404(User, id=user_id)
-    procedures = Procedure.objects.filter(user=request.user, status='Returned')
+    procedures = Procedure.objects.filter(Q(user=request.user) & (Q(status='Returned') | Q(return_count__gt=0)) & ~Q(status='Reviewed'))
 
+    search_client_name = request.GET.get('searchClientName')
+    search_checklist = request.GET.get('searchChecklist')
+    search_date = request.GET.get('searchDate')
+
+    if search_client_name:
+        procedures = procedures.filter(client_name__icontains=search_client_name)
+    if search_checklist:
+        procedures = procedures.filter(checklist__name__icontains=search_checklist)
+    if search_date:
+        procedures = procedures.filter(date_created__date=search_date)
 
     paginator = Paginator(procedures, 10)  # Show 10 procedures per page
     page_number = request.GET.get('page')
@@ -154,6 +225,17 @@ def history(request):
     user_id = request.GET.get('user_id')
     user = get_object_or_404(User, id=user_id)
     procedures = Procedure.objects.filter(user=request.user, status='Reviewed')
+
+    search_client_name = request.GET.get('searchClientName')
+    search_checklist = request.GET.get('searchChecklist')
+    search_date = request.GET.get('searchDate')
+
+    if search_client_name:
+        procedures = procedures.filter(client_name__icontains=search_client_name)
+    if search_checklist:
+        procedures = procedures.filter(checklist__name__icontains=search_checklist)
+    if search_date:
+        procedures = procedures.filter(date_created__date=search_date)
 
     paginator = Paginator(procedures, 10)  # Show 10 procedures per page
     page_number = request.GET.get('page')

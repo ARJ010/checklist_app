@@ -8,8 +8,10 @@ class Procedure(models.Model):
     STATUS_CHOICES = [
         ('Pending', 'Pending'),
         ('Submitted', 'Submitted'),
+        ('Processing', 'Processing'),
         ('Returned', 'Returned'),
         ('Reviewed', 'Reviewed'),
+        ('Deleted', 'Deleted'),
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -24,4 +26,5 @@ class Procedure(models.Model):
     returned_date = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
-        return f"Procedure {self.id} - {self.client_data}"
+        return f"Procedure {self.id} - {self.client_name} - {self.status} - {self.return_count}"
+

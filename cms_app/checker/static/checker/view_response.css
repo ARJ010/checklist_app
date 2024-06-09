@@ -1,0 +1,31 @@
+
+
+.button-container {
+    text-align: center; /* Center-align the buttons */
+}
+
+button {
+    cursor: pointer;
+    padding: 12px 20px;
+    border-radius: 6px;
+    background-color: #1f0050; /* Keep the existing button background color */
+    color: #ffffff;
+    border: none;
+    transition: background-color 0.3s; /* Smooth transition on hover */
+}
+
+button:hover,
+button:active {
+    background-color: #320777; /* Keep the existing hover color */
+}
+
+.errorlist {
+    list-style: none;
+    padding: 0;
+    color: #680000;
+    margin-bottom: 20px; /* Add space below error messages */
+}
+
+.error {
+    font-style: italic;
+}
