@@ -103,7 +103,7 @@ def edit_procedure(request):
             return redirect(reverse('returned') + '?user_id=' + str(user.id))
     else:
         form = ProcedureForm(instance=procedure)
-    return render(request, 'user/edit_procedure.html', {'form': form})
+    return render(request, 'user/edit_procedure.html', {'form': form, "status":status})
 
 
 @login_required

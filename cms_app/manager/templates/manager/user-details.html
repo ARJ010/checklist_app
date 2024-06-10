@@ -44,4 +44,17 @@
   <a href="{% url 'delete_user' %}?user_type={{ request.GET.user_type }}&user_id={{ user.id }}">
     <button id="d2" class="delete-button" type="submit"><i class="fa-sharp fa-solid fa-trash"></i></button>
   </a>
+
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var deleteButton = document.querySelector('.delete-button');
+        deleteButton.addEventListener('click', function(event) {
+            var confirmation = confirm("Are you sure you want to delete this User?");
+            if (!confirmation) {
+                event.preventDefault();
+            }
+        });
+    });
+    </script>
 {% endblock %}

@@ -64,6 +64,17 @@
         </ul>
       </form>
     </section>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+          var deleteButton = document.querySelector('.delete-button');
+          deleteButton.addEventListener('click', function(event) {
+              var confirmation = confirm("Are you sure you want to delete the selected Users?");
+              if (!confirmation) {
+                  event.preventDefault();
+              }
+          });
+      });
+      </script>
   {% else %}
     <section id="all-users">
       {% if messages %}

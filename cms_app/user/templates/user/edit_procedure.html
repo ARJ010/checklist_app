@@ -25,7 +25,11 @@
         {{ form.as_p }}
         <div class="button-container">
           <button type="submit">Save</button>
-          <a href="{% url 'draft' %}?user_id={{user.id}}"><button type="button">Cancel</button></a>
+          {% if status == "returned" %}
+            <a href="{% url 'returned' %}?user_id={{user.id}}"><button type="button">Cancel</button></a>
+          {% else %}
+            <a href="{% url 'draft' %}?user_id={{user.id}}"><button type="button">Cancel</button></a>
+            {% endif %}
         </div>
       </form>
     </div>

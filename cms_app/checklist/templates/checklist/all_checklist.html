@@ -44,7 +44,7 @@
       <h2>Search Results for "{{ query }}"</h2>
       <ul>
         {% for checklist in all_checklist %}
-          {% include 'Checklist/includes/checklist.html' %}
+          {% include 'checklist/includes/checklist.html' %}
         {% endfor %}
       </ul>
     </section>
@@ -63,6 +63,17 @@
         </ul>
       </form>
     </section>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+          var deleteButton = document.querySelector('.delete-button');
+          deleteButton.addEventListener('click', function(event) {
+              var confirmation = confirm("Are you sure you want to delete the selected Checklists?");
+              if (!confirmation) {
+                  event.preventDefault();
+              }
+          });
+      });
+      </script>
   {% else %}
     <section id="all-users">
       {% if messages %}
@@ -76,7 +87,7 @@
       <h2>All Checklists</h2>
       <ul>
         {% for checklist in all_checklist %}
-          {% include 'Checklist/includes/checklist.html' %}
+          {% include 'checklist/includes/checklist.html' %}
         {% endfor %}
       </ul>
     </section>
