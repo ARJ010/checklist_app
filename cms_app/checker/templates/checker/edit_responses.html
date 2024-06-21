@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-  Edit Procedure Responses
+  CMS-Checker
 {% endblock %}
 
 {% block style_content %}
@@ -12,7 +12,7 @@
 {% endblock %}
 
 {% block type %}
-  <h1><a href="{% url 'checker_index' %}?user_id={{ user.id }}">CMS</a></h1>
+  <h1><a href="{% url 'checker_index' %}">CMS</a></h1>
 {% endblock %}
 
 {% block navigation %}
@@ -43,7 +43,7 @@
       {% endfor %}
       <div class="button-container">
         <button type="submit">Save Changes</button>
-        <a href="{% url 'view_response' %}?user_id={{ procedure.checker.id }}&procedure_id={{ procedure.id }}"><button type="button">Cancel</button></a>
+        <a href="{% url 'view_response' procedure.id %}"><button type="button">Cancel</button></a>
       </div>
     </form>
   </section>

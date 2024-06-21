@@ -22,15 +22,19 @@ def login_view(request):
                 else:
                     # Define group to URL mapping
                     group_redirects = {
-                        'Admin': 'manager_index',
+                        'Admin': 'manager_index',  # No args needed
                         'Checkers': 'checker_index',
                         'Users': 'user_index'
                     }
 
                     user_groups = user.groups.all()
-                    for group_name, redirect_url in group_redirects.items():
+                    for group_name, redirect_info in group_redirects.items():
                         if user_groups.filter(name=group_name).exists():
-                            return redirect(reverse(redirect_url) + '?user_id=' + str(user.id))
+                            if isinstance(redirect_info, tuple):
+                                redirect_url, args = redirect_info
+                                return redirect(reverse(redirect_url))
+                            else:
+                                return redirect(reverse(redirect_info))
 
                     # If user does not belong to any expected group, show an error or handle accordingly
                     return render(request, 'authenticate/login.html', {'form': form, 'error': 'User does not belong to any valid group.'})
@@ -39,6 +43,8 @@ def login_view(request):
                 return render(request, 'authenticate/login.html', {'form': form, 'error': 'Invalid username or password'})
 
     return render(request, 'authenticate/login.html', {'form': form})
+
+
 
 def logout_view(request):
     logout(request)

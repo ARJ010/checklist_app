@@ -1,91 +1,90 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}CMS-User{% endblock %}
+{% block title %}
+  CMS-Checker
+{% endblock %}
 
 {% block style_content %}
-<link rel="stylesheet" href="{% static 'checker/all_process.css' %}" />
-<link rel="stylesheet" href="{% static 'user/sidebar.css' %}" />
+  <link rel="stylesheet" href="{% static 'checker/all_process.css' %}" />
+  <link rel="stylesheet" href="{% static 'user/sidebar.css' %}" />
 {% endblock %}
 
 {% block type %}
-<h1><a href="{% url "checker_index" %}?user_id={{user.id}}">CMS</a></h1>
+  <h1><a href="{% url 'checker_index' %}">CMS</a></h1>
 {% endblock %}
 
 {% block navigation %}
-{% include 'checker/includes/sidemenu.html' %}
+  {% include 'checker/includes/sidemenu.html' %}
 {% endblock %}
 
 {% block sidebar %}
-{% include 'checker/includes/sidebar.html' %}
+  {% include 'checker/includes/sidebar.html' %}
 {% endblock %}
 
 {% block body_content %}
-<section id="search-container">
-  <form id="searchForm" method="GET" action="{% url 'all_procedures' %}?user_id={{user.id}}">
-    <div class="search-container">
-      <input type="hidden" name="user_id" value="{{ user.id }}">
-      <input type="text" name="searchClientName" id="searchClientName" placeholder="Search by Client Name">
-      <input type="text" name="searchChecklist" id="searchChecklist" placeholder="Search by Checklist">
-      <input type="date" name="searchDate" id="searchDate" placeholder="Search by Date">
-      <button type="submit">Search</button>
-      {% if request.GET.searchClientName or request.GET.searchChecklist or request.GET.searchDate %}
-      <a href="{% url 'all_process' %}"><button type="button" id="cancelButton">Cancel</button></a>
-      {% endif %}
-    </div>
-  </form>
-</section>
+  <section id="search-container">
+    <form id="searchForm" method="GET" action="{% url 'my_procedures' user.id %}">
+      <div class="search-container">
+        <input type="hidden" name="user_id" value="{{ user.id }}" />
+        <input type="text" name="searchClientName" id="searchClientName" placeholder="Search by Client Name" />
+        <input type="text" name="searchChecklist" id="searchChecklist" placeholder="Search by Checklist" />
+        <input type="date" name="searchDate" id="searchDate" placeholder="Search by Date" />
+        <button type="submit">Search</button>
+        {% if request.GET.searchClientName or request.GET.searchChecklist or request.GET.searchDate %}
+          <a href="{% url 'my_procedures' user.id %}"><button type="button" id="cancelButton">Cancel</button></a>
+        {% endif %}
+      </div>
+    </form>
+  </section>
 
-<section id="procedure_table">
-  <table>
-    <thead>
-      <tr>
-        <th>Sl No.</th>
-        <th>User Name</th>
-        <th>Client Name</th>
-        <th>Data Path</th>
-        <th>Checklist</th>
-        <th>Date</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody id="procedureTableBody">
-      {% for procedure in page_obj %}
-      <tr>
-        <td>{{ forloop.counter0|add:page_obj.start_index }}</td>
-        <td>{{ procedure.user.first_name }} {{ procedure.user.last_name }}</td>
-        <td>{{ procedure.client_name }}</td>
-        <td>{{ procedure.data_path }}</td>
-        <td>{{ procedure.checklist.name }}</td>
-        <td>{{ procedure.date_created }}</td>
-        <td> 
-          <a href="{% url 'view_response' %}?user_id={{ user.id }}&procedure_id={{ procedure.id }}&status=my_process">Response</a> |
-           <a href="{% url 'return_procedure' %}?user_id={{ user.id }}&procedure_id={{ procedure.id }}&status=my_process">Return</a> | 
-           <a href="{% url 'final_submit' %}?user_id={{ user.id }}&procedure_id={{ procedure.id }}&status=my_process">Final Confirm</a> 
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <section id="procedure_table">
+    <table>
+      <thead>
+        <tr>
+          <th>Sl No.</th>
+          <th>User Name</th>
+          <th>Client Name</th>
+          <th>Data Path</th>
+          <th>Checklist</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="procedureTableBody">
+        {% for procedure in page_obj %}
+          <tr>
+            <td>{{ forloop.counter0|add:page_obj.start_index }}</td>
+            <td>{{ procedure.user.first_name }} {{ procedure.user.last_name }}</td>
+            <td>{{ procedure.client_name }}</td>
+            <td>{{ procedure.data_path }}</td>
+            <td>{{ procedure.checklist.name }}</td>
+            <td>{{ procedure.date_created }}</td>
+            <td>
+              <a href="{% url 'view_response' procedure.id %}">Response</a> |
+              <a href="{% url 'return_procedure' procedure.id %}">Return</a> |
+              <a href="{% url 'final_submit' procedure.id %}">Final Confirm</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
 
-  <!-- Pagination controls -->
-  <div class="pagination">
-    <span class="step-links">
-      {% if page_obj.has_previous %}
-        <a href="?page=1&user_id={{ user.id }}">&laquo; first</a>
-        <a href="?page={{ page_obj.previous_page_number }}&user_id={{ user.id }}">previous</a>
-      {% endif %}
+    <!-- Pagination controls -->
+    <div class="pagination">
+      <span class="step-links">
+        {% if page_obj.has_previous %}
+          <a href="?page=1&user_id={{ user.id }}">&laquo; first</a>
+          <a href="?page={{ page_obj.previous_page_number }}&user_id={{ user.id }}">previous</a>
+        {% endif %}
 
-      <span class="current">
-        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        <span class="current">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</span>
+
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}&user_id={{ user.id }}">next</a>
+          <a href="?page={{ page_obj.paginator.num_pages }}&user_id={{ user.id }}">last &raquo;</a>
+        {% endif %}
       </span>
-
-      {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}&user_id={{ user.id }}">next</a>
-        <a href="?page={{ page_obj.paginator.num_pages }}&user_id={{ user.id }}">last &raquo;</a>
-      {% endif %}
-    </span>
-  </div>
-</section>
-
+    </div>
+  </section>
 {% endblock %}

@@ -4,7 +4,7 @@ from . import views
 
 
 urlpatterns = [
-    path("", views.my_protected_view, name="user_index"),
+    path('', views.user_index, name='user_index'),
     path('draft/', views.draft, name='draft'),
     path('add/', views.add_procedure, name='add_procedure'),
     path('submit/', views.submit_procedure, name='submit_procedure'),

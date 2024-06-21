@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-  CMS-User
+  CMS-Checker
 {% endblock %}
 
 {% block style_content %}
@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block type %}
-<h1><a href="{% url "checker_index" %}?user_id={{user.id}}">CMS</a></h1>
+  <h1><a href="{% url 'checker_index' %}">CMS</a></h1>
 {% endblock %}
 
 {% block navigation %}
@@ -23,20 +23,20 @@
 {% endblock %}
 
 {% block body_content %}
-<section id="search-container">
-  <form id="searchForm" method="GET" action="{% url 'all_procedures' %}?user_id={{user.id}}">
-    <div class="search-container">
-      <input type="hidden" name="user_id" value="{{ user.id }}">
-      <input type="text" name="searchClientName" id="searchClientName" placeholder="Search by Client Name">
-      <input type="text" name="searchChecklist" id="searchChecklist" placeholder="Search by Checklist">
-      <input type="date" name="searchDate" id="searchDate" placeholder="Search by Date">
-      <button type="submit">Search</button>
-      {% if request.GET.searchClientName or request.GET.searchChecklist or request.GET.searchDate %}
-      <a href="{% url 'all_process' %}"><button type="button" id="cancelButton">Cancel</button></a>
-      {% endif %}
-    </div>
-  </form>
-</section>
+  <section id="search-container">
+    <form id="searchForm" method="GET" action="{% url 'checkers_returned' user.id %}">
+      <div class="search-container">
+        <input type="hidden" name="user_id" value="{{ user.id }}" />
+        <input type="text" name="searchClientName" id="searchClientName" placeholder="Search by Client Name" />
+        <input type="text" name="searchChecklist" id="searchChecklist" placeholder="Search by Checklist" />
+        <input type="date" name="searchDate" id="searchDate" placeholder="Search by Date" />
+        <button type="submit">Search</button>
+        {% if request.GET.searchClientName or request.GET.searchChecklist or request.GET.searchDate %}
+          <a href="{% url 'checkers_returned' user.id %}"><button type="button" id="cancelButton">Cancel</button></a>
+        {% endif %}
+      </div>
+    </form>
+  </section>
   <section id="procedure_table">
     <table>
       <thead>
@@ -63,11 +63,11 @@
             <td>{{ procedure.return_count }}</td>
             <td>
               {% if procedure.status == 'Submitted' %}
-              <a href="{% url 'view_response' %}?user_id={{ user.id }}&procedure_id={{ procedure.id }}">Response</a> | 
-              <a href="{% url 'return_procedure' %}?user_id={{ user.id }}&procedure_id={{ procedure.id }}">Return</a> | 
-              <a href="{% url 'final_submit' %}?user_id={{ user.id }}&procedure_id={{ procedure.id }}">Final Confirm</a> 
+                <a href="{% url 'view_response' procedure.id %}">Response</a> |
+                <a href="{% url 'return_procedure' procedure.id %}">Return</a> |
+                <a href="{% url 'final_submit' procedure.id %}">Final Confirm</a>
               {% else %}
-              Returned
+                Returned
               {% endif %}
             </td>
           </tr>

@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block type %}
-  <h1><a href="{% url 'user_index' %}?user_id={{ user.id }}">CMS</a></h1>
+  <h1><a href="{% url 'user_index' %}">CMS</a></h1>
 {% endblock %}
 
 {% block body_content %}
@@ -25,7 +25,7 @@
         {{ form.as_p }}
         <div class="button-container">
           <button type="submit">Create Procedure</button>
-          <a href="{% url 'draft' %}?user_id={{user.id}}"><button type="button">Cancel</button></a>
+          <a href="{% url 'draft' %}"><button type="button">Cancel</button></a>
         </div>
       </form>
     </div>

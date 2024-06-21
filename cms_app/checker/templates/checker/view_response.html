@@ -4,7 +4,7 @@
 <!-- checker/view_response.html -->
 
 {% block title %}
-  Procedure Responses
+  CMS-Checker
 {% endblock %}
 
 {% block style_content %}
@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block type %}
-  <h1><a href="{% url 'checker_index' %}?user_id={{ user.id }}">CMS</a></h1>
+  <h1><a href="{% url 'checker_index' %}">CMS</a></h1>
 {% endblock %}
 
 {% block navigation %}
@@ -49,11 +49,11 @@
     </table>
     <div class="button-container">
       {% if procedure.return_count == 0 %}
-        <a href="{% url 'my_procedures' %}?user_id={{ procedure.checker.id }}"><button>Go Back</button></a>
+        <a href="{% url 'my_procedures' procedure.checker.id %}"><button>Go Back</button></a>
       {% else %}
-        <a href="{% url 'checkers_returned' %}?user_id={{ procedure.checker.id }}"><button>Go Back</button></a>
+        <a href="{% url 'checkers_returned' procedure.checker.id %}"><button>Go Back</button></a>
       {% endif %}
-      <a href="{% url 'edit_response' %}?user_id={{ procedure.checker.id }}&procedure_id={{ procedure.id }}"><button>Edit</button></a>
+      <a href="{% url 'edit_response' procedure.id %}"><button>Edit</button></a>
     </div>
   </section>
 {% endblock %}

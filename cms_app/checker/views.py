@@ -24,16 +24,14 @@ def checkers_group_required(user):
 @login_required
 @user_passes_test(checkers_group_required)
 def my_protected_view(request):
-    user_id = request.GET.get('user_id')
-    user = get_object_or_404(User, id=user_id)
+    user = request.user
     return render(request, 'checker/index.html',{'user':user})
 
 
 @login_required
 @user_passes_test(checkers_group_required)
 def all_procedures(request):
-    user_id = request.GET.get('user_id')   
-    user = get_object_or_404(User, id=user_id)
+    user = request.user
     procedures = Procedure.objects.filter(status='Submitted', return_count=0)
 
     search_client_name = request.GET.get('searchClientName')
@@ -57,14 +55,12 @@ def all_procedures(request):
 
 @login_required
 @user_passes_test(checkers_group_required)
-def proceed_procedure(request):
-    procedure_id = request.GET.get('procedure_id')
-    user_id = request.GET.get('user_id')
+def proceed_procedure(request, procedure_id):
 
     procedure = Procedure.objects.get(id=procedure_id)
     procedure.status = 'Processing'
     
-    checker_user = User.objects.get(id=user_id)
+    checker_user = request.user
     procedure.checker = checker_user
     
     procedure.save()
@@ -88,19 +84,18 @@ def proceed_procedure(request):
                 response.save()
 
             # Redirect to a confirmation page or another relevant page
-            return redirect(reverse('my_procedures') + '?user_id=' + str(user_id))
+            return redirect('my_procedures')
     else:
         # Initialize form with question text
         initial_data = {f"question_{question.pk}": f"{question.question_text}?" for question in checklist_questions}
         form = ProcedureForm(initial=initial_data, checklist_questions=checklist_questions)  # Pass checklist_questions to form
 
-    return render(request, 'checker/procedureform.html', {'form': form , 'user_id': user_id, 'procedure_id': procedure_id, 'checklist_name': checklist})
+    return render(request, 'checker/procedureform.html', {'form': form , 'user': checker_user, 'procedure_id': procedure_id, 'checklist_name': checklist})
 
 
 @login_required
 @user_passes_test(checkers_group_required)
-def view_response(request):
-    procedure_id = request.GET.get('procedure_id')
+def view_response(request, procedure_id):
     procedure = get_object_or_404(Procedure, id=procedure_id)
     responses = ProcedureResponse.objects.filter(procedure=procedure)
 
@@ -110,21 +105,18 @@ def view_response(request):
 
 @login_required
 @user_passes_test(checkers_group_required)
-def cancel_procedure(request):
-    user_id = request.GET.get('user_id')
+def cancel_procedure(request, user_id, procedure_id):
     user = get_object_or_404(User, id=user_id)
-    procedure_id= request.GET.get('procedure_id')
     procedure = get_object_or_404(Procedure, id=procedure_id)
     # Update procedure status to 'Submitted'
     procedure.status = 'Submitted'
     procedure.save()
-    return redirect(reverse('all_procedures') + '?user_id=' + str(user_id))  # Redirect to list of procedures
+    return redirect(reverse('all_procedures', args=[user.id]))  # Redirect to list of procedures
 
 
 @login_required
 @user_passes_test(checkers_group_required)
-def my_procedures(request):
-    user_id = request.GET.get('user_id')   
+def my_procedures(request, user_id):
     user = get_object_or_404(User, id=user_id)
     procedures = Procedure.objects.filter(status='Processing', checker=user)
 
@@ -150,8 +142,7 @@ def my_procedures(request):
 
 @login_required
 @user_passes_test(checkers_group_required)
-def edit_responses(request):
-    procedure_id = request.GET.get('procedure_id')
+def edit_responses(request, procedure_id):
     procedure = get_object_or_404(Procedure, id=procedure_id)
     responses = ProcedureResponse.objects.filter(procedure=procedure)
     
@@ -162,7 +153,7 @@ def edit_responses(request):
         formset = ProcedureResponseFormSet(request.POST, queryset=responses)
         if formset.is_valid():
             formset.save()
-            return redirect(reverse('view_response') + '?procedure_id=' + str(procedure_id))
+            return redirect(reverse('view_response', args=[procedure_id]))
     
     return render(request, 'checker/edit_responses.html', {'procedure': procedure, 'formset': formset})
 
@@ -171,23 +162,21 @@ from django.utils import timezone
 
 @login_required
 @user_passes_test(checkers_group_required)
-def return_procedure(request):
+def return_procedure(request, procedure_id):
     status = request.GET.get('status')
-    procedure_id = request.GET.get('procedure_id')
     procedure = get_object_or_404(Procedure, id=procedure_id)
     procedure.return_count += 1
     procedure.returned_date = timezone.now()
     procedure.status = 'Returned'
     procedure.save()
     if status == 'my_process':
-        return redirect(reverse('my_procedures') + '?procedure_id=' + str(procedure_id) + '&user_id=' + str(procedure.checker.id))
-    return redirect(reverse('checkers_returned') + '?procedure_id=' + str(procedure_id) + '&user_id=' + str(procedure.checker.id))
+        return redirect(reverse('my_procedures', args=[procedure.checker.id]))
+    return redirect(reverse('checkers_returned', args=[procedure.checker.id]))
 
 
 @login_required
 @user_passes_test(checkers_group_required)
-def checkers_returned(request):
-    user_id = request.GET.get('user_id')   
+def checkers_returned(request, user_id):
     user = get_object_or_404(User, id=user_id)
     procedures = Procedure.objects.filter(
     Q(checker=user) &
@@ -216,22 +205,19 @@ def checkers_returned(request):
 
 @login_required
 @user_passes_test(checkers_group_required)
-def final_submit(request):
-    status = request.GET.get('status')
-    procedure_id = request.GET.get('procedure_id')
+def final_submit(request, procedure_id):
     procedure = get_object_or_404(Procedure, id=procedure_id)
     procedure.final_submission_date = timezone.now()
     procedure.status = 'Reviewed'
     procedure.save()
-    if status == 'my_process':
-        return redirect(reverse('my_procedures') + '?procedure_id=' + str(procedure_id) + '&user_id=' + str(procedure.checker.id))
-    return redirect(reverse('checkers_returned') + '?procedure_id=' + str(procedure_id) + '&user_id=' + str(procedure.checker.id))
+    if procedure.return_count == 0:
+        return redirect(reverse('my_procedures', args=[procedure.checker.id]))
+    return redirect(reverse('checkers_returned', args=[procedure.checker.id]))
 
 
 @login_required
 @user_passes_test(checkers_group_required)
-def checkers_history(request):
-    user_id = request.GET.get('user_id')   
+def checkers_history(request, user_id):
     user = get_object_or_404(User, id=user_id)
     procedures = Procedure.objects.filter(
     Q(checker=user) & Q(status='Reviewed')

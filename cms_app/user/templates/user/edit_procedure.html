@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block type %}
-  <h1><a href="{% url 'user_index' %}?user_id={{ user.id }}">CMS</a></h1>
+  <h1><a href="{% url 'user_index' %}">CMS</a></h1>
 {% endblock %}
 
 {% block body_content %}
@@ -25,11 +25,11 @@
         {{ form.as_p }}
         <div class="button-container">
           <button type="submit">Save</button>
-          {% if status == "returned" %}
-            <a href="{% url 'returned' %}?user_id={{user.id}}"><button type="button">Cancel</button></a>
+          {% if status == 'returned' %}
+            <a href="{% url 'returned' %}"><button type="button">Cancel</button></a>
           {% else %}
-            <a href="{% url 'draft' %}?user_id={{user.id}}"><button type="button">Cancel</button></a>
-            {% endif %}
+            <a href="{% url 'draft' %}"><button type="button">Cancel</button></a>
+          {% endif %}
         </div>
       </form>
     </div>

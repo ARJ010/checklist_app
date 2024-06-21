@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from .models import Employee
+from django.contrib.auth.hashers import make_password
 
 class RegisterForm(forms.Form):
     username = forms.CharField(label='Username', max_length=100, error_messages={
@@ -21,6 +22,28 @@ class RegisterForm(forms.Form):
             raise forms.ValidationError("This username is already taken. Please choose a different one.")
         return username
 
+class ChangePasswordForm(forms.ModelForm):
+    new_password = forms.CharField(label='New Password', widget=forms.PasswordInput)
+    confirm_password = forms.CharField(label='Confirm Password', widget=forms.PasswordInput)
+
+    class Meta:
+        model = User
+        fields = ['new_password']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        new_password = cleaned_data.get('new_password')
+        confirm_password = cleaned_data.get('confirm_password')
+
+        if new_password and new_password != confirm_password:
+            self.add_error('confirm_password', "Passwords do not match")
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.password = make_password(self.cleaned_data['new_password'])
+        if commit:
+            user.save()
+        return user
 
 class UserEmployeeForm(forms.ModelForm):
     class Meta:

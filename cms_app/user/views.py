@@ -19,20 +19,15 @@ def checkers_group_required(user):
 
 @login_required
 @user_passes_test(checkers_group_required)
-def my_protected_view(request):
-    user_id = request.GET.get('user_id')
-    user = get_object_or_404(User, id=user_id)
+def user_index(request):
+    user = request.user
     return render(request, 'user/index.html',{'user':user})
 
 
 @login_required
 @user_passes_test(checkers_group_required)
 def draft(request):
-    user_id = request.GET.get('user_id')
-    if user_id != str(request.user.id):
-        return redirect('unauthorized')
-    
-    user = get_object_or_404(User, id=user_id)
+    user = request.user
     procedures = Procedure.objects.filter(user=user, status='Pending')
 
     search_client_name = request.GET.get('searchClientName')
@@ -57,15 +52,14 @@ def draft(request):
 @login_required
 @user_passes_test(checkers_group_required)
 def add_procedure(request):
-    user_id = request.GET.get('user_id')
-    user = get_object_or_404(User, id=user_id)
+    user = request.user
     if request.method == 'POST':
         form = ProcedureForm(request.POST)
         if form.is_valid():
             procedure = form.save(commit=False)
             procedure.user = user
             procedure.save()
-            return redirect(reverse('draft') + '?user_id=' + str(user.id))
+            return redirect('draft')
     else:
         form = ProcedureForm()
     return render(request, 'user/add_procedure.html', {'form': form, 'user': user})
@@ -74,24 +68,22 @@ def add_procedure(request):
 @user_passes_test(checkers_group_required)
 def submit_procedure(request):
     status = request.GET.get('status')
-    user_id = request.GET.get('user_id')
-    user = get_object_or_404(User, id=user_id)
+    user = request.user
     procedure_id= request.GET.get('procedure_id')
     procedure = get_object_or_404(Procedure, id=procedure_id)
     # Update procedure status to 'Submitted'
     procedure.status = 'Submitted'
     procedure.save()
     if status == 'draft':
-        return redirect(reverse('draft') + '?user_id=' + str(user.id))  # Redirect to list of procedures
-    return redirect(reverse('returned') + '?user_id=' + str(user.id))
+        return redirect('draft')  # Redirect to list of procedures
+    return redirect('returned')
 
 
 @login_required
 @user_passes_test(checkers_group_required)
 def edit_procedure(request):
-    user_id = request.GET.get('user_id')
+    user = request.user
     status = request.GET.get('status')
-    user = get_object_or_404(User, id=user_id)
     procedure_id = request.GET.get('procedure_id')
     procedure = get_object_or_404(Procedure, id=procedure_id)
     if request.method == 'POST':
@@ -99,8 +91,8 @@ def edit_procedure(request):
         if form.is_valid():
             form.save()
             if status == 'draft':
-                return redirect(reverse('draft') + '?user_id=' + str(user.id))
-            return redirect(reverse('returned') + '?user_id=' + str(user.id))
+                return redirect('draft')
+            return redirect('returned')
     else:
         form = ProcedureForm(instance=procedure)
     return render(request, 'user/edit_procedure.html', {'form': form, "status":status})
@@ -109,44 +101,39 @@ def edit_procedure(request):
 @login_required
 @user_passes_test(checkers_group_required)
 def delete_procedure(request):
-    user_id = request.GET.get('user_id')
-    user = get_object_or_404(User, id=user_id)
+    user = request.user
     procedure_id = request.GET.get('procedure_id')
     procedure = get_object_or_404(Procedure, id=procedure_id)
     # Delete procedure from the database
     procedure.delete()
-    return redirect(reverse('trash') + '?user_id=' + str(user.id))
+    return redirect('trash')
 
 @login_required
 @user_passes_test(checkers_group_required)
 def temp_delete_procedure(request):
-    user_id = request.GET.get('user_id')
-    user = get_object_or_404(User, id=user_id)
+    user = request.user
     procedure_id = request.GET.get('procedure_id')
     procedure = get_object_or_404(Procedure, id=procedure_id)
     # Delete procedure from the database
     procedure.status = 'Deleted'
     procedure.save()
-    return redirect(reverse('draft') + '?user_id=' + str(user.id))
+    return redirect('draft')
 
 @login_required
 @user_passes_test(checkers_group_required)
 def restore_procedure(request):
-    user_id = request.GET.get('user_id')
-    user = get_object_or_404(User, id=user_id)
+    user = request.user
     procedure_id = request.GET.get('procedure_id')
     procedure = get_object_or_404(Procedure, id=procedure_id)
     # Delete procedure from the database
     procedure.status = 'Pending'
     procedure.save()
-    return redirect(reverse('trash') + '?user_id=' + str(user.id))
-
+    return redirect('trash')
 
 @login_required
 @user_passes_test(checkers_group_required)
 def status(request):
-    user_id = request.GET.get('user_id')
-    user = get_object_or_404(User, id=user_id)
+    user = request.user
     procedures = Procedure.objects.filter(
     Q(user=request.user) &
     Q(return_count=0) &
@@ -173,8 +160,7 @@ def status(request):
 @login_required
 @user_passes_test(checkers_group_required)
 def trash(request):
-    user_id = request.GET.get('user_id')
-    user = get_object_or_404(User, id=user_id)
+    user = request.user
     procedures = Procedure.objects.filter(user=request.user, status='Deleted')
 
     search_client_name = request.GET.get('searchClientName')
@@ -198,8 +184,7 @@ def trash(request):
 @login_required
 @user_passes_test(checkers_group_required)
 def returned(request):
-    user_id = request.GET.get('user_id')
-    user = get_object_or_404(User, id=user_id)
+    user = request.user
     procedures = Procedure.objects.filter(Q(user=request.user) & (Q(status='Returned') | Q(return_count__gt=0)) & ~Q(status='Reviewed'))
 
     search_client_name = request.GET.get('searchClientName')
@@ -222,8 +207,7 @@ def returned(request):
 @login_required
 @user_passes_test(checkers_group_required)
 def history(request):
-    user_id = request.GET.get('user_id')
-    user = get_object_or_404(User, id=user_id)
+    user = request.user
     procedures = Procedure.objects.filter(user=request.user, status='Reviewed')
 
     search_client_name = request.GET.get('searchClientName')

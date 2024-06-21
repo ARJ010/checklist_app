@@ -36,6 +36,9 @@
     <p>
       <a href="{% url 'edit_user_profile' %}?user_type={{ request.GET.user_type }}&user_id={{ user.id }}"><button>Edit</button></a>
     </p>
+    <p>
+      <a href="{% url 'change_password' %}?user_type={{ request.GET.user_type }}&user_id={{ user.id }}"><button>Change Password</button></a>
+    </p>
   </div>
 
   <a href="{% url 'delete_user' %}?user_type={{ request.GET.user_type }}&user_id={{ user.id }}">

@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-qxjof%#q%u@=(_%@#g+e-3gqt8rx=0f%p#11(^e5@0e__5i1e!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -55,6 +55,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
 
 ROOT_URLCONF = 'cms_app.urls'
 
@@ -140,3 +141,6 @@ LOGOUT_REDIRECT_URL = 'login'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+print("ALLOWED_HOSTS:", ALLOWED_HOSTS) 

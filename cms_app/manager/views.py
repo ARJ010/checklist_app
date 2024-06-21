@@ -7,7 +7,7 @@ from django.http import HttpResponseBadRequest
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User, Group
-from .forms import RegisterForm, UserProfileForm, UserEmployeeForm
+from .forms import RegisterForm, UserProfileForm, UserEmployeeForm, ChangePasswordForm
 from .models import Employee
 
 logger = logging.getLogger(__name__)
@@ -185,6 +185,10 @@ def edit_user_profile(request):
             user_form.save()
             profile_form.save()
 
+            employee.first_name = user.first_name
+            employee.last_name = user.last_name
+            employee.save()
+
             # Check if the image field has been cleared
             if 'user_photo' in profile_form.cleaned_data and not profile_form.cleaned_data['user_photo']:
                 print("User photo cleared, deleting old image.")
@@ -205,3 +209,21 @@ def edit_user_profile(request):
         user_form = UserEmployeeForm(instance=user)
         profile_form = UserProfileForm(instance=employee)
     return render(request, 'manager/edit_profile.html', {'user_form': user_form, 'profile_form': profile_form})
+
+
+@login_required
+@user_passes_test(employee_group_required)
+def change_password(request):
+    user_id = request.GET.get('user_id')
+    user = get_object_or_404(User, id=user_id)
+
+    if request.method == 'POST':
+        form = ChangePasswordForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            # messages.success(request, 'Password has been updated!')
+            return redirect(reverse('user_details') + '?user_id=' + str(user.id))
+    else:
+        form = ChangePasswordForm(instance=user)
+    
+    return render(request, 'manager/change_password.html', {'form': form})

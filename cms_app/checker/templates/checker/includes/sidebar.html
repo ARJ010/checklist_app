@@ -1,16 +1,16 @@
 <aside id="sidebar">
   <ul>
     <li>
-      <a href="{% url 'all_procedures' %}?user_id={{user.id}}">All Process</a>
+      <a href="{% url 'all_procedures' user.id %}">All Process</a>
     </li>
     <li>
-      <a href="{% url 'my_procedures' %}?user_id={{user.id}}">My Process</a>
+      <a href="{% url 'my_procedures' user.id %}">My Process</a>
     </li>
     <li>
-      <a href="{% url 'checkers_returned' %}?user_id={{user.id}}">Returned</a>
+      <a href="{% url 'checkers_returned' user.id %}">Returned</a>
     </li>
     <li>
-      <a href="{% url 'checkers_history' %}?user_id={{user.id}}">History</a>
+      <a href="{% url 'checkers_history' user.id %}">History</a>
     </li>
   </ul>
 </aside>
