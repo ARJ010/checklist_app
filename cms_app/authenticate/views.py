@@ -49,3 +49,13 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
+
+
+from django.http import HttpResponse
+import logging
+
+logger = logging.getLogger(__name__)
+
+def test_view(request):
+    logger.debug("Test view accessed")
+    return HttpResponse("Logging test")

@@ -36,6 +36,8 @@
         <tr>
           <th>Question</th>
           <th>Response</th>
+          <th>Remarks</th>
+          <th>Remark Response</th>
         </tr>
       </thead>
       <tbody>
@@ -43,13 +45,15 @@
           <tr>
             <td>{{ response.question.question_text }}</td>
             <td>{{ response.response }}</td>
+            <td>{{ response.remarks }}</td>
+            <td>{{ response.user_response }}</td>
           </tr>
         {% endfor %}
       </tbody>
     </table>
     <div class="button-container">
       {% if procedure.return_count == 0 %}
-        <a href="{% url 'my_procedures' procedure.checker.id %}"><button>Go Back</button></a>
+        <a href="{% url 'my_procedures' %}"><button>Go Back</button></a>
       {% else %}
         <a href="{% url 'checkers_returned' procedure.checker.id %}"><button>Go Back</button></a>
       {% endif %}

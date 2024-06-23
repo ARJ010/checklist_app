@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-  All Users
+  User Details
 {% endblock %}
 
 {% block type %}
@@ -40,6 +40,12 @@
       <a href="{% url 'change_password' %}?user_type={{ request.GET.user_type }}&user_id={{ user.id }}"><button>Change Password</button></a>
     </p>
   </div>
+    <div class="card">
+    <h2>Performance Details</h2>
+    <p><strong>Total Procedures Created:</strong> {{ total_created }}</p>
+    <p><strong>Total Procedures Reviewed:</strong> {{ total_reviewed }}</p>
+    <p><strong>Average Review Time:</strong> {{ average_review_time }}</p>
+  </div>
 
   <a href="{% url 'delete_user' %}?user_type={{ request.GET.user_type }}&user_id={{ user.id }}">
     <input id="d1" class="delete-button" type="button" value="Delete Selected Users" />
@@ -47,7 +53,6 @@
   <a href="{% url 'delete_user' %}?user_type={{ request.GET.user_type }}&user_id={{ user.id }}">
     <button id="d2" class="delete-button" type="submit"><i class="fa-sharp fa-solid fa-trash"></i></button>
   </a>
-
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -59,5 +64,5 @@
             }
         });
     });
-    </script>
+  </script>
 {% endblock %}

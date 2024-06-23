@@ -1,3 +1,5 @@
+# user/views.py
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import Group
@@ -5,27 +7,31 @@ from django.contrib.auth.models import User, Group
 from django.core.paginator import Paginator
 from django.urls import reverse
 from django.db.models import Q
+from checker.models import  ProcedureResponse
+
+from django.forms import modelformset_factory
+
 
 
 from .models import Procedure
-from .forms import ProcedureForm
+from .forms import ProcedureForm, UserProcedureResponseForm
 
 
 # Create your views here.    
 
-def checkers_group_required(user):
+def users_group_required(user):
     """Check if the user belongs to the 'Checkers' group."""
     return user.groups.filter(name='Users').exists()
 
 @login_required
-@user_passes_test(checkers_group_required)
+@user_passes_test(users_group_required)
 def user_index(request):
     user = request.user
     return render(request, 'user/index.html',{'user':user})
 
 
 @login_required
-@user_passes_test(checkers_group_required)
+@user_passes_test(users_group_required)
 def draft(request):
     user = request.user
     procedures = Procedure.objects.filter(user=user, status='Pending')
@@ -50,7 +56,7 @@ def draft(request):
 
 
 @login_required
-@user_passes_test(checkers_group_required)
+@user_passes_test(users_group_required)
 def add_procedure(request):
     user = request.user
     if request.method == 'POST':
@@ -65,7 +71,7 @@ def add_procedure(request):
     return render(request, 'user/add_procedure.html', {'form': form, 'user': user})
 
 @login_required
-@user_passes_test(checkers_group_required)
+@user_passes_test(users_group_required)
 def submit_procedure(request):
     status = request.GET.get('status')
     user = request.user
@@ -80,7 +86,7 @@ def submit_procedure(request):
 
 
 @login_required
-@user_passes_test(checkers_group_required)
+@user_passes_test(users_group_required)
 def edit_procedure(request):
     user = request.user
     status = request.GET.get('status')
@@ -99,7 +105,7 @@ def edit_procedure(request):
 
 
 @login_required
-@user_passes_test(checkers_group_required)
+@user_passes_test(users_group_required)
 def delete_procedure(request):
     user = request.user
     procedure_id = request.GET.get('procedure_id')
@@ -109,7 +115,7 @@ def delete_procedure(request):
     return redirect('trash')
 
 @login_required
-@user_passes_test(checkers_group_required)
+@user_passes_test(users_group_required)
 def temp_delete_procedure(request):
     user = request.user
     procedure_id = request.GET.get('procedure_id')
@@ -120,7 +126,7 @@ def temp_delete_procedure(request):
     return redirect('draft')
 
 @login_required
-@user_passes_test(checkers_group_required)
+@user_passes_test(users_group_required)
 def restore_procedure(request):
     user = request.user
     procedure_id = request.GET.get('procedure_id')
@@ -131,7 +137,7 @@ def restore_procedure(request):
     return redirect('trash')
 
 @login_required
-@user_passes_test(checkers_group_required)
+@user_passes_test(users_group_required)
 def status(request):
     user = request.user
     procedures = Procedure.objects.filter(
@@ -158,7 +164,7 @@ def status(request):
     return render(request, 'user/status.html', {'page_obj': page_obj, 'user': user})
 
 @login_required
-@user_passes_test(checkers_group_required)
+@user_passes_test(users_group_required)
 def trash(request):
     user = request.user
     procedures = Procedure.objects.filter(user=request.user, status='Deleted')
@@ -182,7 +188,7 @@ def trash(request):
     return render(request, 'user/trash.html', {'page_obj': page_obj, 'user': user})
 
 @login_required
-@user_passes_test(checkers_group_required)
+@user_passes_test(users_group_required)
 def returned(request):
     user = request.user
     procedures = Procedure.objects.filter(Q(user=request.user) & (Q(status='Returned') | Q(return_count__gt=0)) & ~Q(status='Reviewed'))
@@ -205,7 +211,7 @@ def returned(request):
     return render(request, 'user/returned.html', {'page_obj': page_obj, 'user': user})
 
 @login_required
-@user_passes_test(checkers_group_required)
+@user_passes_test(users_group_required)
 def history(request):
     user = request.user
     procedures = Procedure.objects.filter(user=request.user, status='Reviewed')
@@ -226,3 +232,39 @@ def history(request):
     page_obj = paginator.get_page(page_number)
 
     return render(request, 'user/history.html', {'page_obj': page_obj, 'user': user})
+
+
+@login_required
+@user_passes_test(users_group_required)
+def user_view_responses(request, procedure_id):
+    procedure = get_object_or_404(Procedure, id=procedure_id)
+    responses = ProcedureResponse.objects.filter(procedure=procedure)
+    
+    return render(request, 'user/view_response.html', {
+        'procedure': procedure,
+        'responses': responses
+    })
+
+@login_required
+@user_passes_test(users_group_required)
+def user_edit_responses(request, procedure_id):
+    procedure = get_object_or_404(Procedure, id=procedure_id)
+    responses = ProcedureResponse.objects.filter(procedure=procedure)
+    
+    ProcedureResponseFormSet = modelformset_factory(
+        ProcedureResponse, 
+        form=UserProcedureResponseForm,  # Use the custom form here
+        extra=0
+    )
+    formset = ProcedureResponseFormSet(queryset=responses)
+    
+    if request.method == 'POST':
+        formset = ProcedureResponseFormSet(request.POST, queryset=responses)
+        if formset.is_valid():
+            formset.save()
+            return redirect(reverse('user_view_responses', args=[procedure_id]))
+    
+    return render(request, 'user/edit_responses.html', {
+        'procedure': procedure,
+        'formset': formset
+    })

@@ -24,7 +24,7 @@
 
 {% block body_content %}
   <section id="search-container">
-    <form id="searchForm" method="GET" action="{% url 'my_procedures' user.id %}">
+    <form id="searchForm" method="GET" action="{% url 'my_procedures' %}">
       <div class="search-container">
         <input type="hidden" name="user_id" value="{{ user.id }}" />
         <input type="text" name="searchClientName" id="searchClientName" placeholder="Search by Client Name" />
@@ -32,7 +32,7 @@
         <input type="date" name="searchDate" id="searchDate" placeholder="Search by Date" />
         <button type="submit">Search</button>
         {% if request.GET.searchClientName or request.GET.searchChecklist or request.GET.searchDate %}
-          <a href="{% url 'my_procedures' user.id %}"><button type="button" id="cancelButton">Cancel</button></a>
+          <a href="{% url 'my_procedures' %}"><button type="button" id="cancelButton">Cancel</button></a>
         {% endif %}
       </div>
     </form>

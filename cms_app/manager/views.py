@@ -9,6 +9,10 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User, Group
 from .forms import RegisterForm, UserProfileForm, UserEmployeeForm, ChangePasswordForm
 from .models import Employee
+from user.models import Procedure
+from django.db.models import Count, Avg, F, DurationField
+from django.utils import timezone
+from datetime import timedelta
 
 logger = logging.getLogger(__name__)
 
@@ -92,8 +96,38 @@ def all_users(request):
 @user_passes_test(employee_group_required)
 def user_details(request):
     user_id = request.GET.get('user_id')
-    user = User.objects.get(id=user_id)
-    return render(request, 'manager/user-details.html', {'user': user})
+    user = get_object_or_404(User, id=user_id)
+
+    # Get procedures created by the user
+    created_procedures = Procedure.objects.filter(user=user)
+    total_created = created_procedures.count()
+
+    # Get procedures reviewed by the user (as a checker)
+    reviewed_procedures = Procedure.objects.filter(checker=user)
+    total_reviewed = reviewed_procedures.count()
+
+    # Calculate average time to review a procedure
+    average_review_time = reviewed_procedures.aggregate(
+        avg_time=Avg(F('final_submission_date') - F('date_created'), output_field=DurationField())
+    )['avg_time']
+
+    # Format the average_review_time into a human-readable string
+    def format_timedelta(td):
+        if td is None:
+            return "N/A"
+        days = td.days
+        hours, remainder = divmod(td.seconds, 3600)
+        minutes, seconds = divmod(remainder, 60)
+        return f"{days}d {hours}h {minutes}m {seconds}s"
+
+    context = {
+        'user': user,
+        'total_created': total_created,
+        'total_reviewed': total_reviewed,
+        'average_review_time': format_timedelta(average_review_time),
+    }
+
+    return render(request, 'manager/user-details.html', context)
 
 
 @login_required

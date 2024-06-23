@@ -29,7 +29,7 @@
         <input type="hidden" name="user_type" value="{{ request.GET.user_type }}" />
         <div class="button-container">
           <button type="submit" value="Register">Save</button>
-          <a href="{% url 'cancel_procedure' user_id procedure_id %}"><button type="button">Cancel</button></a>
+          <a href="{% url 'cancel_procedure' procedure_id %}"><button type="button">Cancel</button></a>
         </div>
       </form>
     </div>
