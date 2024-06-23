@@ -89,7 +89,7 @@ def proceed_procedure(request, procedure_id):
                 response.remarks = form.cleaned_data.get(f"remarks_{question.pk}")
                 response.save()
 
-            return redirect('my_procedures', user_id=checker_user.id)
+            return redirect('my_procedures')
     else:
         initial_data = {}
         for question in checklist_questions:
@@ -153,6 +153,7 @@ def cancel_procedure(request, procedure_id):
     procedure = get_object_or_404(Procedure, id=procedure_id)
     # Update procedure status to 'Submitted'
     procedure.status = 'Submitted'
+    procedure.checker = None
     procedure.save()
     return redirect('all_procedures')  # Redirect to list of procedures
 
@@ -195,14 +196,14 @@ def return_procedure(request, procedure_id):
     procedure.status = 'Returned'
     procedure.save()
     if status == 'my_process':
-        return redirect(reverse('my_procedures', args=[procedure.checker.id]))
-    return redirect(reverse('checkers_returned', args=[procedure.checker.id]))
+        return redirect('my_procedures')
+    return redirect('checkers_returned')
 
 
 @login_required
 @user_passes_test(checkers_group_required)
-def checkers_returned(request, user_id):
-    user = get_object_or_404(User, id=user_id)
+def checkers_returned(request):
+    user = request.user
     procedures = Procedure.objects.filter(
     Q(checker=user) &
     (Q(status='Returned') | Q(return_count__gt=0)) &
@@ -236,14 +237,14 @@ def final_submit(request, procedure_id):
     procedure.status = 'Reviewed'
     procedure.save()
     if procedure.return_count == 0:
-        return redirect(reverse('my_procedures', args=[procedure.checker.id]))
-    return redirect(reverse('checkers_returned', args=[procedure.checker.id]))
+        return redirect('my_procedures')
+    return redirect('checkers_returned')
 
 
 @login_required
 @user_passes_test(checkers_group_required)
-def checkers_history(request, user_id):
-    user = get_object_or_404(User, id=user_id)
+def checkers_history(request):
+    user = request.user
     procedures = Procedure.objects.filter(
     Q(checker=user) & Q(status='Reviewed')
 )

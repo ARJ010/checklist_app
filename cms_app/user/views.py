@@ -72,10 +72,8 @@ def add_procedure(request):
 
 @login_required
 @user_passes_test(users_group_required)
-def submit_procedure(request):
+def submit_procedure(request, procedure_id):
     status = request.GET.get('status')
-    user = request.user
-    procedure_id= request.GET.get('procedure_id')
     procedure = get_object_or_404(Procedure, id=procedure_id)
     # Update procedure status to 'Submitted'
     procedure.status = 'Submitted'
@@ -87,10 +85,8 @@ def submit_procedure(request):
 
 @login_required
 @user_passes_test(users_group_required)
-def edit_procedure(request):
-    user = request.user
+def edit_procedure(request, procedure_id):
     status = request.GET.get('status')
-    procedure_id = request.GET.get('procedure_id')
     procedure = get_object_or_404(Procedure, id=procedure_id)
     if request.method == 'POST':
         form = ProcedureForm(request.POST, instance=procedure)
@@ -106,9 +102,7 @@ def edit_procedure(request):
 
 @login_required
 @user_passes_test(users_group_required)
-def delete_procedure(request):
-    user = request.user
-    procedure_id = request.GET.get('procedure_id')
+def delete_procedure(request, procedure_id):
     procedure = get_object_or_404(Procedure, id=procedure_id)
     # Delete procedure from the database
     procedure.delete()
@@ -116,9 +110,7 @@ def delete_procedure(request):
 
 @login_required
 @user_passes_test(users_group_required)
-def temp_delete_procedure(request):
-    user = request.user
-    procedure_id = request.GET.get('procedure_id')
+def temp_delete_procedure(request, procedure_id):
     procedure = get_object_or_404(Procedure, id=procedure_id)
     # Delete procedure from the database
     procedure.status = 'Deleted'
@@ -127,9 +119,7 @@ def temp_delete_procedure(request):
 
 @login_required
 @user_passes_test(users_group_required)
-def restore_procedure(request):
-    user = request.user
-    procedure_id = request.GET.get('procedure_id')
+def restore_procedure(request, procedure_id):
     procedure = get_object_or_404(Procedure, id=procedure_id)
     # Delete procedure from the database
     procedure.status = 'Pending'

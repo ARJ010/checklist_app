@@ -12,7 +12,7 @@ urlpatterns = [
     path("view_response/<int:procedure_id>/", views.view_response, name="view_response"),
     path("edit_response/<int:procedure_id>/", views.edit_responses, name="edit_response"),
     path("return_response/<int:procedure_id>/", views.return_procedure, name="return_procedure"),
-    path("return/<int:user_id>/", views.checkers_returned, name="checkers_returned"),  
+    path("return/", views.checkers_returned, name="checkers_returned"),  
     path("final_submit/<int:procedure_id>/", views.final_submit, name="final_submit"),
-    path("checkers_history/<int:user_id>/", views.checkers_history, name="checkers_history"),
+    path("checkers_history/", views.checkers_history, name="checkers_history"),
 ]

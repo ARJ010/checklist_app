@@ -62,8 +62,8 @@
             <td>{{ procedure.checklist.name }}</td>
             <td>{{ procedure.date_created }}</td>
             <td>
-              <a href="{% url 'restore_procedure' %}?user_id={{ user.id }}&procedure_id={{ procedure.id }}">Restore</a> |
-              <a href="{% url 'delete_procedure' %}?user_id={{ user.id }}&procedure_id={{ procedure.id }}">Delete</a>
+              <a href="{% url 'restore_procedure' procedure.id %}">Restore</a> |
+              <a href="{% url 'delete_procedure' procedure.id %}">Delete</a>
             </td>
           </tr>
         {% endfor %}

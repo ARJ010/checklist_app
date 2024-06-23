@@ -66,8 +66,8 @@
                 Submitted
               {% else %}
                 <a href="{% url 'user_view_responses' procedure.id %}">Response</a> |
-                <a href="{% url 'edit_procedure' %}?user_id={{ user.id }}&procedure_id={{ procedure.id }}&status=returned">Edit</a> |
-                <a href="{% url 'submit_procedure' %}?user_id={{ user.id }}&procedure_id={{ procedure.id }}">Submit</a>
+                <a href="{% url 'edit_procedure' procedure.id %}?status=returned">Edit</a> |
+                <a href="{% url 'submit_procedure' procedure.id %}">Submit</a>
               {% endif %}
             </td>
           </tr>

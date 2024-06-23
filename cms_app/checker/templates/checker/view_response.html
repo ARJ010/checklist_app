@@ -55,7 +55,7 @@
       {% if procedure.return_count == 0 %}
         <a href="{% url 'my_procedures' %}"><button>Go Back</button></a>
       {% else %}
-        <a href="{% url 'checkers_returned' procedure.checker.id %}"><button>Go Back</button></a>
+        <a href="{% url 'checkers_returned' %}"><button>Go Back</button></a>
       {% endif %}
       <a href="{% url 'edit_response' procedure.id %}"><button>Edit</button></a>
     </div>

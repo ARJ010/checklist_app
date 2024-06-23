@@ -74,15 +74,47 @@
     <div class="pagination">
       <span class="step-links">
         {% if page_obj.has_previous %}
-          <a href="?page=1&user_id={{ user.id }}">&laquo; first</a>
-          <a href="?page={{ page_obj.previous_page_number }}&user_id={{ user.id }}">previous</a>
+          <a href="?page=1{% if request.GET.searchClientName %}
+              &searchClientName={{ request.GET.searchClientName }}
+            {% endif %}{% if request.GET.searchChecklist %}
+              &searchChecklist={{ request.GET.searchChecklist }}
+            {% endif %}{% if request.GET.searchDate %}
+              &searchDate={{ request.GET.searchDate }}
+            {% endif %}">
+            &laquo; first
+          </a>
+          <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.searchClientName %}
+              &searchClientName={{ request.GET.searchClientName }}
+            {% endif %}{% if request.GET.searchChecklist %}
+              &searchChecklist={{ request.GET.searchChecklist }}
+            {% endif %}{% if request.GET.searchDate %}
+              &searchDate={{ request.GET.searchDate }}
+            {% endif %}">
+            previous
+          </a>
         {% endif %}
 
         <span class="current">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</span>
 
         {% if page_obj.has_next %}
-          <a href="?page={{ page_obj.next_page_number }}&user_id={{ user.id }}">next</a>
-          <a href="?page={{ page_obj.paginator.num_pages }}&user_id={{ user.id }}">last &raquo;</a>
+          <a href="?page={{ page_obj.next_page_number }}{% if request.GET.searchClientName %}
+              &searchClientName={{ request.GET.searchClientName }}
+            {% endif %}{% if request.GET.searchChecklist %}
+              &searchChecklist={{ request.GET.searchChecklist }}
+            {% endif %}{% if request.GET.searchDate %}
+              &searchDate={{ request.GET.searchDate }}
+            {% endif %}">
+            next
+          </a>
+          <a href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.searchClientName %}
+              &searchClientName={{ request.GET.searchClientName }}
+            {% endif %}{% if request.GET.searchChecklist %}
+              &searchChecklist={{ request.GET.searchChecklist }}
+            {% endif %}{% if request.GET.searchDate %}
+              &searchDate={{ request.GET.searchDate }}
+            {% endif %}">
+            last &raquo;
+          </a>
         {% endif %}
       </span>
     </div>
