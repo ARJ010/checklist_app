@@ -34,7 +34,7 @@ def user_index(request):
 @user_passes_test(users_group_required)
 def draft(request):
     user = request.user
-    procedures = Procedure.objects.filter(user=user, status='Pending')
+    procedures = Procedure.objects.filter(user=user, status='Pending').order_by('-date_created')
 
     search_client_name = request.GET.get('searchClientName')
     search_checklist = request.GET.get('searchChecklist')
@@ -134,7 +134,7 @@ def status(request):
     Q(user=request.user) &
     Q(return_count=0) &
     (Q(status='Submitted') | Q(status='Processing'))
-)
+).order_by('-date_created')
 
     search_client_name = request.GET.get('searchClientName')
     search_checklist = request.GET.get('searchChecklist')
@@ -157,7 +157,7 @@ def status(request):
 @user_passes_test(users_group_required)
 def trash(request):
     user = request.user
-    procedures = Procedure.objects.filter(user=request.user, status='Deleted')
+    procedures = Procedure.objects.filter(user=request.user, status='Deleted').order_by('-date_created')
 
     search_client_name = request.GET.get('searchClientName')
     search_checklist = request.GET.get('searchChecklist')
@@ -181,7 +181,7 @@ def trash(request):
 @user_passes_test(users_group_required)
 def returned(request):
     user = request.user
-    procedures = Procedure.objects.filter(Q(user=request.user) & (Q(status='Returned') | Q(return_count__gt=0)) & ~Q(status='Reviewed'))
+    procedures = Procedure.objects.filter(Q(user=request.user) & (Q(status='Returned') | Q(return_count__gt=0)) & ~Q(status='Reviewed')).order_by('-returned_date')
 
     search_client_name = request.GET.get('searchClientName')
     search_checklist = request.GET.get('searchChecklist')
@@ -204,7 +204,7 @@ def returned(request):
 @user_passes_test(users_group_required)
 def history(request):
     user = request.user
-    procedures = Procedure.objects.filter(user=request.user, status='Reviewed')
+    procedures = Procedure.objects.filter(user=request.user, status='Reviewed').order_by('-final_submission_date')
 
     search_client_name = request.GET.get('searchClientName')
     search_checklist = request.GET.get('searchChecklist')

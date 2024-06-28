@@ -5,17 +5,27 @@ from .models import Checklist,ChecklistQuestion
 from django.urls import reverse
 from django.forms import formset_factory
 from django.contrib import messages
+from django.core.paginator import Paginator
 
 def employee_group_required(user):
     """Check if the user belongs to the 'Admin' group."""
     return user.groups.filter(name='Admin').exists()
+
 
 @login_required
 @user_passes_test(employee_group_required)
 def checklist_detail(request):
     checklist_id = request.GET.get('checklist_id')
     checklist = get_object_or_404(Checklist, id=checklist_id)
-    return render(request, 'checklist/checklist_details.html', {'checklist': checklist})
+    questions = checklist.checklistquestion_set.all()
+
+    # Pagination logic
+    paginator = Paginator(questions, 5)  # Show 10 questions per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'checklist/checklist_details.html', {'checklist': checklist, 'page_obj': page_obj})
+
 
 
 @login_required

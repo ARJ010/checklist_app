@@ -1,207 +1,232 @@
 /* Card Container */
 body {
-    background-color: #e7e7e7;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-  }
-
+  background-color: #e7e7e7;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
 
 .card {
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-    max-width: 100%; /* Increased for better layout */
-    margin: auto;
-    text-align: left; /* Align text to the left for better readability */
-    padding: 20px;
-    margin-top: 50px; /* Adjusted margin for better spacing */
-    background-color: white;
-    border-radius: 10px; /* Added border-radius for a smooth look */
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  max-width: 100%; /* Increased for better layout */
+  margin: auto;
+  text-align: left; /* Align text to the left for better readability */
+  padding: 20px;
+  margin-top: 100px; /* Adjusted margin for better spacing */
+  background-color: white;
+  border-radius: 10px; /* Added border-radius for a smooth look */
 }
 
 /* Title Style */
 .card h2 {
-    color: #333;
-    font-size: 24px;
-    margin-bottom: 10px;
+  color: #333;
+  font-size: 24px;
+  margin-bottom: 10px;
 }
 
 .card p {
-    color: #555;
-    font-size: 16px;
-    line-height: 1.5;
+  color: #555;
+  font-size: 16px;
+  line-height: 1.5;
 }
 
 /* Questions List */
 .card h3 {
-    color: #444;
-    font-size: 20px;
-    margin-top: 20px;
+  color: #444;
+  font-size: 20px;
+  margin-top: 20px;
 }
 
 .card ul {
-    list-style-type: none; /* Remove default list style */
-    padding: 0;
+  list-style-type: none; /* Remove default list style */
+  padding: 0;
 }
 
 .card li {
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    font-size: 16px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  font-size: 16px;
 }
 
 /* Button Styles */
 .button-container {
-    margin-top: 20px;
-    display: flex;
-    justify-content: space-between;
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
 }
 
 .btn {
-    border: none;
-    outline: 0;
-    display: inline-block;
-    padding: 10px 20px;
-    margin: 10px;
-    color: white;
-    background-color: #007bff; /* Primary color for buttons */
-    text-align: center;
-    cursor: pointer;
-    font-size: 16px;
-    border-radius: 5px; /* Added border-radius for a smooth look */
-    transition: background-color 0.3s ease;
-    text-decoration: none;
+  border: none;
+  outline: 0;
+  display: inline-block;
+  padding: 10px 20px;
+  margin: 10px;
+  color: white;
+  background-color: #1f0050; /* Primary color for buttons */
+  text-align: center;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 5px; /* Added border-radius for a smooth look */
+  transition: background-color 0.3s ease;
+  text-decoration: none;
 }
 
 .btn-secondary {
-    background-color: #6c757d; /* Secondary color for buttons */
+  background-color: #1f0050; /* Secondary color for buttons */
 }
 
 .btn-danger {
-    background-color: #dc3545; /* Danger color for delete button */
+  background-color: #dc3545; /* Danger color for delete button */
 }
 
 .btn:hover, .btn:focus {
-    opacity: 0.8;
+  opacity: 0.8;
 }
 
 .delete-button:hover {
-    background-color: #c82333; /* Darker red color on hover */
+  background-color: #c82333; /* Darker red color on hover */
+}
+
+/* Pagination Styles */
+.pagination {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.pagination .step-links {
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+}
+
+.pagination .step-links a,
+.pagination .step-links .current {
+  display: inline-block;
+  margin: 0 5px;
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+.pagination .step-links a:hover {
+  background-color: #0056b3;
+}
+
+.pagination .step-links .current {
+  background-color: #6c757d;
 }
 
 /* Responsive Adjustments */
 @media screen and (max-width: 600px) {
-    .card {
-        max-width: 100%; /* Adjust to full width on smaller screens */
-        margin-top: 20px; /* Adjusted margin for better spacing on mobile */
-    }
+  .card {
+      max-width: 100%; /* Adjust to full width on smaller screens */
+      margin-top: 20px; /* Adjusted margin for better spacing on mobile */
+  }
 }
 
 .alert {
-    padding: 20px;
-    background-color: #f44336;
-    color: white;
-    border-radius: 5px; /* Added border-radius for a smooth look */
-    margin-bottom: 15px; /* Added margin for spacing */
+  padding: 20px;
+  background-color: #f44336;
+  color: white;
+  border-radius: 5px; /* Added border-radius for a smooth look */
+  margin-bottom: 15px; /* Added margin for spacing */
 }
 
 .closebtn {
-    margin-left: 15px;
-    color: white;
-    font-weight: bold;
-    float: right;
-    font-size: 22px;
-    line-height: 20px;
-    cursor: pointer;
-    transition: 0.3s;
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
 .closebtn:hover {
-    color: black;
+  color: black;
 }
 
-
-
 .title {
-    color: grey;
-    font-size: 18px;
+  color: grey;
+  font-size: 18px;
+}
+
+.card button {
+  border: none;
+  outline: 0;
+  display: inline-block;
+  padding: 12px;
+  color: white;
+  background-color: #000;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+  font-size: 18px;
+}
+
+.card button:hover, a:hover {
+  opacity: 0.7;
+}
+
+.delete-button {
+  position: fixed;
+  bottom: 20px; /* Adjust the distance from the bottom */
+  right: 20px; /* Adjust the distance from the right */
+  z-index: 9999;
+  padding: 14px 28px;
+  background-color: white; /* Red color for delete button */
+  color: rgb(0, 0, 0);
+  border: 2px solid #f44336;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-left: 10px;
+}
+
+.delete-button:hover {
+  background-color: #ff0000; /* Darker red color on hover */
+  border-radius: 5px;
+}
+
+@media screen and (max-width: 600px) {
+  #d1 {
+    display: none;
+    /* Hide the sidebar */
   }
-  
-  .card button {
-    border: none;
-    outline: 0;
-    display: inline-block;
-    padding: 12px;
-    color: white;
-    background-color: #000;
-    text-align: center;
-    cursor: pointer;
-    width: 100%;
-    font-size: 18px;
+}
+
+@media screen and (min-width: 600px) {
+  #d2 {
+    display: none;
   }
-  
-  
-  .card button:hover, a:hover {
-    opacity: 0.7;
-  }
-  
-  .delete-button {
-    position: fixed;
-    bottom: 20px; /* Adjust the distance from the bottom */
-    right: 20px; /* Adjust the distance from the right */
-    z-index: 9999;
-    padding: 14px 28px;
-    background-color: white; /* Red color for delete button */
-    color: rgb(0, 0, 0);
-    border: 2px solid #f44336;;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-left: 10px;
-  }
-  
-  .delete-button:hover {
-    background-color: #ff0000; /* Darker red color on hover */
-    border-radius: 5px;
-  }
-  
-  @media screen and (max-width: 600px) {
-    #d1 {
-      display: none;
-      /* Hide the sidebar */
-    }
-  }
-  
-  @media screen and (min-width: 600px) {
-    #d2 {
-      display: none;
-    }
-  }
-  
-  
-  .alert {
-    padding: 20px;
-    background-color: #f44336;
-    color: white;
-  }
-  
-  .closebtn {
-    margin-left: 15px;
-    color: white;
-    font-weight: bold;
-    float: right;
-    font-size: 22px;
-    line-height: 20px;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-  
-  .closebtn:hover {
-    color: black;
-  }
-  
+}
+
+.alert {
+  padding: 20px;
+  background-color: #f44336;
+  color: white;
+}
+
+.closebtn {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.closebtn:hover {
+  color: black;
+}

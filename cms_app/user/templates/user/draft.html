@@ -59,9 +59,9 @@
             <td>{{ procedure.checklist.name }}</td>
             <td>{{ procedure.date_created }}</td>
             <td>
-              <a href="{% url 'edit_procedure' %}?procedure_id={{ procedure.id }}&status=draft">Edit</a> |
-              <a href="{% url 'delete_temp' %}?procedure_id={{ procedure.id }}">Delete</a> |
-              <a href="{% url 'submit_procedure' %}?procedure_id={{ procedure.id }}&status=draft">Submit</a>
+              <a href="{% url 'edit_procedure' procedure.id %}?status=draft">Edit</a> |
+              <a href="{% url 'delete_temp' procedure.id %}">Delete</a> |
+              <a href="{% url 'submit_procedure' procedure.id %}?status=draft">Submit</a>
             </td>
           </tr>
         {% endfor %}

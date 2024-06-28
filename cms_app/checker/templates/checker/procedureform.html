@@ -19,7 +19,7 @@
   <section>
     <div class="container">
       <h2>{{ checklist_name }} Response</h2>
-      <form method="post" enctype="multipart/form-data">
+      <form method="post">
         {% csrf_token %}
         {% for field in form %}
           <div class="form-control {% if form.username.errors %}errors{% endif %}">{{ field.label_tag }}

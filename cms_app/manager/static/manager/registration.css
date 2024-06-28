@@ -7,7 +7,7 @@ body {
 
 .container {
     max-width: 500px; /* Limit the width of the container */
-    margin: 60px auto; /* Center the container vertically */
+    margin: 120px auto; /* Center the container vertically */
     padding: 30px;
     background-color: #ffffff;
     border-radius: 8px;

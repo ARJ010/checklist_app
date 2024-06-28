@@ -7,7 +7,7 @@ class ProcedureForm(forms.Form):
     def __init__(self, *args, **kwargs):
         checklist_questions = kwargs.pop('checklist_questions')
         super(ProcedureForm, self).__init__(*args, **kwargs)
-        
+
         for question in checklist_questions:
             field_name = f"question_{question.pk}"
             self.fields[field_name] = forms.ChoiceField(
@@ -29,3 +29,8 @@ class CheckerProcedureResponseForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(CheckerProcedureResponseForm, self).__init__(*args, **kwargs)
         self.fields['user_response'].disabled = True
+
+        # Update widget attributes
+        for field_name in self.fields:
+            if isinstance(self.fields[field_name].widget, forms.Textarea):
+                self.fields[field_name].widget.attrs.update({'rows': 1})

@@ -9,6 +9,7 @@ html {
 }
 
 body {
+  min-width: 465px;
   margin: 0;
 }
 
@@ -25,7 +26,7 @@ h3 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 10%;
+  padding: 0 5%;
   position: absolute;
   top: 0;
   left: 0;

@@ -27,6 +27,16 @@
 
 {% block body_content %}
   <section id="procedure_table">
+    {% if messages %}
+      <div class="alerts">
+        {% for message in messages %}
+          <div class="alert {{ message.tags }}">
+            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
     <header>
       <h2>Responses</h2>
     </header>

@@ -8,6 +8,7 @@ from django.core.paginator import Paginator
 from django.urls import reverse
 from django.forms import modelformset_factory
 from django.db import transaction
+from django.contrib import messages
 
 from django.db.models import Q
 
@@ -35,7 +36,7 @@ def my_protected_view(request):
 @user_passes_test(checkers_group_required)
 def all_procedures(request):
     user = request.user
-    procedures = Procedure.objects.filter(status='Submitted', return_count=0)
+    procedures = Procedure.objects.filter(status='Submitted', return_count=0).order_by('-date_created')
 
     search_client_name = request.GET.get('searchClientName')
     search_checklist = request.GET.get('searchChecklist')
@@ -58,20 +59,13 @@ def all_procedures(request):
 @login_required
 @user_passes_test(checkers_group_required)
 def proceed_procedure(request, procedure_id):
+
+    procedure = get_object_or_404(Procedure, id=procedure_id)
     checker_user = request.user
 
     with transaction.atomic():
-        # Lock the procedure row for update
-        procedure = Procedure.objects.select_for_update().get(id=procedure_id)
-
-        # Check if the procedure is already being processed
-        if procedure.status != 'Submitted' or procedure.checker is not None:
-            # Redirect or show an error message if already processed
-            return redirect('all_procedures')
-
-        # Update the procedure's status and checker
-        procedure.checker = checker_user
         procedure.status = 'Processing'
+        procedure.checker = checker_user
         procedure.save()
 
     checklist = procedure.checklist
@@ -90,21 +84,23 @@ def proceed_procedure(request, procedure_id):
                 response.save()
 
             return redirect('my_procedures')
+        else:
+            print("Form is not valid:", form.errors)
     else:
         initial_data = {}
         for question in checklist_questions:
             response = ProcedureResponse.objects.filter(procedure=procedure, question=question).first()
-            initial_data[f"question_{question.pk}"] = response.response if response else ""
-            initial_data[f"remarks_{question.pk}"] = response.remarks if response else ""
+            if response:
+                initial_data[f"question_{question.pk}"] = response.response
+                initial_data[f"remarks_{question.pk}"] = response.remarks
         form = ProcedureForm(initial=initial_data, checklist_questions=checklist_questions)
 
     return render(request, 'checker/procedureform.html', {
         'form': form,
-        'user': checker_user,
+        'user_id': checker_user.id,
         'procedure_id': procedure_id,
         'checklist_name': checklist.name
     })
-
 
 
 
@@ -162,7 +158,7 @@ def cancel_procedure(request, procedure_id):
 @user_passes_test(checkers_group_required)
 def my_procedures(request):
     user = request.user
-    procedures = Procedure.objects.filter(status='Processing', checker=user)
+    procedures = Procedure.objects.filter(status='Processing', checker=user).order_by('-date_created')
 
     search_client_name = request.GET.get('searchClientName')
     search_checklist = request.GET.get('searchChecklist')
@@ -208,7 +204,7 @@ def checkers_returned(request):
     Q(checker=user) &
     (Q(status='Returned') | Q(return_count__gt=0)) &
     ~Q(status='Reviewed')
-)
+).order_by('-returned_date')
 
 
     search_client_name = request.GET.get('searchClientName')
@@ -233,13 +229,23 @@ def checkers_returned(request):
 @user_passes_test(checkers_group_required)
 def final_submit(request, procedure_id):
     procedure = get_object_or_404(Procedure, id=procedure_id)
+    
+    # Check if any response is "no"
+    no_responses = ProcedureResponse.objects.filter(procedure=procedure, response='no')
+    
+    if no_responses.exists():
+        # Provide feedback to the user
+        messages.error(request, "Submission cannot be completed because one or more responses are 'no'.")
+        return redirect('view_response', procedure_id=procedure_id)
+    
+    # Proceed with submission if no "no" responses
     procedure.final_submission_date = timezone.now()
     procedure.status = 'Reviewed'
     procedure.save()
+    
     if procedure.return_count == 0:
         return redirect('my_procedures')
     return redirect('checkers_returned')
-
 
 @login_required
 @user_passes_test(checkers_group_required)
@@ -247,7 +253,7 @@ def checkers_history(request):
     user = request.user
     procedures = Procedure.objects.filter(
     Q(checker=user) & Q(status='Reviewed')
-)
+).order_by('-final_submission_date')
 
 
     search_client_name = request.GET.get('searchClientName')

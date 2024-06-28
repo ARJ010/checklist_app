@@ -4,8 +4,6 @@
 {% block title %}Checklist Details{% endblock title %}
 
 {% block style_content %}
-    <link rel="stylesheet" href="{% static 'checklist/index.css' %}" />
-    <link rel="stylesheet" href="{% static 'checklist/registration.css' %}" />
     <link rel="stylesheet" href="{% static 'checklist/checklist-details.css' %}" />
 {% endblock style_content %}
 
@@ -21,12 +19,29 @@
 
         <h3>Questions:</h3>
         <ul>
-            {% for question in checklist.checklistquestion_set.all %}
+            {% for question in page_obj %}
             <li>{{ question.question_text }}</li>
             {% empty %}
             <li>No questions found for this checklist.</li>
             {% endfor %}
         </ul>
+        <div class="pagination">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1&checklist_id={{ checklist.id }}">&laquo; first</a>
+                    <a href="?page={{ page_obj.previous_page_number }}&checklist_id={{ checklist.id }}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}&checklist_id={{ checklist.id }}">next</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}&checklist_id={{ checklist.id }}">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
         <div class="button-container">
             <a href="{% url 'all_checklist' %}" class="btn btn-secondary">Go Back</a>
             <a href="{% url 'edit_checklist' %}?checklist_id={{ checklist.id }}" class="btn btn-primary">Edit Checklist</a>
