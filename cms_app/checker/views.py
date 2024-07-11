@@ -116,6 +116,18 @@ def view_response(request, procedure_id):
         'responses': responses
     })
 
+
+@login_required
+@user_passes_test(checkers_group_required)
+def history_response(request, procedure_id):
+    procedure = get_object_or_404(Procedure, id=procedure_id)
+    responses = ProcedureResponse.objects.filter(procedure=procedure)
+    
+    return render(request, 'checker/history_response.html', {
+        'procedure': procedure,
+        'responses': responses
+    })
+
 @login_required
 @user_passes_test(checkers_group_required)
 def edit_responses(request, procedure_id):

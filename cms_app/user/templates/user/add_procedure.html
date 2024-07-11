@@ -25,7 +25,7 @@
         {{ form.as_p }}
         <div class="button-container">
           <button type="submit">Create Procedure</button>
-          <a href="{% url 'draft' %}"><button type="button">Cancel</button></a>
+          <a href="{% url 'draft' %}?status=pending"><button type="button">Cancel</button></a>
         </div>
       </form>
     </div>

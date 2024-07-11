@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ['127.0.0.1','localhost','192.168.1.5','192.168.168.81']
 # Application definition
 
 INSTALLED_APPS = [
+    'django_extensions',
     'checklist',
     'user',
     'checker',

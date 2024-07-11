@@ -39,6 +39,9 @@
   </section>
 
   <section id="procedure_table">
+    <header>
+      <h2>Procedure History</h2>
+    </header>
     <table>
       <thead>
         <tr>
@@ -50,21 +53,32 @@
           <th>Checker's Name</th>
           <th>Final Submitted Date</th>
           <th>Returned Count</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody>
-        {% for procedure in page_obj %}
+        {% if page_obj %}
+          {% for procedure in page_obj %}
+            <tr>
+              <td>{{ forloop.counter0|add:page_obj.start_index }}</td>
+              <td>{{ procedure.client_name }}</td>
+              <td>{{ procedure.data_path }}</td>
+              <td>{{ procedure.checklist.name }}</td>
+              <td>{{ procedure.date_created }}</td>
+              <td>{{ procedure.checker.first_name }} {{ procedure.checker.last_name }}</td>
+              <td>{{ procedure.final_submission_date }}</td>
+              <td>{{ procedure.return_count }}</td>
+              <td>
+                <a href="{% url 'user_history_response' procedure.id %}">Response</a>
+              </td>
+            </tr>
+          {% endfor %}
+        {% else %}
           <tr>
-            <td>{{ forloop.counter }}</td>
-            <td>{{ procedure.client_name }}</td>
-            <td>{{ procedure.data_path }}</td>
-            <td>{{ procedure.checklist.name }}</td>
-            <td>{{ procedure.date_created }}</td>
-            <td>{{ procedure.checker.first_name }} {{ procedure.checker.last_name }}</td>
-            <td>{{ procedure.final_submission_date }}</td>
-            <td>{{ procedure.return_count }}</td>
+            <td colspan="9">No records found</td>
           </tr>
-        {% endfor %}
+        {% endif %}
+        
       </tbody>
     </table>
     <!-- Pagination controls -->

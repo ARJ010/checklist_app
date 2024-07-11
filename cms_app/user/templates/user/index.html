@@ -16,7 +16,11 @@
 {% block body_content %}
   <section id="welcome">
     <header>
-      <img src="{{ user.employee.user_photo.url|cut:'/manager' }}" alt="{{ user.first_name }}" />
+      {% if user.employee.user_photo %}
+        <img src="{{ user.employee.user_photo.url }}" alt="{{ user.first_name }}" />
+      {% else %}
+        <img src="{% static 'images/user.png' %}" alt="{{ user.first_name }}" />
+      {% endif %}
       <h2>Welcome,<br /> {{ user.employee.first_name }} {{ user.employee.last_name }}</h2>
     </header>
   </section>

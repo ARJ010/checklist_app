@@ -38,42 +38,52 @@
     </form>
   </section>
   <section id="procedure_table">
+    <header>
+      <h2>Returned Procedures</h2>
+    </header>
     <table>
       <thead>
         <tr>
           <th>Sl No.</th>
           <th>Client Name</th>
+          <th>User</th>
           <th>Checklist</th>
           <th>Date</th>
-          <th>Checker</th>
           <th>Returned Date</th>
           <th>Returned Count</th>
           <th>Action</th>
         </tr>
       </thead>
       <tbody>
-        {% for procedure in page_obj %}
+        {% if page_obj %}
+          {% for procedure in page_obj %}
+            <tr>
+              <td>{{ forloop.counter0|add:page_obj.start_index }}</td>
+              <td>{{ procedure.client_name }}</td>
+              <td>{{ procedure.user.first_name }} {{ procedure.user.last_name }}</td>
+              <td>{{ procedure.checklist.name }}</td>
+              <td>{{ procedure.date_created }}</td>
+              <td>{{ procedure.returned_date }}</td>
+              <td>{{ procedure.return_count }}</td>
+              <td>
+                {% if procedure.status == 'Submitted' %}
+                  <a href="{% url 'view_response' procedure.id %}">Response</a> |
+                  <a href="{% url 'return_procedure' procedure.id %}">Return</a> |
+                  <a href="{% url 'final_submit' procedure.id %}">Final Confirm</a>
+                {% else %}
+                  Returned
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        {% else %}
           <tr>
-            <td>{{ forloop.counter }}</td>
-            <td>{{ procedure.client_name }}</td>
-            <td>{{ procedure.checklist.name }}</td>
-            <td>{{ procedure.date_created }}</td>
-            <td>{{ procedure.checker.first_name }} {{ procedure.checker.last_name }}</td>
-            <td>{{ procedure.returned_date }}</td>
-            <td>{{ procedure.return_count }}</td>
-            <td>
-              {% if procedure.status == 'Submitted' %}
-                <a href="{% url 'view_response' procedure.id %}">Response</a> |
-                <a href="{% url 'return_procedure' procedure.id %}">Return</a> |
-                <a href="{% url 'final_submit' procedure.id %}">Final Confirm</a>
-              {% else %}
-                Returned
-              {% endif %}
-            </td>
+            <td colspan="8">No records found</td>
           </tr>
-        {% endfor %}
+        {% endif %}
       </tbody>
     </table>
+    
     <!-- Pagination controls -->
     <div class="pagination">
       <span class="step-links">

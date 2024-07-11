@@ -15,4 +15,5 @@ urlpatterns = [
     path("return/", views.checkers_returned, name="checkers_returned"),  
     path("final_submit/<int:procedure_id>/", views.final_submit, name="final_submit"),
     path("checkers_history/", views.checkers_history, name="checkers_history"),
+    path("history_response/<int:procedure_id>/", views.history_response, name="history_response"),
 ]

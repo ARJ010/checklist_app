@@ -133,8 +133,7 @@ def status(request):
     procedures = Procedure.objects.filter(
     Q(user=request.user) &
     Q(return_count=0) &
-    (Q(status='Submitted') | Q(status='Processing'))
-).order_by('-date_created')
+    (Q(status='Submitted') | Q(status='Processing'))).order_by('-date_created')
 
     search_client_name = request.GET.get('searchClientName')
     search_checklist = request.GET.get('searchChecklist')
@@ -257,4 +256,16 @@ def user_edit_responses(request, procedure_id):
     return render(request, 'user/edit_responses.html', {
         'procedure': procedure,
         'formset': formset
+    })
+
+
+@login_required
+@user_passes_test(users_group_required)
+def user_history_response(request, procedure_id):
+    procedure = get_object_or_404(Procedure, id=procedure_id)
+    responses = ProcedureResponse.objects.filter(procedure=procedure)
+    
+    return render(request, 'user/history_response.html', {
+        'procedure': procedure,
+        'responses': responses
     })

@@ -37,8 +37,11 @@
       </div>
     </form>
   </section>
-
+  
   <section id="procedure_table">
+    <header>
+      <h2>Draft</h2>
+    </header>
     <table>
       <thead>
         <tr>
@@ -51,20 +54,26 @@
         </tr>
       </thead>
       <tbody id="procedureTableBody">
-        {% for procedure in page_obj %}
+        {% if page_obj %}
+          {% for procedure in page_obj %}
+            <tr>
+              <td>{{ forloop.counter0|add:page_obj.start_index }}</td>
+              <td>{{ procedure.client_name }}</td>
+              <td>{{ procedure.data_path }}</td>
+              <td>{{ procedure.checklist.name }}</td>
+              <td>{{ procedure.date_created }}</td>
+              <td>
+                <a href="{% url 'edit_procedure' procedure.id %}?status=draft">Edit</a> |
+                <a href="{% url 'delete_temp' procedure.id %}">Delete</a> |
+                <a href="{% url 'submit_procedure' procedure.id %}?status=draft">Submit</a>
+              </td>
+            </tr>
+          {% endfor %}
+        {% else %}
           <tr>
-            <td>{{ forloop.counter0|add:page_obj.start_index }}</td>
-            <td>{{ procedure.client_name }}</td>
-            <td>{{ procedure.data_path }}</td>
-            <td>{{ procedure.checklist.name }}</td>
-            <td>{{ procedure.date_created }}</td>
-            <td>
-              <a href="{% url 'edit_procedure' procedure.id %}?status=draft">Edit</a> |
-              <a href="{% url 'delete_temp' procedure.id %}">Delete</a> |
-              <a href="{% url 'submit_procedure' procedure.id %}?status=draft">Submit</a>
-            </td>
+            <td colspan="6">No records found</td>
           </tr>
-        {% endfor %}
+        {% endif %}
       </tbody>
     </table>
 

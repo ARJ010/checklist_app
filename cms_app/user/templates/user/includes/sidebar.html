@@ -2,13 +2,11 @@
   <ul>
     <li>
       <a href="{% url 'draft' %}?status=pending">Draft</a>
-      {% if request.GET.status == 'pending' %}
         <ul>
           <li>
             <a href="{% url 'add_procedure' %}">Add</a>
           </li>
         </ul>
-      {% endif %}
     </li>
     <li>
       <a href="{% url 'status' %}">Status</a>

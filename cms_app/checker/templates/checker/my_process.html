@@ -40,6 +40,9 @@
   </section>
 
   <section id="procedure_table">
+    <header>
+      <h2>My Procedures</h2>
+    </header>
     <table>
       <thead>
         <tr>
@@ -53,21 +56,30 @@
         </tr>
       </thead>
       <tbody id="procedureTableBody">
-        {% for procedure in page_obj %}
+        {% if page_obj %}
+          {% for procedure in page_obj %}
+            <tr>
+              <td>{{ forloop.counter0|add:page_obj.start_index }}</td>
+              <td>{{ procedure.user.first_name }} {{ procedure.user.last_name }}</td>
+              <td>{{ procedure.client_name }}</td>
+              <td>{{ procedure.data_path }}</td>
+              <td>{{ procedure.checklist.name }}</td>
+              <td>{{ procedure.date_created }}</td>
+              <td>
+                <a href="{% url 'view_response' procedure.id %}">Response</a> |
+                <a href="{% url 'return_procedure' procedure.id %}">Return</a> |
+                <a href="{% url 'final_submit' procedure.id %}">Final Confirm</a>
+              </td>
+            </tr>
+          {% endfor %}
+        {% else %}
           <tr>
-            <td>{{ forloop.counter0|add:page_obj.start_index }}</td>
-            <td>{{ procedure.user.first_name }} {{ procedure.user.last_name }}</td>
-            <td>{{ procedure.client_name }}</td>
-            <td>{{ procedure.data_path }}</td>
-            <td>{{ procedure.checklist.name }}</td>
-            <td>{{ procedure.date_created }}</td>
-            <td>
-              <a href="{% url 'view_response' procedure.id %}">Response</a> |
-              <a href="{% url 'return_procedure' procedure.id %}">Return</a> |
-              <a href="{% url 'final_submit' procedure.id %}">Final Confirm</a>
-            </td>
+            <td colspan="7">No records found</td>
           </tr>
-        {% endfor %}
+        {% endif %}
+
+
+
       </tbody>
     </table>
 

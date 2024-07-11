@@ -10,9 +10,9 @@ from django.contrib.auth.models import User, Group
 from .forms import RegisterForm, UserProfileForm, UserEmployeeForm, ChangePasswordForm
 from .models import Employee
 from user.models import Procedure
-from django.db.models import Count, Avg, F, DurationField
-from django.utils import timezone
-from datetime import timedelta
+from django.db.models import Sum
+from django.core.paginator import Paginator
+from checker.models import  ProcedureResponse
 
 logger = logging.getLogger(__name__)
 
@@ -98,33 +98,46 @@ def user_details(request):
     user_id = request.GET.get('user_id')
     user = get_object_or_404(User, id=user_id)
 
-    # Get procedures created by the user
-    created_procedures = Procedure.objects.filter(user=user)
-    total_created = created_procedures.count()
+    total_created = 0
+    total_proceeded = 0
+    total_reviewed_user = 0
+    total_reviewed = 0
+    total_returns = 0
+    successful_review_rate = 0
+    successful_review_rate_user = 0
 
-    # Get procedures reviewed by the user (as a checker)
-    reviewed_procedures = Procedure.objects.filter(checker=user)
-    total_reviewed = reviewed_procedures.count()
+    # Check if the user is a creator (in 'Users' group)
+    if user.groups.filter(name='Users').exists():
+        created_procedures = Procedure.objects.filter(user=user)
+        reviewed_procedures = Procedure.objects.filter(user=user,status='Reviewed')
+        total_reviewed = reviewed_procedures.count()
+        total_created = created_procedures.count()
+        total_returns = created_procedures.aggregate(total=Sum('return_count'))['total'] or 0
+        if total_reviewed > 0:
+            successful_reviews = reviewed_procedures.filter(return_count=0).count()
+            successful_review_rate_user = (successful_reviews / total_reviewed) * 100  # Successful review rate in percentage
 
-    # Calculate average time to review a procedure
-    average_review_time = reviewed_procedures.aggregate(
-        avg_time=Avg(F('final_submission_date') - F('date_created'), output_field=DurationField())
-    )['avg_time']
+    # Check if the user is a checker (in 'Checkers' group)
+    if user.groups.filter(name='Checkers').exists():
+        proceeded_procedure = Procedure.objects.filter(checker=user)
+        reviewed_procedures = Procedure.objects.filter(checker=user,status='Reviewed')
+        total_reviewed = reviewed_procedures.count()
+        total_proceeded = proceeded_procedure.count()
 
-    # Format the average_review_time into a human-readable string
-    def format_timedelta(td):
-        if td is None:
-            return "N/A"
-        days = td.days
-        hours, remainder = divmod(td.seconds, 3600)
-        minutes, seconds = divmod(remainder, 60)
-        return f"{days}d {hours}h {minutes}m {seconds}s"
+
+        total_returns = reviewed_procedures.aggregate(total=Sum('return_count'))['total'] or 0
+        if total_reviewed > 0:
+            successful_reviews = reviewed_procedures.filter(return_count=0).count()
+            successful_review_rate = (successful_reviews / total_reviewed) * 100  # Successful review rate in percentage
 
     context = {
         'user': user,
         'total_created': total_created,
+        'total_proceeded': total_proceeded,
         'total_reviewed': total_reviewed,
-        'average_review_time': format_timedelta(average_review_time),
+        'total_returns': total_returns,
+        'successful_review_rate': successful_review_rate,
+        'successful_review_rate_user': successful_review_rate_user,
     }
 
     return render(request, 'manager/user-details.html', context)
@@ -261,3 +274,37 @@ def change_password(request):
         form = ChangePasswordForm(instance=user)
     
     return render(request, 'manager/change_password.html', {'form': form})
+
+
+@login_required
+@user_passes_test(employee_group_required)
+def admin_history(request):
+    procedures = Procedure.objects.filter(status='Reviewed').order_by('-final_submission_date')
+
+    search_client_name = request.GET.get('searchClientName')
+    search_checklist = request.GET.get('searchChecklist')
+    search_date = request.GET.get('searchDate')
+
+    if search_client_name:
+        procedures = procedures.filter(client_name__icontains=search_client_name)
+    if search_checklist:
+        procedures = procedures.filter(checklist__name__icontains=search_checklist)
+    if search_date:
+        procedures = procedures.filter(date_created__date=search_date)
+
+    paginator = Paginator(procedures, 10)  # Show 10 procedures per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'manager/admin_history.html', {'page_obj': page_obj })
+
+@login_required
+@user_passes_test(employee_group_required)
+def admin_history_response(request, procedure_id):
+    procedure = get_object_or_404(Procedure, id=procedure_id)
+    responses = ProcedureResponse.objects.filter(procedure=procedure)
+    
+    return render(request, 'manager/history_response.html', {
+        'procedure': procedure,
+        'responses': responses
+    })

@@ -18,5 +18,6 @@ urlpatterns = [
     path('history/', views.history, name='history'),
     path('view_responses/<int:procedure_id>/', views.user_view_responses, name='user_view_responses'),
     path('edit_responses/<int:procedure_id>/', views.user_edit_responses, name='user_edit_responses'),
+    path("history_response/<int:procedure_id>/", views.user_history_response, name="user_history_response"),
 
 ] 

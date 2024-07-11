@@ -54,19 +54,25 @@
         </tr>
       </thead>
       <tbody id="procedureTableBody">
-        {% for procedure in page_obj %}
+        {% if page_obj %}
+          {% for procedure in page_obj %}
+            <tr>
+              <td>{{ forloop.counter0|add:page_obj.start_index }}</td>
+              <td>{{ procedure.client_name }}</td>
+              <td>{{ procedure.data_path }}</td>
+              <td>{{ procedure.checklist.name }}</td>
+              <td>{{ procedure.date_created }}</td>
+              <td>
+                <a href="{% url 'restore_procedure' procedure.id %}">Restore</a> |
+                <a href="{% url 'delete_procedure' procedure.id %}">Delete</a>
+              </td>
+            </tr>
+          {% endfor %}
+        {% else %}
           <tr>
-            <td>{{ forloop.counter0|add:page_obj.start_index }}</td>
-            <td>{{ procedure.client_name }}</td>
-            <td>{{ procedure.data_path }}</td>
-            <td>{{ procedure.checklist.name }}</td>
-            <td>{{ procedure.date_created }}</td>
-            <td>
-              <a href="{% url 'restore_procedure' procedure.id %}">Restore</a> |
-              <a href="{% url 'delete_procedure' procedure.id %}">Delete</a>
-            </td>
+            <td colspan="7">No records found</td>
           </tr>
-        {% endfor %}
+        {% endif %}
       </tbody>
     </table>
 
