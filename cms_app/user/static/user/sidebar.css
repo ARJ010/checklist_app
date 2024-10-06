@@ -1,7 +1,7 @@
 #sidebar {
   background-color: #390281;
   color: white;
-  width: 10rem;
+  width: 12rem;
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
   padding: 1rem;
@@ -29,11 +29,14 @@
 #sidebar ul {
   list-style: none;
   padding: 10%;
+  display: grid;
+  gap: 2rem;
 }
 
 #sidebar ul ul {
   padding: 1rem;
   margin: 0;
+  gap: 2rem;
 }
 
 #sidebar ul ul li {
