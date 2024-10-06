@@ -2,16 +2,12 @@
 {% load static %}
 
 {% block title %}
-  CMS-Checker
+  Edit Responses
 {% endblock %}
 
 {% block style_content %}
-  <link rel="stylesheet" href="{% static 'checker/response.css' %}" />
-  <link rel="stylesheet" href="{% static 'user/sidebar.css' %}" />
-{% endblock %}
-
-{% block type %}
-  <h1><a href="{% url 'checker_index' %}">CMS</a></h1>
+<link rel="stylesheet" href="{% static 'checker/response.css' %}" />
+<link rel="stylesheet" href="{% static 'checker/sidebar.css' %}" />
 {% endblock %}
 
 {% block navigation %}
@@ -23,27 +19,37 @@
 {% endblock %}
 
 {% block body_content %}
-  <section id="procedure_table">
-    <header>
-      <h2>Edit Responses</h2>
-    </header>
+<section id="procedure_table">
+  <header>
+    <h2>Edit Responses</h2>
+  </header>
+</section>
 
-    <form method="post" enctype="multipart/form-data" id="checklist-form">
-      {% csrf_token %}
-      <div class="form-control">{{ form.as_p }}</div>
-      {{ formset.management_form }}
+<form method="POST" id="checklist-form" action="{% url 'edit_response' procedure.id %}">
+    {% csrf_token %}
+    {{ formset.management_form }}
+    
+    {% for section in sections %}
+    <section id="procedure_table_section">
+      <h2 id="section_title">Section : {{ section.name }}</h2>  <!-- Display the section name -->
       <hr />
-      {% for form in formset %}
-        <div class="form-control">
-          <label for="{{ form.auto_id }}">{{ form.instance.question.question_text }}</label>
-          {{ form }}
-          <hr />
-        </div>
+      {% for form in formset.forms %}
+        {% if form.instance.question.section == section %}
+          <div class="form-control">
+            <h3>Question: {{ form.instance.question.question_text }}</h3>
+            {{ form.as_p }}  <!-- Render the form fields -->
+            <hr />
+          </div>
+        {% endif %}
       {% endfor %}
+    </section>
+    {% endfor %}
+    
+    <section id="procedure_table">   
       <div class="button-container">
         <button type="submit">Save Changes</button>
         <a href="{% url 'view_response' procedure.id %}"><button type="button">Cancel</button></a>
       </div>
-    </form>
-  </section>
+    </section>
+</form>
 {% endblock %}

@@ -25,7 +25,6 @@
     font-size: 3.5rem;
     margin: 0 0 0 2rem;
     color: #e4e4e4;
-    width: 50rem;
   }
   
   #welcome p {
@@ -75,29 +74,12 @@
   }
   
   #procedure_table {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
     background-color: white;
-    padding: 1rem;
+    padding: 4rem;
     border-radius: 12px;
-    width: 60rem;
-    margin: 10rem auto;
+    width: 75rem;
+    margin: 5rem 15rem;
     box-shadow: 1px 1px 12px rgba(0, 0, 0, 0.4);
-
-  }
-
-  #procedure_table_section {
-    display: flex;
-    flex-direction: column;
-    background-color: white;
-    padding: 1rem;
-    border-radius: 12px;
-    width: 60rem;
-    margin: 10rem auto;
-    box-shadow: 1px 1px 12px rgba(0, 0, 0, 0.4);
-
   }
   
   #procedure_table header {
@@ -110,18 +92,6 @@
     color: #6305dd;
     display: inline-block;
     border-bottom: 3px solid #6305dd;
-  }
-
-  #procedure_table_section h2 {
-    font-size: 2rem;
-    margin: 1rem;
-    color: #000000;
-    text-align: center;
-    display: inline-block;
-    align-items: center;
-    justify-content: center;
-    border-bottom: 3px solid #6305dd;
-    width: 50%;
   }
   
   #procedure_table button:hover {
@@ -141,7 +111,7 @@
   }
   
   #procedure_table table {
-    width: 70%;
+    width: 100%;
     border-collapse: collapse;
     margin: 1rem;
   }
@@ -150,12 +120,12 @@
   #procedure_table td {
     border: 1px solid black;
     padding: 0.5rem;
+    text-align: center;
   }
   
   #procedure_table th {
     background-color: #6305dd;
     color: white;
-    text-align: center;
   }
   
   #procedure_table tr:nth-of-type(even) {
@@ -204,34 +174,47 @@
   #search-container {
     width: 60rem;
     margin: 10rem auto 2rem auto;
-  }
-  
+}
 
-  .search-container {
+.search-container {
     display: flex;
+    flex-wrap: wrap; /* Allows items to wrap onto the next line */
     gap: 1rem;
     margin-bottom: 1rem;
-  }
-  
-  .search-container input, .search-container button {
+}
+
+.search-container input,
+.search-container select, /* Include select in the styles */
+.search-container button {
     padding: 0.5rem;
     border: 1px solid #ccc;
     border-radius: 12px;
     font-size: 1.2rem;
-  }
-  
-  .search-container button {
+    flex: 1 1 40%; /* Adjusts the width of inputs and button, allowing them to grow and shrink */
+}
+
+.search-container button {
     background-color: #6305dd;
     color: white;
     border: none;
     cursor: pointer;
     transition: background-color 0.2s ease-in-out;
-  }
-  
-  .search-container button:hover {
+}
+
+.search-container button:hover {
     background-color: #390281;
-  }
-  
+}
+
+/* Style for the select dropdown */
+.search-container select {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    font-size: 1.2rem;
+    flex: 1 1 40%; /* Same width as input fields */
+}
+
+
 
   .delete-button {
     position: fixed;
@@ -287,68 +270,5 @@
   
   .closebtn:hover {
     color: black;
-  }
-  
-
-  .form-control label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-    color: #6305dd;
-  }
-  
-  .form-control input[type="text"],
-  .form-control textarea,
-  .form-control select {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1rem;
-    margin-bottom: 1rem;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-  
-  .form-control textarea {
-    resize: vertical; /* Allow vertical resizing */
-    height: auto;
-    min-height: 2.5rem; /* Approximately 1 row height */
-  }
-  
-  .form-control input[type="text"]:focus,
-  .form-control textarea:focus,
-  .form-control select:focus {
-    border-color: #6305dd;
-    outline: none;
-    box-shadow: 0 0 5px rgba(99, 5, 221, 0.5);
-  }
-  
-  .button-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 1rem;
-  }
-  
-  .button-container button,
-  .button-container a button {
-    background-color: #6305dd;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 12px;
-    font-size: 1.2rem;
-    cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
-  }
-  
-  .button-container button:hover,
-  .button-container a button:hover {
-    background-color: #390281;
-  }
-  
-  .button-container button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
   }
   

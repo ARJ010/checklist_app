@@ -13,9 +13,9 @@ from django.contrib import messages
 from django.db.models import Q
 
 from user.models import Procedure
-from checklist.models import ChecklistQuestion
+from checklist.models import ChecklistQuestion, Checklist, Section
 
-from .forms import ProcedureForm, CheckerProcedureResponseForm
+from .forms import CheckerProcedureResponseForm 
 from .models import ProcedureResponse
 
 
@@ -59,7 +59,6 @@ def all_procedures(request):
 @login_required
 @user_passes_test(checkers_group_required)
 def proceed_procedure(request, procedure_id):
-
     procedure = get_object_or_404(Procedure, id=procedure_id)
     checker_user = request.user
 
@@ -68,53 +67,120 @@ def proceed_procedure(request, procedure_id):
         procedure.checker = checker_user
         procedure.save()
 
+    # Group questions by section
     checklist = procedure.checklist
-    checklist_questions = ChecklistQuestion.objects.filter(checklist=checklist)
+    sections = Section.objects.filter(checklist=checklist)
+    questions_by_section = {}
+    for section in sections:
+        questions_by_section[section] = ChecklistQuestion.objects.filter(checklist=checklist, section=section)
+
+    # Initialize responses with default value
+    for section, questions in questions_by_section.items():
+        for question in questions:
+            # Create or update the ProcedureResponse with default value '-----'
+            response, created = ProcedureResponse.objects.get_or_create(
+                procedure=procedure,
+                question=question,
+                defaults={'response': '-----', 'remarks': '', 'user_response': ''}
+            )
+    
+    # Redirect to the edit_response view
+    return redirect('edit_response_first', procedure_id=procedure.id)
+
+@login_required
+@user_passes_test(checkers_group_required)
+def edit_response_first(request, procedure_id):
+    procedure = get_object_or_404(Procedure, id=procedure_id)
+    
+    # Fetch the responses and their related sections
+    responses = ProcedureResponse.objects.filter(procedure=procedure)
+    sections = Section.objects.filter(checklist=procedure.checklist)
+
+    # Create a formset for responses
+    ProcedureResponseFormSet = modelformset_factory(
+        ProcedureResponse, 
+        form=CheckerProcedureResponseForm,  # Use the custom form here
+        extra=0
+    )
+    
+    formset = ProcedureResponseFormSet(queryset=responses)
 
     if request.method == 'POST':
-        form = ProcedureForm(request.POST, checklist_questions=checklist_questions)
-        if form.is_valid():
-            for question in checklist_questions:
-                response, created = ProcedureResponse.objects.get_or_create(
-                    procedure=procedure,
-                    question=question
-                )
-                response.response = form.cleaned_data.get(f"question_{question.pk}")
-                response.remarks = form.cleaned_data.get(f"remarks_{question.pk}")
-                response.save()
-
-            return redirect('my_procedures')
+        formset = ProcedureResponseFormSet(request.POST, queryset=responses)
+        if formset.is_valid():
+            formset.save()
+            return redirect(reverse('view_response', args=[procedure_id]))
         else:
-            print("Form is not valid:", form.errors)
-    else:
-        initial_data = {}
-        for question in checklist_questions:
-            response = ProcedureResponse.objects.filter(procedure=procedure, question=question).first()
-            if response:
-                initial_data[f"question_{question.pk}"] = response.response
-                initial_data[f"remarks_{question.pk}"] = response.remarks
-        form = ProcedureForm(initial=initial_data, checklist_questions=checklist_questions)
+            print(formset.errors)  # Output errors for debugging
+            for form in formset:
+                print(form.errors)  # Print errors for each form in the formset
 
-    return render(request, 'checker/procedureform.html', {
-        'form': form,
-        'user_id': checker_user.id,
-        'procedure_id': procedure_id,
-        'checklist_name': checklist.name
+
+
+    return render(request, 'checker/edit_responses_first.html', {
+        'procedure': procedure,
+        'formset': formset,
+        'sections': sections,  # Pass sections to the template
+    })
+
+@login_required
+@user_passes_test(checkers_group_required)
+def edit_responses(request, procedure_id):
+    procedure = get_object_or_404(Procedure, id=procedure_id)
+    
+    # Fetch the responses and their related sections
+    responses = ProcedureResponse.objects.filter(procedure=procedure)
+    sections = Section.objects.filter(checklist=procedure.checklist)
+
+    # Create a formset for responses
+    ProcedureResponseFormSet = modelformset_factory(
+        ProcedureResponse, 
+        form=CheckerProcedureResponseForm,  # Use the custom form here
+        extra=0
+    )
+    
+    formset = ProcedureResponseFormSet(queryset=responses)
+
+    if request.method == 'POST':
+        formset = ProcedureResponseFormSet(request.POST, queryset=responses)
+        if formset.is_valid():
+            formset.save()
+            return redirect(reverse('view_response', args=[procedure_id]))
+
+    return render(request, 'checker/edit_responses.html', {
+        'procedure': procedure,
+        'formset': formset,
+        'sections': sections,  # Pass sections to the template
     })
 
 
+@login_required
+@user_passes_test(checkers_group_required)
+def history_response(request, procedure_id):
+    procedure = get_object_or_404(Procedure, id=procedure_id)
+    responses = ProcedureResponse.objects.filter(procedure=procedure)
+    
+    return render(request, 'checker/history_response.html', {
+        'procedure': procedure,
+        'responses': responses
+    })
 
 
 @login_required
 @user_passes_test(checkers_group_required)
 def view_response(request, procedure_id):
     procedure = get_object_or_404(Procedure, id=procedure_id)
-    responses = ProcedureResponse.objects.filter(procedure=procedure)
     
+    sections = Section.objects.filter(checklist=procedure.checklist)
+    responses_by_section = {}
+    for section in sections:
+        responses_by_section[section] = ProcedureResponse.objects.filter(procedure=procedure, question__section=section)
+
     return render(request, 'checker/view_response.html', {
         'procedure': procedure,
-        'responses': responses
+        'responses_by_section': responses_by_section
     })
+
 
 
 @login_required
@@ -132,24 +198,30 @@ def history_response(request, procedure_id):
 @user_passes_test(checkers_group_required)
 def edit_responses(request, procedure_id):
     procedure = get_object_or_404(Procedure, id=procedure_id)
-    responses = ProcedureResponse.objects.filter(procedure=procedure)
     
+    # Fetch the responses and their related sections
+    responses = ProcedureResponse.objects.filter(procedure=procedure)
+    sections = Section.objects.filter(checklist=procedure.checklist)
+
+    # Create a formset for responses
     ProcedureResponseFormSet = modelformset_factory(
         ProcedureResponse, 
         form=CheckerProcedureResponseForm,  # Use the custom form here
         extra=0
     )
-    formset = ProcedureResponseFormSet(queryset=responses)
     
+    formset = ProcedureResponseFormSet(queryset=responses)
+
     if request.method == 'POST':
         formset = ProcedureResponseFormSet(request.POST, queryset=responses)
         if formset.is_valid():
             formset.save()
             return redirect(reverse('view_response', args=[procedure_id]))
-    
+
     return render(request, 'checker/edit_responses.html', {
         'procedure': procedure,
-        'formset': formset
+        'formset': formset,
+        'sections': sections,  # Pass sections to the template
     })
 
 

@@ -7,7 +7,7 @@ from checklist.models import ChecklistQuestion
 class ProcedureResponse(models.Model):
     procedure = models.ForeignKey(Procedure, on_delete=models.CASCADE)
     question = models.ForeignKey(ChecklistQuestion, on_delete=models.CASCADE)
-    response = models.CharField(max_length=10, choices=[('yes', 'Yes'), ('no', 'No'), ('na', 'N/A')])
+    response = models.CharField(max_length=10, choices=[('yes', 'Yes'), ('no', 'No'), ('na', 'N/A'), ('-----', '-----')])
     remarks = models.TextField(blank=True, null=True)
     user_response = models.TextField(blank=True, null=True)
 

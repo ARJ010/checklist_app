@@ -7,8 +7,8 @@
 
 {% block style_content %}
   <link rel="stylesheet" href="{% static 'checker/all_process.css' %}" />
-  <link rel="stylesheet" href="{% static 'user/sidebar.css' %}" />
-  <link rel="stylesheet" href="{% static 'checker/checkers_history.css' %}" />
+  <link rel="stylesheet" href="{% static 'checker/sidebar.css' %}" />
+  <link rel="stylesheet" href="{% static 'checker/check_table.css' %}" />
 {% endblock %}
 
 {% block type %}
@@ -68,7 +68,8 @@
               <td>
                 <a href="{% url 'view_response' procedure.id %}">Response</a> |
                 <a href="{% url 'return_procedure' procedure.id %}">Return</a> |
-                <a href="{% url 'final_submit' procedure.id %}">Final Confirm</a>
+                <a href="{% url 'final_submit' procedure.id %}">Final Confirm</a>|
+                <a href="{% url 'cancel_procedure' procedure.id %}">Remove</a>
               </td>
             </tr>
           {% endfor %}

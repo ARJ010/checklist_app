@@ -1,7 +1,7 @@
 #sidebar {
   background-color: #390281;
   color: white;
-  width: 10rem;
+  width: 12rem;
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
   padding: 1rem;
@@ -13,14 +13,14 @@
   align-items: center;
 }
 
-@media screen and (max-width: 2000px) {
+@media screen and (max-width: 789px) {
   #sidebar {
     display: none;
     /* Hide the sidebar */
   }
 }
 
-@media screen and (min-width: 1000px) {
+@media screen and (min-width: 789px) {
   .dropdown-container {
     display: none;
   }
@@ -29,11 +29,14 @@
 #sidebar ul {
   list-style: none;
   padding: 10%;
+  display: grid;
+  gap: 2rem;
 }
 
 #sidebar ul ul {
   padding: 1rem;
   margin: 0;
+  gap: 2rem;
 }
 
 #sidebar ul ul li {
@@ -162,7 +165,7 @@
   width: 300px; /* Adjust width as needed */
 }
 
-@media screen and (max-width: 2000px) {
+@media screen and (max-width: 789px) {
   .search-input {
     width: 200px;
     /* Change placeholder text to "Search" */

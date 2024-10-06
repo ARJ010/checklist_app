@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  Edit Responses
+{% endblock %}
+
+{% block style_content %}
+<link rel="stylesheet" href="{% static 'checker/response.css' %}" />
+<link rel="stylesheet" href="{% static 'checker/sidebar.css' %}" />
+<script>
+  function validateForm(event) {
+    // Get all form fields in the formset
+    const forms = document.querySelectorAll('#checklist-form .form-control');
+    let invalidFound = false;
+
+    // Clear any previous error messages and styles
+    forms.forEach(form => {
+      const errorMsg = form.querySelector('.error-message');
+      if (errorMsg) {
+        errorMsg.remove();
+      }
+      form.classList.remove('invalid'); // Clear previous invalid styles
+    });
+
+    forms.forEach(form => {
+      // Get the response field (the select input for response)
+      const responseField = form.querySelector('select[name$="-response"]');
+      
+      if (responseField) {
+        const selectedValue = responseField.value;
+
+        // Debugging: log the selected value to ensure it's correct
+        console.log(`Selected value for response: ${selectedValue}`);
+
+        // Check if the selected value is "-----"
+        if (selectedValue === '-----') {
+          invalidFound = true;
+
+          // Add a red border to highlight the invalid form
+          form.classList.add('invalid'); // Add a class for styling the invalid form
+
+          // Create an error message and append it below the form
+          const errorMessage = document.createElement('div');
+          errorMessage.classList.add('error-message');
+          errorMessage.style.color = 'red';
+          errorMessage.style.marginTop = '5px';
+          errorMessage.innerText = 'Please select a valid response. "-----" is not allowed.';
+          form.appendChild(errorMessage);
+        }
+      }
+    });
+
+    // Debugging: Check if any invalid input was found
+    console.log(`Invalid form found: ${invalidFound}`);
+
+    // If any invalid input is found, prevent form submission and scroll to the first error
+    if (invalidFound) {
+      event.preventDefault(); // Prevent form submission
+
+      // Scroll to the first invalid form field
+      const firstInvalidForm = document.querySelector('.invalid');
+      if (firstInvalidForm) {
+        firstInvalidForm.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      // Debugging: If no invalid form, allow form submission and log success
+      console.log('Form is valid, allowing submission.');
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    // Attach the validateForm function to the form's submit event
+    const form = document.getElementById('checklist-form');
+    
+    // Debugging: Log when the form submission event is triggered
+    console.log('Form submission event listener attached.');
+
+    form.addEventListener('submit', validateForm);
+  });
+</script>
+
+
+{% endblock %}
+
+{% block navigation %}
+  {% include 'checker/includes/sidemenu.html' %}
+{% endblock %}
+
+{% block sidebar %}
+  {% include 'checker/includes/sidebar.html' %}
+{% endblock %}
+
+{% block body_content %}
+<section id="procedure_table">
+  <header>
+    <h2>Edit Responses</h2>
+  </header>
+</section>
+
+<form method="POST" id="checklist-form" action="{% url 'edit_response_first' procedure.id %}">
+  {% csrf_token %}
+  {{ formset.management_form }}
+  
+  {% for section in sections %}
+  <section id="procedure_table_section">
+    <h2 id="section_title">Section : {{ section.name }}</h2>  <!-- Display the section name -->
+    <hr />
+    {% for form in formset.forms %}
+      {% if form.instance.question.section == section %}
+        <div class="form-control">
+          <h3>Question: {{ form.instance.question.question_text }}</h3>
+          {{ form.as_p }}  <!-- Render the form fields -->
+          <hr />
+        </div>
+      {% endif %}
+    {% endfor %}
+  </section>
+  {% endfor %}
+  <section id="procedure_table">   
+    <div class="button-container">
+      <button type="submit">Save</button>
+      <a href="{% url 'cancel_procedure' procedure.id %}"><button type="button">Cancel</button></a>
+    </div>
+  </section>
+</form>
+{% endblock %}
