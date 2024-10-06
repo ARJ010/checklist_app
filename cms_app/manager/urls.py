@@ -19,6 +19,11 @@ urlpatterns = [
     path('delete_checklist/', checklist_views.delete_checklist, name='delete_checklist'),
     path('checklist_details/', checklist_views.checklist_detail, name='checklist_detail'),
     path('checklist_edit/', checklist_views.edit_checklist, name='edit_checklist'),
+    path('add-section/', checklist_views.add_section, name='add_section'),
+    path('edit_section/', checklist_views.edit_section, name='edit_section'),
     path('History/', views.admin_history, name='admin_history'),
     path("history_response/<int:procedure_id>/", views.admin_history_response, name="admin_history_response"),
+    path("admin_processing/", views.admin_processing, name="admin_processing"),
+    path("admin_procedure_edit/<int:procedure_id>/", views.admin_procedure_edit, name="admin_procedure_edit"),
+    path("procedure_details/", views.procedure_details, name="procedure_details"),
 ]

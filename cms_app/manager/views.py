@@ -7,11 +7,12 @@ from django.http import HttpResponseBadRequest
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User, Group
-from .forms import RegisterForm, UserProfileForm, UserEmployeeForm, ChangePasswordForm
+from .forms import RegisterForm, UserProfileForm, UserEmployeeForm, ChangePasswordForm, ProcedureForm
 from .models import Employee
 from user.models import Procedure
 from django.db.models import Sum
 from django.core.paginator import Paginator
+from django.db.models import Q
 from checker.models import  ProcedureResponse
 
 logger = logging.getLogger(__name__)
@@ -281,16 +282,37 @@ def change_password(request):
 def admin_history(request):
     procedures = Procedure.objects.filter(status='Reviewed').order_by('-final_submission_date')
 
+    # Existing search fields
     search_client_name = request.GET.get('searchClientName')
     search_checklist = request.GET.get('searchChecklist')
     search_date = request.GET.get('searchDate')
+    search_user = request.GET.get('searchUser')
+    search_checker = request.GET.get('searchChecker')
+    search_status = request.GET.get('searchStatus')
 
+    # Filter by client name
     if search_client_name:
         procedures = procedures.filter(client_name__icontains=search_client_name)
+
+    # Filter by checklist name
     if search_checklist:
         procedures = procedures.filter(checklist__name__icontains=search_checklist)
+
+    # Filter by creation date
     if search_date:
         procedures = procedures.filter(date_created__date=search_date)
+
+    # Filter by user
+    if search_user:
+        procedures = procedures.filter(user__username__icontains=search_user)
+
+    # Filter by checker
+    if search_checker:
+        procedures = procedures.filter(checker__username__icontains=search_checker)
+
+    # Filter by status
+    if search_status:
+        procedures = procedures.filter(status__icontains=search_status)
 
     paginator = Paginator(procedures, 10)  # Show 10 procedures per page
     page_number = request.GET.get('page')
@@ -308,3 +330,84 @@ def admin_history_response(request, procedure_id):
         'procedure': procedure,
         'responses': responses
     })
+
+
+@login_required
+@user_passes_test(employee_group_required)
+def admin_processing(request):
+    procedures = Procedure.objects.filter(
+    Q(status='Processing') | Q(status='Submitted') | Q(status='Returned')
+).order_by('-final_submission_date')
+
+    # Existing search fields
+    search_client_name = request.GET.get('searchClientName')
+    search_checklist = request.GET.get('searchChecklist')
+    search_date = request.GET.get('searchDate')
+    search_user = request.GET.get('searchUser')
+    search_checker = request.GET.get('searchChecker')
+    search_status = request.GET.get('searchStatus')
+
+    # Filter by client name
+    if search_client_name:
+        procedures = procedures.filter(client_name__icontains=search_client_name)
+
+    # Filter by checklist name
+    if search_checklist:
+        procedures = procedures.filter(checklist__name__icontains=search_checklist)
+
+    # Filter by creation date
+    if search_date:
+        procedures = procedures.filter(date_created__date=search_date)
+
+    # Filter by user
+    if search_user:
+        procedures = procedures.filter(user__username__icontains=search_user)
+
+    # Filter by checker
+    if search_checker:
+        procedures = procedures.filter(checker__username__icontains=search_checker)
+
+    # Filter by status
+    if search_status:
+        procedures = procedures.filter(status__icontains=search_status)
+
+
+    paginator = Paginator(procedures, 10)  # Show 10 procedures per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'manager/admin_processing.html', {'page_obj': page_obj })
+
+@login_required
+@user_passes_test(employee_group_required)
+def admin_procedure_edit(request, procedure_id):
+    procedure = get_object_or_404(Procedure, id=procedure_id)
+
+    if request.method == 'POST':
+        form = ProcedureForm(request.POST, instance=procedure)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('admin_processing'))
+    else:
+        form = ProcedureForm(instance=procedure)
+
+    return render(request, 'manager/admin_edit_procedure.html', {'form': form})
+
+@login_required
+@user_passes_test(employee_group_required)
+def procedure_details(request):
+    total_created = Procedure.objects.count()  # Count all procedures
+    total_reviewed = Procedure.objects.filter(status='Reviewed').count()  # Count all reviewed procedures
+    total_pending = Procedure.objects.filter(status='Pending').count()  # Count all procedures pending review
+    total_proceeded = Procedure.objects.filter(status='Processing').count()  # Count all proceeded procedures
+    total_returns = Procedure.objects.filter(status='Returned').count() # return counts
+
+    context = {
+        'total_created': total_created,
+        'total_reviewed': total_reviewed,
+        'total_pending': total_pending,
+        'total_returns': total_returns,
+        'total_proceeded': total_proceeded
+    }
+
+    return render(request, 'manager/procedure.html', context)

@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  CMS-Admin
+{% endblock %}
+
+{% block type %}
+  <h1><a href="{% url 'manager_index' %}">CMS</a></h1>
+{% endblock %}
+
+{% block style_content %}
+  <link rel="stylesheet" href="{% static 'manager/procedure.css' %}" />
+  <link rel="stylesheet" href="{% static 'manager/sidebar.css' %}" />
+{% endblock %}
+
+{% block navigation %}
+  {% include 'manager/includes/sidemenu.html' %}
+{% endblock %}
+
+{% block sidebar %}
+  {% include 'manager/includes/sidebar.html' %}
+{% endblock %}
+
+{% block body_content %}
+
+  <section id="procedure_table">
+    <header>
+      <h2>Procedure Details</h2>
+    </header>
+    <table>
+        <tr>
+          <td>Total Procedures Created:</td><td>{{ total_created }}</td>
+        </tr>
+        <tr>
+          <td>Total Procedure Pending to be Submitted:</td><td>{{total_pending}}</td>
+        </tr>
+        <tr>
+          <td>Total Procedure Pending to be Reviewed:</td><td>{{total_proceeded}}</td>
+        </tr>
+        <tr>
+          <td>Total Procedures Reviewed:</td><td>{{ total_reviewed }}</td>
+        </tr>
+        <tr>
+          <td>Procedures Currently Returned:</td><td>{{ total_returns }}</td>
+        </tr>
+    </table>
+  </section>
+{% endblock %}

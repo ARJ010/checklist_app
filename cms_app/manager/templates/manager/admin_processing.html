@@ -23,27 +23,34 @@
 {% endblock %}
 
 {% block body_content %}
-<section id="search-container">
-  <form id="searchForm" method="GET" action="{% url 'admin_history' %}">
+  <section id="search-container">
+    <form id="searchForm" method="GET" action="{% url 'admin_processing' %}">
       <div class="search-container">
-          <input type="text" name="searchClientName" id="searchClientName" placeholder="Search by Client Name" />
-          <input type="text" name="searchChecklist" id="searchChecklist" placeholder="Search by Checklist" />
-          <input type="date" name="searchDate" id="searchDate" placeholder="Search by Date" /></br>
-          <input type="text" name="searchUser" id="searchUser" placeholder="Search by User" /> <!-- New field -->
-          <input type="text" name="searchChecker" id="searchChecker" placeholder="Search by Checker" /> <!-- New field -->
+        <input type="text" name="searchClientName" id="searchClientName" placeholder="Search by Client Name" />
+        <input type="text" name="searchChecklist" id="searchChecklist" placeholder="Search by Checklist" />
+        <input type="date" name="searchDate" id="searchDate" placeholder="Search by Date" />
+        <input type="text" name="searchUser" id="searchUser" placeholder="Search by User" /> <!-- New field -->
+        <input type="text" name="searchChecker" id="searchChecker" placeholder="Search by Checker" /> <!-- New field -->
 
+        <!-- New Status Select -->
+        <select name="searchStatus" id="searchStatus">
+          <option value="">Select Status</option> <!-- Default option -->
+          <option value="Submitted">Submitted</option>
+          <option value="Processing">Processing</option>
+          <option value="Returned">Returned</option>
+        </select>
 
-          <button type="submit">Search</button>
-          {% if request.GET.searchClientName or request.GET.searchChecklist or request.GET.searchDate or request.GET.searchUser or request.GET.searchChecker %}
-              <a href="{% url 'admin_history' %}"><button type="button" id="cancelButton">Cancel</button></a>
-          {% endif %}
+        <button type="submit">Search</button>
+        {% if request.GET.searchClientName or request.GET.searchChecklist or request.GET.searchDate or request.GET.searchUser or request.GET.searchChecker or request.GET.searchStatus %}
+          <a href="{% url 'admin_processing' %}"><button type="button" id="cancelButton">Cancel</button></a>
+        {% endif %}
       </div>
-  </form>
-</section>
+    </form>
+  </section>
 
   <section id="procedure_table">
     <header>
-      <h2>Procedure History</h2>
+      <h2>Active Procedures</h2>
     </header>
     <table>
       <thead>
@@ -55,7 +62,6 @@
           <th>Checklist</th>
           <th>Submitted Date</th>
           <th>Checker's Name</th>
-          <th>Final Submitted Date</th>
           <th>Returned Count</th>
           <th>Action</th>
         </tr>
@@ -70,10 +76,9 @@
             <td>{{ procedure.checklist.name }}</td>
             <td>{{ procedure.date_created }}</td>
             <td>{{ procedure.checker.first_name }} {{ procedure.checker.last_name }}</td>
-            <td>{{ procedure.final_submission_date }}</td>
             <td>{{ procedure.return_count }}</td>
             <td>
-              <a href="{% url 'admin_history_response' procedure.id %}">Response</a>
+              <a href="{% url 'admin_procedure_edit' procedure.id %}">Edit Procedure</a>
             </td>
           </tr>
         {% endfor %}
@@ -93,6 +98,8 @@
               &searchUser={{ request.GET.searchUser }}
             {% endif %}{% if request.GET.searchChecker %}
               &searchChecker={{ request.GET.searchChecker }}
+            {% endif %}{% if request.GET.searchStatus %}
+              &searchStatus={{ request.GET.searchStatus }}
             {% endif %}">
             &laquo; first
           </a>
@@ -106,6 +113,8 @@
               &searchUser={{ request.GET.searchUser }}
             {% endif %}{% if request.GET.searchChecker %}
               &searchChecker={{ request.GET.searchChecker }}
+            {% endif %}{% if request.GET.searchStatus %}
+              &searchStatus={{ request.GET.searchStatus }}
             {% endif %}">
             previous
           </a>
@@ -124,6 +133,8 @@
               &searchUser={{ request.GET.searchUser }}
             {% endif %}{% if request.GET.searchChecker %}
               &searchChecker={{ request.GET.searchChecker }}
+            {% endif %}{% if request.GET.searchStatus %}
+              &searchStatus={{ request.GET.searchStatus }}
             {% endif %}">
             next
           </a>
@@ -137,6 +148,8 @@
               &searchUser={{ request.GET.searchUser }}
             {% endif %}{% if request.GET.searchChecker %}
               &searchChecker={{ request.GET.searchChecker }}
+            {% endif %}{% if request.GET.searchStatus %}
+              &searchStatus={{ request.GET.searchStatus }}
             {% endif %}">
             last &raquo;
           </a>

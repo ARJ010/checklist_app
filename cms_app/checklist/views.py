@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import ChecklistForm, ChecklistQuestionForm, ChecklistQuestionFormSet
 from django.contrib.auth.decorators import login_required, user_passes_test
-from .models import Checklist,ChecklistQuestion
+from .forms import ChecklistForm, ChecklistQuestionFormSet, SectionForm, SectionFormSet
+from .models import Checklist, Section, ChecklistQuestion
 from django.urls import reverse
-from django.forms import formset_factory
+from django.forms import formset_factory,inlineformset_factory
 from django.contrib import messages
 from django.core.paginator import Paginator
 
@@ -17,14 +17,19 @@ def employee_group_required(user):
 def checklist_detail(request):
     checklist_id = request.GET.get('checklist_id')
     checklist = get_object_or_404(Checklist, id=checklist_id)
-    questions = checklist.checklistquestion_set.all()
 
-    # Pagination logic
-    paginator = Paginator(questions, 5)  # Show 10 questions per page
+    # Retrieve sections and their related questions
+    sections = checklist.section_set.prefetch_related('checklistquestion_set').all()
+
+    # Pagination logic - paginate by sections
+    paginator = Paginator(sections, 1)  # Show 1 sections per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    return render(request, 'checklist/checklist_details.html', {'checklist': checklist, 'page_obj': page_obj})
+    return render(request, 'checklist/checklist_details.html', {
+        'checklist': checklist,
+        'page_obj': page_obj,  # Paginated sections
+    })
 
 
 
@@ -36,10 +41,35 @@ def add_checklist(request):
         if form.is_valid():
             checklist = form.save()
             checklist_name = checklist.name
-            return redirect(reverse('add_questions') + '?cname=' + checklist_name)
+            return redirect(reverse('add_section') + '?cname=' + checklist_name)
     else:
         form = ChecklistForm()
     return render(request, 'checklist/add_checklist.html', {'form': form})
+
+@login_required
+@user_passes_test(employee_group_required)
+def add_section(request):
+    checklist_name = request.GET.get('cname', None)
+    if checklist_name is None:
+        return redirect('error_page')
+
+    checklist_instance = get_object_or_404(Checklist, name=checklist_name)
+
+    # Handle POST request
+    if request.method == 'POST':
+        formset = SectionFormSet(request.POST, instance=checklist_instance)
+        if formset.is_valid():
+            formset.save()
+            action = request.POST.get('action')
+            if action == 'submit':
+                return redirect(reverse('add_questions') + '?cname=' + checklist_name)
+            elif action == 'save_and_add':
+                return redirect(reverse('add_section') + '?cname=' + checklist_name + '#end')
+    else:
+        formset = SectionFormSet(instance=checklist_instance)
+
+    return render(request, 'checklist/add_section.html', {'formset': formset, 'name': checklist_name})
+
 
 @login_required
 @user_passes_test(employee_group_required)
@@ -52,17 +82,23 @@ def add_checklist_question(request):
 
     if request.method == 'POST':
         formset = ChecklistQuestionFormSet(request.POST, instance=checklist_instance)
+        for form in formset:
+            form.fields['section'].queryset = Section.objects.filter(checklist=checklist_instance)  # Filter section choices
         if formset.is_valid():
             formset.save()
             action = request.POST.get('action')
             if action == 'submit':
-                 return redirect('all_checklist')
+                return redirect('all_checklist')
             elif action == 'save_and_add':
                 return redirect(reverse('add_questions') + '?cname=' + checklist_name + '#end')
     else:
         formset = ChecklistQuestionFormSet(instance=checklist_instance)
+        for form in formset:
+            form.fields['section'].queryset = Section.objects.filter(checklist=checklist_instance)  # Filter section choices
 
     return render(request, 'checklist/add_checklist_questions.html', {'formset': formset, 'name': checklist_name})
+
+
 
 @login_required
 @user_passes_test(employee_group_required)
@@ -114,14 +150,29 @@ def edit_checklist(request):
     checklist_id = request.GET.get('checklist_id')
     checklist = get_object_or_404(Checklist, id=checklist_id)
 
+    # Get the questions linked to the checklist
+    questions = ChecklistQuestion.objects.filter(checklist=checklist)
+
     if request.method == 'POST':
         form = ChecklistForm(request.POST, instance=checklist)
         formset = ChecklistQuestionFormSet(request.POST, instance=checklist)
+
+        # Pass checklist instance to each form in the formset
+        for form in formset:
+            form.fields['section'].queryset = Section.objects.filter(checklist=checklist)
+
         if form.is_valid() and formset.is_valid():
             form.save()
             formset.save()
 
-            if request.POST.get('action') == 'save_and_edit':
+            # Delete any empty questions after saving
+            for question in formset:
+                if question.cleaned_data.get('question_text', '').strip() == '':
+                    question.instance.delete()
+
+            # Redirect to either the same page to continue editing or exit to the checklist view
+            action = request.POST.get('action')
+            if action == 'save_and_edit':
                 return redirect(reverse('edit_checklist') + '?checklist_id=' + str(checklist.id))
             else:
                 return redirect(reverse('checklist_detail') + '?checklist_id=' + str(checklist.id))
@@ -129,4 +180,44 @@ def edit_checklist(request):
         form = ChecklistForm(instance=checklist)
         formset = ChecklistQuestionFormSet(instance=checklist)
 
-    return render(request, 'checklist/edit_checklist.html', {'form': form, 'formset': formset, 'checklist': checklist})
+        # Pass checklist instance to each form in the formset
+        for form in formset:
+            form.fields['section'].queryset = Section.objects.filter(checklist=checklist)
+
+    return render(request, 'checklist/edit_checklist.html', {
+        'form': form,
+        'formset': formset,
+        'checklist': checklist,
+    })
+
+
+
+
+@login_required
+@user_passes_test(employee_group_required)
+def edit_section(request):
+    checklist_id = request.GET.get('checklist_id')
+    checklist = get_object_or_404(Checklist, id=checklist_id)
+
+    # Get the sections linked to the checklist
+    sections = Section.objects.filter(checklist=checklist)
+
+    if request.method == 'POST':
+        formset = SectionFormSet(request.POST, instance=checklist)
+
+        if formset.is_valid():
+            formset.save()
+
+            # Redirect to either the same page to continue editing or exit to the checklist view
+            action = request.POST.get('action')
+            if action == 'save_and_edit':
+                return redirect(reverse('edit_section') + '?checklist_id=' + str(checklist.id))
+            else:
+                return redirect(reverse('checklist_detail') + '?checklist_id=' + str(checklist.id))
+    else:
+        formset = SectionFormSet(instance=checklist)
+
+    return render(request, 'checklist/edit_section.html', {
+        'formset': formset,
+        'checklist': checklist,
+    })

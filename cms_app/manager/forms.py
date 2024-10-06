@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from .models import Employee
+from user.models import Procedure
 from django.contrib.auth.hashers import make_password
 
 class RegisterForm(forms.Form):
@@ -63,3 +64,25 @@ class UserProfileForm(forms.ModelForm):
             # If user photo is cleared, return None to delete the old image
             return None
         return user_photo
+
+class ProcedureForm(forms.ModelForm):
+    
+    class Meta:
+        model = Procedure
+        fields = ['client_name','data_path', 'checklist', 'user', 'checker','status']
+
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        # Filter the 'user' field to show only users in the 'Users' group
+        self.fields['user'].queryset = User.objects.filter(groups__name='Users')
+        
+        # Filter the 'checker' field to show only users in the 'Checkers' group
+        self.fields['checker'].queryset = User.objects.filter(groups__name='Checkers')
+
+        # Disable the 'status' field
+        self.fields['status'].disabled = True
+
+        # Set the 'readonly' attribute on the 'status' field
+        self.fields['status'].widget.attrs['readonly'] = 'readonly'

@@ -3,18 +3,19 @@ body {
   background-color: #e7e7e7;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start; /* Align items at the top */
   height: 100vh;
   margin: 0;
+  padding-top: 100px; /* Maintain 350px from top regardless of content */
 }
 
 .card {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   max-width: 100%; /* Increased for better layout */
-  margin: auto;
+  width: 100%; /* Make the card take full width */
+  max-width: 600px; /* Set a maximum width for the card */
   text-align: left; /* Align text to the left for better readability */
   padding: 20px;
-  margin-top: 100px; /* Adjusted margin for better spacing */
   background-color: white;
   border-radius: 10px; /* Added border-radius for a smooth look */
 }
@@ -126,8 +127,8 @@ body {
 /* Responsive Adjustments */
 @media screen and (max-width: 600px) {
   .card {
-      max-width: 100%; /* Adjust to full width on smaller screens */
-      margin-top: 20px; /* Adjusted margin for better spacing on mobile */
+    max-width: 100%; /* Adjust to full width on smaller screens */
+    margin-top: 20px; /* Adjusted margin for better spacing on mobile */
   }
 }
 
