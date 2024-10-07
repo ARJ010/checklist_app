@@ -1,6 +1,5 @@
-# Checklist Management System
-
 ![CMS Icon](cms.png)
+# Checklist Management System
 
 ![Django](https://img.shields.io/badge/Django-3.2-brightgreen.svg)
 ![Python](https://img.shields.io/badge/Python-3.9-blue.svg)
