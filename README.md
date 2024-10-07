@@ -1,8 +1,6 @@
-Here’s a professional README file for your Checklist Management System project:
-
----
-
 # Checklist Management System
+
+![CMS Icon](cms.png)
 
 ![Django](https://img.shields.io/badge/Django-3.2-brightgreen.svg)
 ![Python](https://img.shields.io/badge/Python-3.9-blue.svg)
@@ -123,6 +121,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Contact
 
 Developed by **Abhinav Raj**  
-Feel free to reach out via [LinkedIn](https://www.linkedin.com/in/abhinav-raj/) or [Email](mailto:abhinavmuzhakom@gmail.com) for any questions or feedback.
+Feel free to reach out via [LinkedIn](https://www.linkedin.com/in/arj010/) or [Email](mailto:abhinavmuzhakom@gmail.com) for any questions or feedback.
 
 ---
