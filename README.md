@@ -1,6 +1,3 @@
-Here’s the corrected version of the README file in a single Markdown format without splitting any sections. You can copy and paste this into your `README.md` file in your GitHub repository:
-
-```markdown
 # CMS App
 
 ![CMS App Logo](link-to-your-logo) *(Optional)*
