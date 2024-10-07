@@ -12,4 +12,4 @@ class ProcedureResponse(models.Model):
     user_response = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return f"Response for Procedure {self.procedure.id}, Question {self.question.question_id}: {self.response}, Remarks: {self.remarks}, User Response: {self.user_response}"
+        return str(self.procedure)
