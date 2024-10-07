@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<!-- checker/view_response.html -->
+
+{% block title %}
+  CMS-Admin
+{% endblock %}
+
+{% block style_content %}
+  <link rel="stylesheet" href="{% static 'checker/view_response.css' %}" />
+  <link rel="stylesheet" href="{% static 'checker/response.css' %}" />
+  <link rel="stylesheet" href="{% static 'manager/sidebar.css' %}" />
+{% endblock %}
+
+{% block type %}
+  <h1><a href="{% url 'manager_index' %}">CMS</a></h1>
+{% endblock %}
+
+{% block navigation %}
+  {% include 'manager/includes/sidemenu.html' %}
+{% endblock %}
+
+{% block sidebar %}
+  {% include 'manager/includes/sidebar.html' %}
+{% endblock %}
+
+{% block body_content %}
+  <section id="procedure_table">
+    {% if messages %}
+      <div class="alerts">
+        {% for message in messages %}
+          <div class="alert {{ message.tags }}">
+            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+    <header>
+      <h2>Responses</h2>
+    </header>
+    <table>
+      <thead>
+        <tr>
+          <th>Path</th>
+          <td colspan="3" >{{ procedure.data_path }}</td>
+        </tr>
+      </thead>
+    </table>
+    <table>
+      <thead>
+        <tr>
+          <th>Question</th>
+          <th>Response</th>
+          <th>Remarks</th>
+          <th>Remark Response</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for response in responses %}
+          <tr>
+            <td>{{ response.question.question_text }}</td>
+            <td>{{ response.response }}</td>
+            <td>{{ response.remarks }}</td>
+            <td>{{ response.user_response }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div class="button-container">
+        <a href="{% url 'admin_history' %}"><button>Go Back</button></a>
+    </div>
+  </section>
+{% endblock %}

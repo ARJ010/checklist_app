@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  Edit Responses
+{% endblock %}
+
+{% block style_content %}
+<link rel="stylesheet" href="{% static 'checker/response.css' %}" />
+<link rel="stylesheet" href="{% static 'checker/sidebar.css' %}" />
+{% endblock %}
+
+{% block navigation %}
+  {% include 'checker/includes/sidemenu.html' %}
+{% endblock %}
+
+{% block sidebar %}
+  {% include 'checker/includes/sidebar.html' %}
+{% endblock %}
+
+{% block body_content %}
+<section id="procedure_table">
+  <header>
+    <h2>Edit Responses</h2>
+  </header>
+</section>
+
+<form method="POST" id="checklist-form" action="{% url 'edit_response' procedure.id %}">
+    {% csrf_token %}
+    {{ formset.management_form }}
+    
+    {% for section in sections %}
+    <section id="procedure_table_section">
+      <h2 id="section_title">Section : {{ section.name }}</h2>  <!-- Display the section name -->
+      <hr />
+      {% for form in formset.forms %}
+        {% if form.instance.question.section == section %}
+          <div class="form-control">
+            <h3>Question: {{ form.instance.question.question_text }}</h3>
+            {{ form.as_p }}  <!-- Render the form fields -->
+            <hr />
+          </div>
+        {% endif %}
+      {% endfor %}
+    </section>
+    {% endfor %}
+    
+    <section id="procedure_table">   
+      <div class="button-container">
+        <button type="submit">Save Changes</button>
+        <a href="{% url 'view_response' procedure.id %}"><button type="button">Cancel</button></a>
+      </div>
+    </section>
+</form>
+{% endblock %}

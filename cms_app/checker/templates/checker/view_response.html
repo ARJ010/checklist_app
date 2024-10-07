@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  CMS-Checker
+{% endblock %}
+
+{% block style_content %}
+  <link rel="stylesheet" href="{% static 'checker/view_response.css' %}" />
+  <link rel="stylesheet" href="{% static 'checker/response.css' %}" />
+  <link rel="stylesheet" href="{% static 'checker/sidebar.css' %}" />
+{% endblock %}
+
+{% block type %}
+  <h1><a href="{% url 'checker_index' %}">CMS</a></h1>
+{% endblock %}
+
+{% block navigation %}
+  {% include 'checker/includes/sidemenu.html' %}
+{% endblock %}
+
+{% block sidebar %}
+  {% include 'checker/includes/sidebar.html' %}
+{% endblock %}
+
+{% block body_content %}
+  <section id="procedure_table">
+    {% if messages %}
+      <div class="alerts">
+        {% for message in messages %}
+          <div class="alert {{ message.tags }}">
+            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+    <header>
+      <h2>Responses</h2>
+    </header>
+    <table>
+      <thead>
+        <tr>
+          <th>Path</th>
+          <td colspan="3">{{ procedure.data_path }}</td>
+        </tr>
+      </thead>
+    </table>
+
+    <!-- Loop through each section and its responses -->
+    {% for section, responses in responses_by_section.items %}
+      <h3>{{ section.name }}</h3>  <!-- Assuming 'name' is the field in your Section model -->
+      <table>
+        <thead>
+          <tr>
+            <th>Question</th>
+            <th>Response</th>
+            <th>Remarks</th>
+            <th>Remark Response</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for response in responses %}
+            <tr>
+              <td>{{ response.question.question_text }}</td>
+              <td>{{ response.response }}</td>
+              <td>{{ response.remarks }}</td>
+              <td>{{ response.user_response }}</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="4">No responses for this section.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endfor %}
+    
+    <div class="button-container">
+      {% if procedure.return_count == 0 %}
+        <a href="{% url 'my_procedures' %}"><button>Go Back</button></a>
+      {% else %}
+        <a href="{% url 'checkers_returned' %}"><button>Go Back</button></a>
+      {% endif %}
+      <a href="{% url 'edit_response' procedure.id %}"><button>Edit</button></a>
+    </div>
+  </section>
+{% endblock %}

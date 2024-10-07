@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  All Checklists
+{% endblock %}
+
+{% block type %}
+  <h1><a href="{% url 'manager_index' %}">CMS</a></h1>
+{% endblock %}
+
+{% block style_content %}
+  <link rel="stylesheet" href="{% static 'checklist/all-users.css' %}" />
+  <link rel="stylesheet" href="{% static 'manager/sidebar.css' %}" />
+  {% if delete %}
+    <link rel="stylesheet" href="{% static 'checklist/user_delete.css' %}" />
+  {% else %}
+    <link rel="stylesheet" href="{% static 'checklist/user.css' %}" />
+  {% endif %}
+{% endblock %}
+
+{% block navigation %}
+  {% include 'checklist/includes/sidemenu.html' %}
+{% endblock %}
+
+{% block sidebar %}
+  {% include 'checklist/includes/sidebar.html' %}
+{% endblock %}
+
+{% block navigation2 %}
+  <div class="search-container">
+    <form action="{% url 'all_checklist' %}" method="get" class="search-form">
+      <div class="search-input-container">
+        <input type="text" name="qname" placeholder="Search for a Checklist..." class="search-input" />
+        <button type="submit" class="search-button"><i class="fas fa-search"></i></button>
+      </div>
+    </form>
+  </div>
+{% endblock %}
+
+{% block body_content %}
+  {% if query %}
+    <section id="all-users">
+      <h2>Search Results for "{{ query }}"</h2>
+      <ul>
+        {% for checklist in all_checklist %}
+          {% include 'checklist/includes/checklist.html' %}
+        {% endfor %}
+      </ul>
+    </section>
+  {% elif delete %}
+    <section id="all-users">
+      <h2>Select users to Delete</h2>
+      <form method="POST" action="{% url "delete_checklist" %}" class="delete-form">
+        {% csrf_token %}
+        <input id="d1" class="delete-button" type="submit" value="Delete Selected Users" />
+        <button id="d2" class="delete-button" type="submit"><i class="fa-sharp fa-solid fa-trash"></i></button>
+        <input type="hidden" name="user_type" value="{{ request.GET.user_type }}" />
+        <ul>
+          {% for checklist in all_checklist %}
+            {% include 'checklist/includes/delete_checklist.html' %}
+          {% endfor %}
+        </ul>
+      </form>
+    </section>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+          var deleteButton = document.querySelector('.delete-button');
+          deleteButton.addEventListener('click', function(event) {
+              var confirmation = confirm("Are you sure you want to delete the selected Checklists?");
+              if (!confirmation) {
+                  event.preventDefault();
+              }
+          });
+      });
+      </script>
+  {% else %}
+    <section id="all-users">
+      {% if messages %}
+        {% for message in messages %}
+        <div class="alert">
+          <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+          {{message}}
+        </div>
+        {% endfor %}
+      {% endif %}
+      <h2>All Checklists</h2>
+      <ul>
+        {% for checklist in all_checklist %}
+          {% include 'checklist/includes/checklist.html' %}
+        {% endfor %}
+      </ul>
+    </section>
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  CMS-User
+{% endblock %}
+
+{% block style_content %}
+  <link rel="stylesheet" href="{% static 'user/user_table.css' %}" />
+  <link rel="stylesheet" href="{% static 'user/sidebar.css' %}" />
+{% endblock %}
+
+{% block type %}
+  <h1><a href="{% url 'user_index'  %}">CMS</a></h1>
+{% endblock %}
+
+{% block navigation %}
+  {% include 'user/includes/sidemenu.html' %}
+{% endblock %}
+
+{% block sidebar %}
+  {% include 'user/includes/sidebar.html' %}
+{% endblock %}
+
+{% block body_content %}
+  <section id="search-container">
+    <form id="searchForm" method="GET" action="{% url 'returned' %}">
+      <div class="search-container">
+        <input type="hidden" name="user_id" value="{{ user.id }}" />
+        <input type="text" name="searchClientName" id="searchClientName" placeholder="Search by Client Name" />
+        <input type="text" name="searchChecklist" id="searchChecklist" placeholder="Search by Checklist" />
+        <input type="date" name="searchDate" id="searchDate" placeholder="Search by Date" />
+        <button type="submit">Search</button>
+        {% if request.GET.searchClientName or request.GET.searchChecklist or request.GET.searchDate %}
+          <a href="{% url 'returned' %}"><button type="button" id="cancelButton">Cancel</button></a>
+        {% endif %}
+      </div>
+    </form>
+  </section>
+  <section id="procedure_table">
+    <header>
+      <h2>Returned Procedure</h2>
+    </header>
+    <table>
+      <thead>
+        <tr>
+          <th>Sl No.</th>
+          <th>Client Name</th>
+          <th>Checklist</th>
+          <th>Date</th>
+          <th>Checker</th>
+          <th>Returned Date</th>
+          <th>Returned Count</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if page_obj %}
+          {% for procedure in page_obj %}
+            <tr>
+              <td>{{ forloop.counter0|add:page_obj.start_index }}</td>
+              <td>{{ procedure.client_name }}</td>
+              <td>{{ procedure.checklist.name }}</td>
+              <td>{{ procedure.date_created }}</td>
+              <td>{{ procedure.checker.first_name }} {{ procedure.checker.last_name }}</td>
+              <td>{{ procedure.returned_date }}</td>
+              <td>{{ procedure.return_count }}</td>
+              <td>
+                {% if procedure.status == 'Submitted' %}
+                  Submitted
+                {% else %}
+                  <a href="{% url 'user_view_responses' procedure.id %}">Response</a> |
+                  <a href="{% url 'edit_procedure' procedure.id %}?status=returned">Edit</a> |
+                  <a href="{% url 'submit_procedure' procedure.id %}">Submit</a>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="8">No records found</td>
+          </tr>
+        {% endif %}
+        
+      </tbody>
+    </table>
+    <!-- Pagination controls -->
+    <div class="pagination">
+      <span class="step-links">
+        {% if page_obj.has_previous %}
+          <a href="?page=1{% if request.GET.searchClientName %}
+              &searchClientName={{ request.GET.searchClientName }}
+            {% endif %}{% if request.GET.searchChecklist %}
+              &searchChecklist={{ request.GET.searchChecklist }}
+            {% endif %}{% if request.GET.searchDate %}
+              &searchDate={{ request.GET.searchDate }}
+            {% endif %}">
+            &laquo; first
+          </a>
+          <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.searchClientName %}
+              &searchClientName={{ request.GET.searchClientName }}
+            {% endif %}{% if request.GET.searchChecklist %}
+              &searchChecklist={{ request.GET.searchChecklist }}
+            {% endif %}{% if request.GET.searchDate %}
+              &searchDate={{ request.GET.searchDate }}
+            {% endif %}">
+            previous
+          </a>
+        {% endif %}
+
+        <span class="current">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</span>
+
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}{% if request.GET.searchClientName %}
+              &searchClientName={{ request.GET.searchClientName }}
+            {% endif %}{% if request.GET.searchChecklist %}
+              &searchChecklist={{ request.GET.searchChecklist }}
+            {% endif %}{% if request.GET.searchDate %}
+              &searchDate={{ request.GET.searchDate }}
+            {% endif %}">
+            next
+          </a>
+          <a href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.searchClientName %}
+              &searchClientName={{ request.GET.searchClientName }}
+            {% endif %}{% if request.GET.searchChecklist %}
+              &searchChecklist={{ request.GET.searchChecklist }}
+            {% endif %}{% if request.GET.searchDate %}
+              &searchDate={{ request.GET.searchDate }}
+            {% endif %}">
+            last &raquo;
+          </a>
+        {% endif %}
+      </span>
+    </div>
+  </section>
+{% endblock %}

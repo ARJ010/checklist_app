@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Checklist Details{% endblock title %}
+
+{% block style_content %}
+    <link rel="stylesheet" href="{% static 'checklist/checklist-details.css' %}" />
+{% endblock style_content %}
+
+{% block type %}
+    <h1><a href="{% url 'manager_index' %}">CMS</a></h1>
+{% endblock %}
+
+{% block body_content %}
+<section>
+    <div class="card">
+        <h2>Checklist: {{ checklist.name }}</h2>
+        <p>{{ checklist.description }}</p>
+        <!-- Back and Edit Buttons -->
+        <div class="button-container">
+            <a href="{% url 'all_checklist' %}" class="btn btn-secondary">Go Back</a>
+            <a href="{% url 'edit_section' %}?checklist_id={{ checklist.id }}" class="btn btn-primary">Edit Section</a>
+            <a href="{% url 'edit_checklist' %}?checklist_id={{ checklist.id }}" class="btn btn-primary">Edit Checklist</a>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1&checklist_id={{ checklist.id }}">&laquo; first</a>
+                    <a href="?page={{ page_obj.previous_page_number }}&checklist_id={{ checklist.id }}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}&checklist_id={{ checklist.id }}">next</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}&checklist_id={{ checklist.id }}">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+
+        <!-- Sections and Questions -->
+        <h3>Sections:</h3>
+        {% if page_obj %}
+            <ul>
+                {% for section in page_obj %}
+                    <li>
+                        <h4>Section: {{ section.name }}</h4>
+                        <ul>
+                            {% for question in section.checklistquestion_set.all %}
+                                <li>{{ question.question_text }}</li>
+                            {% empty %}
+                                <li>No questions in this section.</li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No sections found for this checklist.</p>
+        {% endif %}
+
+        <!-- Pagination -->
+        <div class="pagination">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1&checklist_id={{ checklist.id }}">&laquo; first</a>
+                    <a href="?page={{ page_obj.previous_page_number }}&checklist_id={{ checklist.id }}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}&checklist_id={{ checklist.id }}">next</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}&checklist_id={{ checklist.id }}">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+
+    <!-- Delete Form -->
+    <form method="post" action="{% url 'delete_checklist' %}" style="display: inline;">
+        {% csrf_token %}
+        <input type="hidden" name="checklist_ids" value="{{ checklist.id }}">
+        <button type="submit" class="btn btn-danger delete-button">Delete Checklist</button>
+    </form>
+</section>
+
+<!-- JavaScript to confirm delete action -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var deleteButton = document.querySelector('.delete-button');
+    deleteButton.addEventListener('click', function(event) {
+        var confirmation = confirm("Are you sure you want to delete this checklist?");
+        if (!confirmation) {
+            event.preventDefault();
+        }
+    });
+});
+</script>
+{% endblock body_content %}

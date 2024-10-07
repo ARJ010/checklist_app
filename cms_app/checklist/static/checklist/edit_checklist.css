@@ -1,0 +1,95 @@
+/* edit_checklist.css */
+
+/* Styles specific to the edit checklist page */
+
+.main-container {
+    max-width: 500px;
+    margin: 170px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.main-container h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #1f0050;
+}
+
+form {
+    width: 100%;
+}
+
+.form-control {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.form-control input,
+.form-control textarea {
+    font-family: inherit;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.form-control input:focus,
+.form-control textarea:focus {
+    border-color: #1f0050;
+    background-color: #f4eeff;
+}
+
+.form-control label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 8px;
+    color: #1f0050;
+    text-align: center;
+}
+
+/* Adjust radio button styling */
+.form-control input[type="radio"] {
+    margin-right: 5px;
+}
+
+.button-container {
+    text-align: center;
+}
+
+button {
+    cursor: pointer;
+    padding: 12px 20px;
+    border-radius: 6px;
+    background-color: #1f0050;
+    color: #ffffff;
+    border: none;
+    transition: background-color 0.3s;
+}
+
+button:hover,
+button:active {
+    background-color: #320777;
+}
+
+.errorlist {
+    list-style: none;
+    padding: 0;
+    color: #680000;
+    margin-bottom: 20px;
+}
+
+.error {
+    font-style: italic;
+}
+
+/* Style for <hr> element */
+hr {
+    border: none;
+    height: 2px;
+    background-color: #1f0050;
+    margin: 20px 0;
+}

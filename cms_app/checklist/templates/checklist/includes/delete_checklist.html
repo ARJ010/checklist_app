@@ -1,0 +1,10 @@
+{% load static %}
+
+
+<li class="user">
+    <input type="checkbox" name="checklist_ids" value="{{ checklist.id }}" id="checklist_{{ checklist.id }}" class="user-checkbox">
+    <label for="checklist_{{ checklist.id }}" class="user-label">
+        <img src="{% static 'images/checklist.png' %}" alt="checklist">
+        <h3>{{ checklist.name }}</h3>
+    </label>
+</li>

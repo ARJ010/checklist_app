@@ -1,0 +1,152 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'poppins', sans-serif;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    Justify-content: center;
+    min-height: 100vh;
+    background-image: url('../images/lbg.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+
+
+#cms {
+    position: absolute;
+    top: -10px;
+    left: 20%;
+    transform: translateX(-60%);
+    max-width: 300px;
+}
+
+@media screen and (max-width: 900px) {
+    #cms {
+        max-width: 400px;
+        transform: translateX(-50%);
+        left: 50%;
+    }
+
+    section {
+        max-width: 50%;
+    }
+}
+
+#cms img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+section {
+    position: relative;
+    max-width: 400px;
+    background-color: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+    backdrop-filter: blur(55px);
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 3rem;
+}
+
+h1 {
+    font-size: 2em;
+    color: #fff;
+    text-align: center;
+}
+
+.inputbox {
+    margin: 30px 0;
+    position: relative; /* Add position relative */
+    max-width: 310px; /* Adjusted max-width */
+    border-bottom: 2px solid #fff;
+}
+
+.inputbox label {
+    position: absolute;
+    top: 50%;
+    left: 5px;
+    transform: translateY(-50%);
+    color: #fff;
+    font-size: 1rem;
+    pointer-events: none;
+    transition: all 0.3s ease-in-out;
+}
+
+.inputbox input:focus + label,
+.inputbox input:valid + label {
+    top: -5px; /* Adjust the label position when the input is focused or has value */
+    font-size: 0.8rem; /* Adjust the font size when the input is focused or has value */
+}
+
+.inputbox input[type="text"],
+.inputbox input[type="password"] {
+    width: 100%; /* Adjusted width */
+    height: 40px;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    padding: 0 35px 0 5px;
+    color: #fff;
+    border-bottom: 1px solid #fff; /* Add a border-bottom to style the input fields */
+}
+
+.inputbox ion-icon {
+    position: absolute;
+    right: 8px;
+    color: #fff;
+    font-size: 1.2rem;
+    top: 20px;
+}
+
+
+button {
+    width: 100%;
+    height: 45px;
+    color: #fff;
+    border-radius: 40px;
+    background-color: #1f0050;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.4s ease;
+}
+
+button:hover {
+    background-color: #1f0050ab;
+}
+
+
+
+
+.errorlist {
+    list-style: none;
+    margin: 0.5rem 0;
+    padding: 0;
+    color: lemonchiffon;
+}
+
+.errors input {
+    border-color: lemonchiffon;
+    background-color: #fde3e3;
+}
+
+.errors label {
+    color: lemonchiffon;
+}
+
+.error {
+    margin: 0.5rem 0;
+    padding: 0;
+    font-style: italic;
+    color: lemonchiffon;
+}

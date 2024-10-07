@@ -1,0 +1,262 @@
+#welcome {
+    background: linear-gradient(to right top, #6305dd, #390281);
+    padding: 6rem 12%;
+  }
+  
+  #welcome header {
+    display: flex;
+    align-items: flex-start;
+    margin: 3rem auto;
+  }
+  
+  #welcome img {
+    width: 10rem;
+    height: 10rem;
+    object-fit: cover;
+    object-position: top;
+    border: 5px solid white;
+    border-radius: 12px;
+    background-color: #ffe1bf;
+    transform: rotateZ(-5deg);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  }
+  
+  #welcome h2 {
+    font-size: 3.5rem;
+    margin: 0 0 0 2rem;
+    color: #e4e4e4;
+    width: 50rem;
+  }
+  
+  #welcome p {
+    color: white;
+    font-size: 1.5rem;
+  }
+  
+  #latest-posts {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 60rem;
+    margin: -6rem auto 2rem auto;
+    box-shadow: 1px 1px 12px rgba(0, 0, 0, 0.4);
+  }
+  
+  #latest-posts h2 {
+    text-align: center;
+  }
+  
+  #latest-posts ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 1rem;
+  }
+  
+  #latest-posts li {
+    flex: 1;
+  }
+  
+  #about {
+    text-align: center;
+    padding: 3rem;
+    background-color: #e48900;
+    margin-top: 5rem;
+  }
+  
+  #about h2 {
+    font-size: 3rem;
+  }
+  
+  #about p {
+    font-size: 1.5rem;
+    color: #353535;
+  }
+  
+  #procedure_table {
+    background-color: white;
+    padding: 4rem;
+    border-radius: 12px;
+    width: 60rem;
+    margin: 5rem auto;
+    box-shadow: 1px 1px 12px rgba(0, 0, 0, 0.4);
+  }
+  
+  #procedure_table header {
+    text-align: center;
+  }
+  
+  #procedure_table h2 {
+    font-size: 2.5rem;
+    margin: 1rem;
+    color: #6305dd;
+    display: inline-block;
+    border-bottom: 3px solid #6305dd;
+  }
+  
+  #procedure_table button:hover {
+    background-color: #390281;
+  }
+  
+  #procedure_table button {
+    background-color: #6305dd;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin: 1rem;
+    transition: background-color 0.2s ease-in-out;
+  }
+  
+  #procedure_table table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem;
+  }
+  
+  #procedure_table th,
+  #procedure_table td {
+    border: 1px solid black;
+    padding: 0.5rem;
+    text-align: center;
+  }
+  
+  #procedure_table th {
+    background-color: #6305dd;
+    color: white;
+  }
+  
+  #procedure_table tr:nth-of-type(even) {
+    background-color: #ccc;
+  }
+  
+  
+  #procedure_table .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2rem;
+  }
+  
+  #procedure_table .pagination .step-links {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  #procedure_table .pagination a,
+  #procedure_table .pagination span.current {
+    background-color: #6305dd;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    text-decoration: none;
+    font-size: 1.2rem;
+    transition: background-color 0.2s ease-in-out;
+  }
+  
+  #procedure_table .pagination a:hover {
+    background-color: #390281;
+  }
+  
+  #procedure_table .pagination span.current {
+    background-color: #ccc;
+    color: #6305dd;
+  }
+  
+  #procedure_table .pagination a.disabled {
+    background-color: #ccc;
+    color: #aaa;
+    pointer-events: none;
+  }
+
+  #search-container {
+    width: 60rem;
+    margin: 10rem auto 2rem auto;
+  }
+  
+
+  .search-container {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .search-container input, .search-container button {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    font-size: 1.2rem;
+  }
+  
+  .search-container button {
+    background-color: #6305dd;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+  }
+  
+  .search-container button:hover {
+    background-color: #390281;
+  }
+  
+
+  .delete-button {
+    position: fixed;
+    bottom: 20px; /* Adjust the distance from the bottom */
+    right: 20px; /* Adjust the distance from the right */
+    z-index: 9999;
+    padding: 14px 28px;
+    background-color: white; /* Red color for delete button */
+    color: rgb(0, 0, 0);
+    border: 2px solid #f44336;;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 10px;
+  }
+  
+  .delete-button:hover {
+    background-color: #ff0000; /* Darker red color on hover */
+    border-radius: 5px;
+  }
+  
+  @media screen and (max-width: 600px) {
+    #d1 {
+      display: none;
+      /* Hide the sidebar */
+    }
+  }
+  
+  @media screen and (min-width: 600px) {
+    #d2 {
+      display: none;
+    }
+  }
+  
+  
+  .alert {
+    padding: 20px;
+    background-color: #f44336;
+    color: white;
+  }
+  
+  .closebtn {
+    margin-left: 15px;
+    color: white;
+    font-weight: bold;
+    float: right;
+    font-size: 22px;
+    line-height: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  .closebtn:hover {
+    color: black;
+  }
+  

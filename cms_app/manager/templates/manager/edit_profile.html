@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+<!-- registration/register.html -->
+
+{% block title %}
+  {% if request.GET.user_type == 'user' %}
+    User
+  {% else %}
+    Checker
+  {% endif %}Registration
+{% endblock %}
+
+{% block style_content %}
+  <link rel="stylesheet" href="{% static 'manager/index.css' %}" />
+  <link rel="stylesheet" href="{% static 'manager/registration.css' %}" />
+{% endblock %}
+
+{% block type %}
+  <h1><a href="{% url 'manager_index' %}">CMS</a></h1>
+{% endblock %}
+
+{% block body_content %}
+  <section>
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert">
+          <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+    <div class="container">
+      <h2>
+        {% if request.GET.user_type == 'user' %}
+          User
+        {% else %}
+          Checker
+        {% endif %}Edit
+      </h2>
+
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in user_form %}
+          <div class="form-control {% if form.username.errors %}{% endif %}">{{ field.label_tag }}
+            {{ field }}
+            {{ field.errors }}</div>
+        {% endfor %}
+        {% for field in profile_form %}
+          <div class="form-control {% if form.username.errors %}{% endif %}">{{ field.label_tag }}
+            {{ field }}
+            {{ field.errors }}</div>
+        {% endfor %}
+        <input type="hidden" name="user_type" value="{{ request.GET.user_type }}" />
+        <div class="button-container">
+          <button type="submit">Save</button>
+          {% if request.GET.user_type == 'user' %}
+            <a href="{% url 'all_users' %}?user_type=user"><button type="button">Cancel</button></a>
+          {% elif request.GET.user_type == 'checker' %}
+            <a href="{% url 'all_users' %}?user_type=checker"><button type="button">Cancel</button></a>
+          {% endif %}
+        </div>
+      </form>
+    </div>
+  </section>
+{% endblock %}

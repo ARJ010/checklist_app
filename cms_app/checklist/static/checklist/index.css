@@ -1,0 +1,118 @@
+/* Base Styles */
+body {
+  font-family: Arial, sans-serif;
+  min-width: 465px;
+  margin: 0;
+  padding: 0;
+  background-image: url('../images/bg.png');
+  background-size: cover;
+}
+
+/* Navigation Bar */
+#main-navigation {
+  background-color: #390281;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+/* Welcome Section */
+#welcome {
+  background: linear-gradient(to right top, #3c097e, #390281);
+  padding: 100px 10% 20px 10%;
+}
+
+#welcome header {
+  display: flex;
+  align-items: flex-start;
+  margin: 3rem auto;
+}
+
+#welcome img {
+  width: 10rem;
+  height: 10rem;
+  object-fit: cover;
+  object-position: top;
+  border: 5px solid white;
+  border-radius: 12px;
+  background-color: #ffe1bf;
+  transform: rotateZ(-5deg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+#welcome h2 {
+  font-size: 3.5rem;
+  margin: 40px 2rem;
+  color: #e4e4e4;
+}
+
+@media screen and (max-width: 600px) {
+  #welcome h2 {
+    font-size: 2.5rem;
+  }
+}
+
+
+/* Action Section */
+.all_actions {
+  background-color: #ffffff; /* Adjust to your preferred color */
+  padding: auto;
+  border-radius: 12px;
+  width: 80%;
+  margin: 2rem auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Add a box-shadow for depth */
+  border: 2px solid #390281; /* Add a border for further visibility */
+}
+
+.all_actions ul {
+  list-style: none;
+  max-width: 1200px;
+  width : 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  padding: 0;
+
+}
+
+.all_actions li {
+  flex: 1;
+}
+
+/* Action Item */
+.action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.action a {
+  text-decoration: none;
+  color: #000000; /* Adjust to improve contrast */
+  transition: all 0.2s ease;
+  padding: 1rem;
+}
+
+.action a:hover,
+.action a:active {
+  transform: scale(1.05);
+  background-color: #390281;
+  color: white;
+  border-radius: 10px;
+}
+
+.action img {
+  width: 10rem;
+  height: 10rem;
+  object-fit: cover;
+  border: #e4e4e4 5px solid;
+  border-radius: 50%;
+}
+
+.action h3 {
+  margin: 0.25rem 0;
+}
+
+.action p {
+  margin: 0.25rem 0;
+}
+

@@ -1,0 +1,35 @@
+<aside class="dropdown-container">
+  <div class="dropdown">
+    <a href="#" class="menu-icon">&#9776;</a>
+    <div class="dropdown-content">
+      <div class="sub-menu">
+        <a href="{% url 'all_users' %}?user_type=user">User</a>
+        <div id="sub-user" class="sub-options">
+          <a href="{% url 'user_register' %}?user_type=user">Add</a>
+          <a href="{% url 'all_users' %}?user_type=user&delete=delete">Delete</a>
+        </div>
+      </div>
+      <div class="sub-menu">
+        <a href="{% url 'all_users' %}?user_type=checker">Checker</a>
+        <div id="sub-checker" class="sub-options">
+          <a href="{% url 'user_register' %}?user_type=checker">Add</a>
+          <a href="{% url 'all_users' %}?user_type=checker&delete=delete">Delete</a>
+        </div>
+      </div>
+      <div class="sub-menu">
+        <a href="{% url 'all_checklist' %}">Checklist</a>
+        <div id="sub-checklist" class="sub-options">
+          <a href="{% url "add_checklist" %}">Add</a>
+          <a href="{% url "all_checklist" %}?delete=delete">Delete</a>
+        </div>
+      </div>
+      <div class="sub-menu">
+        <a href="{% url 'procedure_details' %}?procedures=True">Procedures</a>
+        <div id="sub-checklist" class="sub-options">
+          <a href="{% url 'admin_processing' %}?procedures=True">Processing</a>
+          <a href="{% url 'admin_history' %}?procedures=True">Completed</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</aside>

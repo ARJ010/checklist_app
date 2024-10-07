@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  User Details
+{% endblock %}
+
+{% block type %}
+  <h1><a href="{% url 'manager_index' %}">CMS</a></h1>
+{% endblock %}
+
+{% block style_content %}
+  <link rel="stylesheet" href="{% static 'manager/user-details.css' %}" />
+  <link rel="stylesheet" href="{% static 'manager/sidebar.css' %}" />
+{% endblock %}
+
+{% block navigation %}
+  {% include 'manager/includes/sidemenu.html' %}
+{% endblock %}
+
+{% block sidebar %}
+  {% include 'manager/includes/sidebar.html' %}
+{% endblock %}
+
+{% block body_content %}
+  <div class="card">
+    {% if user.employee.user_photo %}
+      <img src="{{ user.employee.user_photo.url }}" alt="{{ user.first_name }}" style="width:100%" />
+    {% else %}
+      <img src="{% static 'images/user.png' %}" alt="{{ user.first_name }}" style="width:100%" />
+    {% endif %}
+    <h1>{{ user.first_name|title }} {{ user.last_name|title }}</h1>
+    <p class="title">{{ request.GET.user_type|title }}</p>
+    <p>Age: {{ user.employee.age }}</p>
+    <p>Gender: {{ user.employee.gender }}</p>
+    <p>
+      <a href="{% url 'edit_user_profile' %}?user_type={{ request.GET.user_type }}&user_id={{ user.id }}"><button>Edit</button></a>
+    </p>
+    <p>
+      <a href="{% url 'change_password' %}?user_type={{ request.GET.user_type }}&user_id={{ user.id }}"><button>Change Password</button></a>
+    </p>
+  </div>
+  <div class="card">
+    <h2>Performance Details</h2>
+    {% if request.GET.user_type == 'user' %}
+      <p><strong>Total Procedures Created:</strong> {{ total_created }}</p>
+      <p><strong>Total Procedures Reviewed:</strong> {{ total_reviewed }}</p>
+      <p><strong>Total Returns:</strong> {{ total_returns }}</p>
+      <p><strong>Successful Creation Rate:</strong> {{ successful_review_rate_user|floatformat:2 }}%</p>
+    {% endif %}
+    {% if request.GET.user_type == 'checker' %}
+    <p><strong>Total Procedures Proceeded:</strong> {{ total_proceeded }}</p>
+      <p><strong>Total Procedures Reviewed:</strong> {{ total_reviewed }}</p>
+      <p><strong>Total Returns:</strong> {{ total_returns }}</p>
+      <p><strong>Successful Review Rate:</strong> {{ successful_review_rate|floatformat:2 }}%</p>
+    {% endif %}
+  </div>
+
+  <a href="{% url 'delete_user' %}?user_type={{ request.GET.user_type }}&user_id={{ user.id }}">
+    <input id="d1" class="delete-button" type="button" value="Delete Selected Users" />
+  </a>
+  <a href="{% url 'delete_user' %}?user_type={{ request.GET.user_type }}&user_id={{ user.id }}">
+    <button id="d2" class="delete-button" type="submit"><i class="fa-sharp fa-solid fa-trash"></i></button>
+  </a>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var deleteButton = document.querySelector('.delete-button');
+        deleteButton.addEventListener('click', function(event) {
+            var confirmation = confirm("Are you sure you want to delete this User?");
+            if (!confirmation) {
+                event.preventDefault();
+            }
+        });
+    });
+  </script>
+{% endblock %}

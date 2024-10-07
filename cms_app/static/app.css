@@ -9,6 +9,7 @@ html {
 }
 
 body {
+  min-width: 465px;
   margin: 0;
 }
 
@@ -25,10 +26,12 @@ h3 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 10%;
+  padding: 0 5%;
   position: absolute;
   top: 0;
   left: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  background: linear-gradient(to right top, #3c097e, #390281);
 }
 
 nav{
@@ -50,4 +53,23 @@ nav{
 #main-navigation h1 a:hover,
 #main-navigation h1 a:active {
   color: white;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+}
+
+
+@media screen and (max-width: 600px) {
+  #l1 {
+    display: none;
+    /* Hide the sidebar */
+  }
+}
+
+@media screen and (min-width: 600px) {
+  #l2 {
+    display: none;
+  }
 }

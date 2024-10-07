@@ -1,0 +1,21 @@
+<aside id="sidebar">
+  <ul>
+    <li>
+      <a href="{% url 'draft' %}?status=pending">Draft</a>
+        <ul>
+          <li>
+            <a href="{% url 'add_procedure' %}">Add</a>
+          </li>
+        </ul>
+    </li>
+    <li>
+      <a href="{% url 'status' %}">Status</a>
+    </li>
+    <li>
+      <a href="{% url 'returned' %}">Returned</a>
+    </li>
+    <li>
+      <a href="{% url 'history' %}">History</a>
+    </li>
+  </ul>
+</aside>

@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  Add Sections
+{% endblock %}
+
+{% block style_content %}
+  <link rel="stylesheet" href="{% static 'checklist/index.css' %}" />
+  <link rel="stylesheet" href="{% static 'checklist/registration.css' %}" />
+  <link rel="stylesheet" href="{% static 'checklist/edit_checklist.css' %}" />
+  <style>
+    .form-row {
+      margin-bottom: 10px;
+    }
+    .button-container {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+  </style>
+{% endblock %}
+
+{% block body_content %}
+  <section>
+    <div class="container">
+      <h2>{{ name }}</h2>
+      <form id="section-form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ formset.management_form }}
+        <div id="formset-container">
+            {% for form in formset %}
+            <div class="form-row">
+                <label for="{{ form.auto_id }}">{{ form.label }}</label>
+                {{ form }}
+                <hr>
+            </div>
+            {% endfor %}
+        </div>
+        <input type="hidden" name="user_type" value="{{ request.GET.user_type }}" />
+        <div class="button-container">
+          <button type="submit" name="action" value="save_and_add" class="btn btn-primary">Save and Add</button>
+          <button type="submit" name="action" value="submit" class="btn btn-success">Save and Next</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var formCount = {{ formset.total_form_count }};
+      var formContainer = document.getElementById('formset-container');
+      var addButton = document.getElementById('add-section');
+
+      addButton.addEventListener('click', function() {
+        var newForm = document.createElement('div');
+        newForm.classList.add('form-row');
+        newForm.innerHTML = formContainer.children[0].innerHTML.replace(/__prefix__/g, formCount);
+        formContainer.appendChild(newForm);
+        formCount++;
+        document.getElementById('id_form-TOTAL_FORMS').value = formCount;
+      });
+    });
+
+    if (window.location.hash === '#end') {
+      window.scrollTo(0, document.body.scrollHeight);
+    }
+  </script>
+{% endblock %}

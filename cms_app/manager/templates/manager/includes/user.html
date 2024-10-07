@@ -1,0 +1,17 @@
+{% load static %}
+
+
+<li>
+  <article class="user">
+    <a href="{% url 'user_details' %}?user_id={{user.user.id}}&user_type={{request.GET.user_type}}">
+      {% if user.user_photo %}
+        <img src="{{user.user_photo.url}}" alt="{{ user.first_name }}">
+      {% else %}
+        <img src="{% static 'images/user.png' %}" alt="{{ user.first_name }}">
+      {% endif %}
+      <div class="post__content">
+      <h3>{{user.first_name}} {{user.last_name}}</h3>
+      </div>
+    </a>
+  </article>
+</li>

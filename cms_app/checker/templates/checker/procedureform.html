@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+<!-- registration/register.html -->
+
+{% block title %}
+  CMS-Checker
+{% endblock %}
+
+{% block style_content %}
+  <link rel="stylesheet" href="{% static 'manager/index.css' %}" />
+  <link rel="stylesheet" href="{% static 'manager/registration.css' %}" />
+{% endblock %}
+
+{% block type %}
+  <h1><a href="{% url 'checker_index' %}">CMS</a></h1>
+{% endblock %}
+
+{% block body_content %}
+  <section>
+    <div class="container">
+      <h2>{{ checklist_name }} Response</h2>
+      <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+          <div class="form-control {% if form.username.errors %}errors{% endif %}">{{ field.label_tag }}
+            {{ field }}
+            {{ field.errors }}</div>
+        {% endfor %}
+        <input type="hidden" name="user_type" value="{{ request.GET.user_type }}" />
+        <div class="button-container">
+          <button type="submit" value="Register">Save</button>
+          <a href="{% url 'cancel_procedure' procedure_id %}"><button type="button">Cancel</button></a>
+        </div>
+      </form>
+    </div>
+  </section>
+{% endblock %}
