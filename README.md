@@ -1,4 +1,4 @@
-![CMS Icon](cms.png)
+![CMS Icon](cms-card.png)
 # Checklist Management System
 
 ![Django](https://img.shields.io/badge/Django-3.2-brightgreen.svg)
